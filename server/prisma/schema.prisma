@@ -16,6 +16,33 @@ enum Role {
   STAFF
 }
 
+enum ClientType {
+  INDIVIDUAL
+  COMPANY
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL_SENT
+  CONVERTED
+  LOST
+}
+
+enum FollowUpType {
+  CALL
+  EMAIL
+  MEETING
+  OTHER
+}
+
+enum FollowUpStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
 model Employee {
   id         BigInt   @id @default(autoincrement())
   full_name  String
@@ -31,18 +58,72 @@ model Employee {
 }
 
 model User {
-  id                   BigInt    @id @default(autoincrement())
-  email                String    @unique
+  id                   BigInt     @id @default(autoincrement())
+  email                String     @unique
   password_hash        String
-  role                 Role      @default(STAFF)
-  employee_id          BigInt?   @unique
-  is_active            Boolean   @default(true)
-  must_change_password Boolean   @default(true)
+  role                 Role       @default(STAFF)
+  employee_id          BigInt?    @unique
+  is_active            Boolean    @default(true)
+  must_change_password Boolean    @default(true)
   last_login_at        DateTime?
-  created_at           DateTime  @default(now())
-  updated_at           DateTime  @updatedAt
-  employee             Employee? @relation(fields: [employee_id], references: [id], onDelete: Restrict)
+  created_at           DateTime   @default(now())
+  updated_at           DateTime   @updatedAt
+  employee             Employee?  @relation(fields: [employee_id], references: [id], onDelete: Restrict)
+  leads                Lead[]
+  follow_ups           FollowUp[]
 
   @@index([role])
   @@map("users")
+}
+
+model Client {
+  id                  BigInt     @id @default(autoincrement())
+  client_type         ClientType @default(COMPANY)
+  display_name        String
+  email               String?
+  phone               String?
+  address             String?    @db.Text
+  registration_number String?
+  notes               String?    @db.Text
+  is_active           Boolean    @default(true)
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+  lead                Lead?
+
+  @@index([display_name])
+  @@index([email])
+  @@map("clients")
+}
+
+model Lead {
+  id                  BigInt     @id @default(autoincrement())
+  owner_id            BigInt
+  owner               User       @relation(fields: [owner_id], references: [id], onDelete: Restrict)
+  status              LeadStatus @default(NEW)
+  lost_reason         String?
+  expected_value      Decimal?   @db.Decimal(14, 2)
+  converted_client_id BigInt?    @unique
+  converted_client    Client?    @relation(fields: [converted_client_id], references: [id], onDelete: SetNull)
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+  follow_ups          FollowUp[]
+
+  @@map("leads")
+}
+
+model FollowUp {
+  id                  BigInt         @id @default(autoincrement())
+  lead_id             BigInt
+  lead                Lead           @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  follow_up_date      DateTime
+  type                FollowUpType
+  status              FollowUpStatus @default(SCHEDULED)
+  next_follow_up_date DateTime?
+  created_by          BigInt
+  creator             User           @relation(fields: [created_by], references: [id], onDelete: Restrict)
+  created_at          DateTime       @default(now())
+  updated_at          DateTime       @updatedAt
+
+  @@index([lead_id, follow_up_date])
+  @@map("follow_ups")
 }
