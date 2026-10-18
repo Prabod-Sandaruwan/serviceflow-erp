@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 1 Complete (Foundation)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012
+**Current Task:** DB-002 Complete (Phase 2 - Database Architecture)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -23,3 +23,7 @@
 - [x] FOUND-010: Add the health endpoint and its first test
 - [x] FOUND-011: Configure Vitest and Testing Library for the client
 - [x] FOUND-012: Add the first GitHub Actions workflow and a README stub
+
+## Phase 2 - Database Architecture & Schema
+- [x] DB-001: Create the MySQL databases and application user
+- [x] DB-002: Install Prisma and verify its MySQL setup
