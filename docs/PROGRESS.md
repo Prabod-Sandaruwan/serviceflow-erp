@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** DB-005 Complete (Phase 2 - Database Architecture)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005
+**Current Task:** DB-006 Complete (Phase 2 - Database Architecture)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -30,3 +30,4 @@
 - [x] DB-003: Establish database connections and schema conventions
 - [x] DB-004: Model identity tables: employees and users
 - [x] DB-005: Model CRM tables: clients, leads, follow_ups
+- [x] DB-006: Model quotations and quotation items
