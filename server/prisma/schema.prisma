@@ -154,6 +154,7 @@ model User {
   voidedPayments       Payment[]   @relation("PaymentVoider")
   recordedExpenses     Expense[]   @relation("ExpenseRecorder")
   voidedExpenses       Expense[]   @relation("ExpenseVoider")
+  auditLogs            AuditLog[]  @relation("AuditActor")
 
   @@index([role])
   @@map("users")
@@ -455,4 +456,25 @@ model Expense {
   @@index([projectId, expenseDate])
   @@index([expenseDate])
   @@map("expenses")
+}
+
+model AuditLog {
+  id          BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
+  actorUserId BigInt?  @map("actor_user_id") @db.UnsignedBigInt
+  actorRole   String?  @map("actor_role") @db.VarChar(20)
+  action      String   @db.VarChar(60)
+  entityType  String   @map("entity_type") @db.VarChar(40)
+  entityId    BigInt?  @map("entity_id") @db.UnsignedBigInt
+  beforeJson  Json?    @map("before_json")
+  afterJson   Json?    @map("after_json")
+  requestId   String?  @map("request_id") @db.Char(36)
+  ipAddress   String?  @map("ip_address") @db.VarChar(45)
+  createdAt   DateTime @default(now()) @map("created_at") @db.DateTime(3)
+
+  actor User? @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([entityType, entityId])
+  @@index([actorUserId, createdAt])
+  @@index([createdAt])
+  @@map("audit_logs")
 }
