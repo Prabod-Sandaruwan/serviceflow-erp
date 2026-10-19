@@ -83,6 +83,36 @@ enum TaskStatus {
   CANCELLED
 }
 
+enum InvoiceStatus {
+  DRAFT
+  ISSUED
+  PARTIALLY_PAID
+  PAID
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
+enum RecordStatus {
+  ACTIVE
+  VOIDED
+}
+
+enum ExpenseCategory {
+  SOFTWARE_LICENSE
+  HOSTING_INFRASTRUCTURE
+  THIRD_PARTY_SERVICE
+  TRAVEL
+  EQUIPMENT
+  SUBCONTRACTOR
+  OTHER
+}
+
 model Employee {
   id            BigInt   @id @default(autoincrement())
   full_name     String
@@ -117,6 +147,13 @@ model User {
   createdProjects      Project[]   @relation("ProjectCreator")
   approvedMilestones   Milestone[] @relation("MilestoneApprover")
   createdTasks         Task[]      @relation("TaskCreator")
+  createdInvoices      Invoice[]   @relation("InvoiceCreator")
+  issuedInvoices       Invoice[]   @relation("InvoiceIssuer")
+  cancelledInvoices    Invoice[]   @relation("InvoiceCanceller")
+  recordedPayments     Payment[]   @relation("PaymentRecorder")
+  voidedPayments       Payment[]   @relation("PaymentVoider")
+  recordedExpenses     Expense[]   @relation("ExpenseRecorder")
+  voidedExpenses       Expense[]   @relation("ExpenseVoider")
 
   @@index([role])
   @@map("users")
@@ -256,6 +293,8 @@ model Project {
   creator    User        @relation("ProjectCreator", fields: [createdBy], references: [id], onDelete: Restrict)
   milestones Milestone[]
   tasks      Task[]
+  invoices   Invoice[]
+  expenses   Expense[]
 
   @@index([clientId])
   @@index([status])
@@ -277,9 +316,10 @@ model Milestone {
   createdAt     DateTime        @default(now()) @map("created_at") @db.DateTime(3)
   updatedAt     DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
 
-  project  Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
-  approver User?   @relation("MilestoneApprover", fields: [approvedBy], references: [id], onDelete: Restrict)
+  project  Project   @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  approver User?     @relation("MilestoneApprover", fields: [approvedBy], references: [id], onDelete: Restrict)
   tasks    Task[]
+  invoices Invoice[]
 
   @@index([projectId])
   @@index([status])
@@ -308,4 +348,111 @@ model Task {
   @@index([assigneeId, status])
   @@index([projectId, status])
   @@map("tasks")
+}
+
+model Invoice {
+  id                 BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  invoiceNumber      String        @unique @map("invoice_number") @db.VarChar(20)
+  projectId          BigInt        @map("project_id") @db.UnsignedBigInt
+  milestoneId        BigInt        @map("milestone_id") @db.UnsignedBigInt
+  activeMilestoneKey BigInt?       @unique @map("active_milestone_key") @db.UnsignedBigInt
+  status             InvoiceStatus @default(DRAFT)
+  issueDate          DateTime?     @map("issue_date") @db.Date
+  dueDate            DateTime?     @map("due_date") @db.Date
+  subtotal           Decimal       @db.Decimal(14, 2)
+  taxType            String?       @map("tax_type") @db.VarChar(20)
+  taxRate            Decimal?      @map("tax_rate") @db.Decimal(5, 2)
+  taxAmount          Decimal       @default(0) @map("tax_amount") @db.Decimal(14, 2)
+  taxReference       String?       @map("tax_reference") @db.VarChar(60)
+  total              Decimal       @db.Decimal(14, 2)
+  notes              String?       @db.Text
+  createdBy          BigInt        @map("created_by") @db.UnsignedBigInt
+  issuedBy           BigInt?       @map("issued_by") @db.UnsignedBigInt
+  issuedAt           DateTime?     @map("issued_at") @db.DateTime(3)
+  cancelledBy        BigInt?       @map("cancelled_by") @db.UnsignedBigInt
+  cancelledAt        DateTime?     @map("cancelled_at") @db.DateTime(3)
+  cancelReason       String?       @map("cancel_reason") @db.VarChar(500)
+  createdAt          DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt          DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  project   Project       @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  milestone Milestone     @relation(fields: [milestoneId], references: [id], onDelete: Restrict)
+  creator   User          @relation("InvoiceCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+  issuer    User?         @relation("InvoiceIssuer", fields: [issuedBy], references: [id], onDelete: Restrict)
+  canceller User?         @relation("InvoiceCanceller", fields: [cancelledBy], references: [id], onDelete: Restrict)
+  items     InvoiceItem[]
+  payments  Payment[]
+
+  @@index([projectId])
+  @@index([milestoneId])
+  @@index([status, dueDate])
+  @@index([issueDate])
+  @@map("invoices")
+}
+
+model InvoiceItem {
+  id          BigInt  @id @default(autoincrement()) @db.UnsignedBigInt
+  invoiceId   BigInt  @map("invoice_id") @db.UnsignedBigInt
+  lineNo      Int     @map("line_no") @db.UnsignedSmallInt
+  description String  @db.VarChar(255)
+  quantity    Decimal @db.Decimal(12, 2)
+  unitPrice   Decimal @map("unit_price") @db.Decimal(14, 2)
+  lineAmount  Decimal @map("line_amount") @db.Decimal(14, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+
+  @@unique([invoiceId, lineNo])
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+model Payment {
+  id             BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  invoiceId      BigInt        @map("invoice_id") @db.UnsignedBigInt
+  amount         Decimal       @db.Decimal(14, 2)
+  method         PaymentMethod
+  paymentDate    DateTime      @map("payment_date") @db.Date
+  reference      String?       @db.VarChar(80)
+  note           String?       @db.VarChar(500)
+  status         RecordStatus  @default(ACTIVE)
+  idempotencyKey String?       @unique @map("idempotency_key") @db.VarChar(64)
+  recordedBy     BigInt        @map("recorded_by") @db.UnsignedBigInt
+  voidedBy       BigInt?       @map("voided_by") @db.UnsignedBigInt
+  voidedAt       DateTime?     @map("voided_at") @db.DateTime(3)
+  voidReason     String?       @map("void_reason") @db.VarChar(500)
+  createdAt      DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt      DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  invoice  Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  recorder User    @relation("PaymentRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
+  voider   User?   @relation("PaymentVoider", fields: [voidedBy], references: [id], onDelete: Restrict)
+
+  @@index([invoiceId, status])
+  @@index([paymentDate])
+  @@map("payments")
+}
+
+model Expense {
+  id          BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  projectId   BigInt          @map("project_id") @db.UnsignedBigInt
+  category    ExpenseCategory
+  description String          @db.VarChar(255)
+  supplier    String?         @db.VarChar(120)
+  amount      Decimal         @db.Decimal(14, 2)
+  expenseDate DateTime        @map("expense_date") @db.Date
+  status      RecordStatus    @default(ACTIVE)
+  recordedBy  BigInt          @map("recorded_by") @db.UnsignedBigInt
+  voidedBy    BigInt?         @map("voided_by") @db.UnsignedBigInt
+  voidedAt    DateTime?       @map("voided_at") @db.DateTime(3)
+  voidReason  String?         @map("void_reason") @db.VarChar(500)
+  createdAt   DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  recorder User    @relation("ExpenseRecorder", fields: [recordedBy], references: [id], onDelete: Restrict)
+  voider   User?   @relation("ExpenseVoider", fields: [voidedBy], references: [id], onDelete: Restrict)
+
+  @@index([projectId, expenseDate])
+  @@index([expenseDate])
+  @@map("expenses")
 }
