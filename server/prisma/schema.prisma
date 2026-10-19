@@ -53,16 +53,47 @@ enum QuotationStatus {
   DECLINED
 }
 
+enum ProjectStatus {
+  PLANNED
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  APPROVED
+  CANCELLED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+  CANCELLED
+}
+
 model Employee {
-  id         BigInt   @id @default(autoincrement())
-  full_name  String
-  job_title  String?
-  department String?
-  phone      String?
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  user       User?
+  id            BigInt   @id @default(autoincrement())
+  full_name     String
+  job_title     String?
+  department    String?
+  phone         String?
+  is_active     Boolean  @default(true)
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user          User?
+  assignedTasks Task[]   @relation("TaskAssignee")
 
   @@map("employees")
 }
@@ -83,6 +114,9 @@ model User {
   follow_ups           FollowUp[]
   createdQuotations    Quotation[] @relation("QuotationCreator")
   approvedQuotations   Quotation[] @relation("QuotationApprover")
+  createdProjects      Project[]   @relation("ProjectCreator")
+  approvedMilestones   Milestone[] @relation("MilestoneApprover")
+  createdTasks         Task[]      @relation("TaskCreator")
 
   @@index([role])
   @@map("users")
@@ -102,6 +136,7 @@ model Client {
   updated_at          DateTime    @updatedAt
   lead                Lead?
   quotations          Quotation[]
+  projects            Project[]
 
   @@index([display_name])
   @@index([email])
@@ -177,6 +212,7 @@ model Quotation {
   creator    User            @relation("QuotationCreator", fields: [createdBy], references: [id], onDelete: Restrict)
   approver   User?           @relation("QuotationApprover", fields: [approvedBy], references: [id], onDelete: Restrict)
   items      QuotationItem[]
+  project    Project?
 
   @@index([status, createdBy])
   @@index([clientId])
@@ -197,4 +233,79 @@ model QuotationItem {
   @@unique([quotationId, lineNo])
   @@index([quotationId])
   @@map("quotation_items")
+}
+
+model Project {
+  id           BigInt        @id @default(autoincrement()) @db.UnsignedBigInt
+  projectCode  String        @unique @map("project_code") @db.VarChar(20)
+  quotationId  BigInt        @unique @map("quotation_id") @db.UnsignedBigInt
+  clientId     BigInt        @map("client_id") @db.UnsignedBigInt
+  name         String        @db.VarChar(160)
+  description  String?       @db.Text
+  status       ProjectStatus @default(PLANNED)
+  startDate    DateTime?     @map("start_date") @db.Date
+  endDate      DateTime?     @map("end_date") @db.Date
+  budgetAmount Decimal       @map("budget_amount") @db.Decimal(14, 2)
+  cancelReason String?       @map("cancel_reason") @db.VarChar(500)
+  createdBy    BigInt        @map("created_by") @db.UnsignedBigInt
+  createdAt    DateTime      @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt    DateTime      @updatedAt @map("updated_at") @db.DateTime(3)
+
+  quotation  Quotation   @relation(fields: [quotationId], references: [id], onDelete: Restrict)
+  client     Client      @relation(fields: [clientId], references: [id], onDelete: Restrict)
+  creator    User        @relation("ProjectCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+  milestones Milestone[]
+  tasks      Task[]
+
+  @@index([clientId])
+  @@index([status])
+  @@map("projects")
+}
+
+model Milestone {
+  id            BigInt          @id @default(autoincrement()) @db.UnsignedBigInt
+  projectId     BigInt          @map("project_id") @db.UnsignedBigInt
+  name          String          @db.VarChar(160)
+  description   String?         @db.Text
+  sortOrder     Int             @default(0) @map("sort_order") @db.UnsignedSmallInt
+  status        MilestoneStatus @default(PENDING)
+  billingAmount Decimal         @map("billing_amount") @db.Decimal(14, 2)
+  dueDate       DateTime?       @map("due_date") @db.Date
+  completedAt   DateTime?       @map("completed_at") @db.DateTime(3)
+  approvedBy    BigInt?         @map("approved_by") @db.UnsignedBigInt
+  approvedAt    DateTime?       @map("approved_at") @db.DateTime(3)
+  createdAt     DateTime        @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.DateTime(3)
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  approver User?   @relation("MilestoneApprover", fields: [approvedBy], references: [id], onDelete: Restrict)
+  tasks    Task[]
+
+  @@index([projectId])
+  @@index([status])
+  @@map("milestones")
+}
+
+model Task {
+  id          BigInt       @id @default(autoincrement()) @db.UnsignedBigInt
+  projectId   BigInt       @map("project_id") @db.UnsignedBigInt
+  milestoneId BigInt?      @map("milestone_id") @db.UnsignedBigInt
+  title       String       @db.VarChar(160)
+  description String?      @db.Text
+  priority    TaskPriority @default(MEDIUM)
+  status      TaskStatus   @default(TODO)
+  dueDate     DateTime?    @map("due_date") @db.Date
+  assigneeId  BigInt?      @map("assignee_id") @db.UnsignedBigInt
+  createdBy   BigInt       @map("created_by") @db.UnsignedBigInt
+  createdAt   DateTime     @default(now()) @map("created_at") @db.DateTime(3)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.DateTime(3)
+
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Restrict)
+  milestone Milestone? @relation(fields: [milestoneId], references: [id], onDelete: Restrict)
+  assignee  Employee?  @relation("TaskAssignee", fields: [assigneeId], references: [id], onDelete: Restrict)
+  creator   User       @relation("TaskCreator", fields: [createdBy], references: [id], onDelete: Restrict)
+
+  @@index([assigneeId, status])
+  @@index([projectId, status])
+  @@map("tasks")
 }
