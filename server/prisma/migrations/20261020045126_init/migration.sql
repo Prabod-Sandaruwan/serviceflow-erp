@@ -411,15 +411,8 @@ ALTER TABLE `expenses` ADD CONSTRAINT `expenses_voided_by_fkey` FOREIGN KEY (`vo
 -- AddForeignKey
 ALTER TABLE `audit_logs` ADD CONSTRAINT `audit_logs_actor_user_id_fkey` FOREIGN KEY (`actor_user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- ============================================================================
--- ServiceFlow ERP - Hand-crafted SQL additions (Task DB-009)
--- These pieces cannot be natively expressed in Prisma Schema:
--- 1. sessions table for express-mysql-session
--- 2. Domain CHECK constraints for financial & business invariants
--- ============================================================================
-
 -- ----------------------------------------------------------------------------
--- 1. Sessions Table (Managed by express-mysql-session)
+-- Sessions Table (express-mysql-session)
 -- ----------------------------------------------------------------------------
 CREATE TABLE `sessions` (
   `session_id` VARCHAR(128) COLLATE utf8mb4_bin NOT NULL,
@@ -430,15 +423,12 @@ CREATE TABLE `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ----------------------------------------------------------------------------
--- 2. Business & Financial CHECK Constraints
+-- Domain CHECK Constraints
 -- ----------------------------------------------------------------------------
-
--- Leads: Expected value must be non-negative
 ALTER TABLE `leads`
   ADD CONSTRAINT `chk_leads_expected_value_nonneg`
   CHECK (`expected_value` IS NULL OR `expected_value` >= 0);
 
--- Quotations: Date consistency, valid money, valid tax rates, and total integrity
 ALTER TABLE `quotations`
   ADD CONSTRAINT `chk_quotations_valid_until_ge_date`
   CHECK (`valid_until` >= `quotation_date`),
@@ -453,7 +443,6 @@ ALTER TABLE `quotations`
   ADD CONSTRAINT `chk_quotations_total_equals_subtotal_plus_tax`
   CHECK (`total` = `subtotal` + `tax_amount`);
 
--- Quotation Items: Line amount, quantity and unit price validation
 ALTER TABLE `quotation_items`
   ADD CONSTRAINT `chk_quotation_items_quantity_pos`
   CHECK (`quantity` > 0),
@@ -462,19 +451,16 @@ ALTER TABLE `quotation_items`
   ADD CONSTRAINT `chk_quotation_items_line_amount_nonneg`
   CHECK (`line_amount` >= 0);
 
--- Projects: Date ordering and budget non-negative
 ALTER TABLE `projects`
   ADD CONSTRAINT `chk_projects_dates_order`
   CHECK (`end_date` IS NULL OR `start_date` IS NULL OR `end_date` >= `start_date`),
   ADD CONSTRAINT `chk_projects_budget_amount_nonneg`
   CHECK (`budget_amount` >= 0);
 
--- Milestones: Billing amount non-negative
 ALTER TABLE `milestones`
   ADD CONSTRAINT `chk_milestones_billing_amount_nonneg`
   CHECK (`billing_amount` >= 0);
 
--- Invoices: Date ordering, valid money, valid tax rates, and total integrity
 ALTER TABLE `invoices`
   ADD CONSTRAINT `chk_invoices_due_date_ge_issue_date`
   CHECK (`due_date` IS NULL OR `issue_date` IS NULL OR `due_date` >= `issue_date`),
@@ -489,7 +475,6 @@ ALTER TABLE `invoices`
   ADD CONSTRAINT `chk_invoices_total_equals_subtotal_plus_tax`
   CHECK (`total` = `subtotal` + `tax_amount`);
 
--- Invoice Items: Line amount, quantity and unit price validation
 ALTER TABLE `invoice_items`
   ADD CONSTRAINT `chk_invoice_items_quantity_pos`
   CHECK (`quantity` > 0),
@@ -498,12 +483,10 @@ ALTER TABLE `invoice_items`
   ADD CONSTRAINT `chk_invoice_items_line_amount_nonneg`
   CHECK (`line_amount` >= 0);
 
--- Payments: Amount must be strictly greater than zero
 ALTER TABLE `payments`
   ADD CONSTRAINT `chk_payments_amount_pos`
   CHECK (`amount` > 0);
 
--- Expenses: Amount must be strictly greater than zero
 ALTER TABLE `expenses`
   ADD CONSTRAINT `chk_expenses_amount_pos`
   CHECK (`amount` > 0);
