@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `employees` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `full_name` VARCHAR(191) NOT NULL,
     `job_title` VARCHAR(191) NULL,
     `department` VARCHAR(191) NULL,
@@ -14,11 +14,11 @@ CREATE TABLE `employees` (
 
 -- CreateTable
 CREATE TABLE `users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
     `password_hash` VARCHAR(191) NOT NULL,
     `role` ENUM('ADMIN', 'MANAGER', 'STAFF') NOT NULL DEFAULT 'STAFF',
-    `employee_id` BIGINT NULL,
+    `employee_id` BIGINT UNSIGNED NULL,
     `is_active` BOOLEAN NOT NULL DEFAULT true,
     `must_change_password` BOOLEAN NOT NULL DEFAULT true,
     `last_login_at` DATETIME(3) NULL,
@@ -33,7 +33,7 @@ CREATE TABLE `users` (
 
 -- CreateTable
 CREATE TABLE `clients` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
     `client_type` ENUM('INDIVIDUAL', 'COMPANY') NOT NULL DEFAULT 'COMPANY',
     `display_name` VARCHAR(191) NOT NULL,
     `email` VARCHAR(191) NULL,
@@ -52,12 +52,12 @@ CREATE TABLE `clients` (
 
 -- CreateTable
 CREATE TABLE `leads` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `owner_id` BIGINT NOT NULL,
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `owner_id` BIGINT UNSIGNED NOT NULL,
     `status` ENUM('NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL_SENT', 'CONVERTED', 'LOST') NOT NULL DEFAULT 'NEW',
     `lost_reason` VARCHAR(191) NULL,
     `expected_value` DECIMAL(14, 2) NULL,
-    `converted_client_id` BIGINT NULL,
+    `converted_client_id` BIGINT UNSIGNED NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -67,13 +67,13 @@ CREATE TABLE `leads` (
 
 -- CreateTable
 CREATE TABLE `follow_ups` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `lead_id` BIGINT NOT NULL,
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `lead_id` BIGINT UNSIGNED NOT NULL,
     `follow_up_date` DATETIME(3) NOT NULL,
     `type` ENUM('CALL', 'EMAIL', 'MEETING', 'OTHER') NOT NULL,
     `status` ENUM('SCHEDULED', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'SCHEDULED',
     `next_follow_up_date` DATETIME(3) NULL,
-    `created_by` BIGINT NOT NULL,
+    `created_by` BIGINT UNSIGNED NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 

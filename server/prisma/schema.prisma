@@ -114,7 +114,7 @@ enum ExpenseCategory {
 }
 
 model Employee {
-  id            BigInt   @id @default(autoincrement())
+  id            BigInt   @id @default(autoincrement()) @db.UnsignedBigInt
   full_name     String
   job_title     String?
   department    String?
@@ -129,17 +129,17 @@ model Employee {
 }
 
 model User {
-  id                   BigInt      @id @default(autoincrement())
+  id                   BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
   email                String      @unique
   password_hash        String
   role                 Role        @default(STAFF)
-  employee_id          BigInt?     @unique
+  employeeId           BigInt?     @unique @map("employee_id") @db.UnsignedBigInt
   is_active            Boolean     @default(true)
   must_change_password Boolean     @default(true)
   last_login_at        DateTime?
   created_at           DateTime    @default(now())
   updated_at           DateTime    @updatedAt
-  employee             Employee?   @relation(fields: [employee_id], references: [id], onDelete: Restrict)
+  employee             Employee?   @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   leads                Lead[]
   follow_ups           FollowUp[]
   createdQuotations    Quotation[] @relation("QuotationCreator")
@@ -161,7 +161,7 @@ model User {
 }
 
 model Client {
-  id                  BigInt      @id @default(autoincrement())
+  id                  BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
   client_type         ClientType  @default(COMPANY)
   display_name        String
   email               String?
@@ -182,36 +182,36 @@ model Client {
 }
 
 model Lead {
-  id                  BigInt      @id @default(autoincrement())
-  owner_id            BigInt
-  owner               User        @relation(fields: [owner_id], references: [id], onDelete: Restrict)
-  status              LeadStatus  @default(NEW)
-  lost_reason         String?
-  expected_value      Decimal?    @db.Decimal(14, 2)
-  converted_client_id BigInt?     @unique
-  converted_client    Client?     @relation(fields: [converted_client_id], references: [id], onDelete: SetNull)
-  created_at          DateTime    @default(now())
-  updated_at          DateTime    @updatedAt
-  follow_ups          FollowUp[]
-  quotations          Quotation[]
+  id                BigInt      @id @default(autoincrement()) @db.UnsignedBigInt
+  ownerId           BigInt      @map("owner_id") @db.UnsignedBigInt
+  owner             User        @relation(fields: [ownerId], references: [id], onDelete: Restrict)
+  status            LeadStatus  @default(NEW)
+  lost_reason       String?
+  expected_value    Decimal?    @db.Decimal(14, 2)
+  convertedClientId BigInt?     @unique @map("converted_client_id") @db.UnsignedBigInt
+  convertedClient   Client?     @relation(fields: [convertedClientId], references: [id], onDelete: SetNull)
+  created_at        DateTime    @default(now())
+  updated_at        DateTime    @updatedAt
+  follow_ups        FollowUp[]
+  quotations        Quotation[]
 
   @@map("leads")
 }
 
 model FollowUp {
-  id                  BigInt         @id @default(autoincrement())
-  lead_id             BigInt
-  lead                Lead           @relation(fields: [lead_id], references: [id], onDelete: Cascade)
+  id                  BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
+  leadId              BigInt         @map("lead_id") @db.UnsignedBigInt
+  lead                Lead           @relation(fields: [leadId], references: [id], onDelete: Cascade)
   follow_up_date      DateTime
   type                FollowUpType
   status              FollowUpStatus @default(SCHEDULED)
   next_follow_up_date DateTime?
-  created_by          BigInt
-  creator             User           @relation(fields: [created_by], references: [id], onDelete: Restrict)
+  createdBy           BigInt         @map("created_by") @db.UnsignedBigInt
+  creator             User           @relation(fields: [createdBy], references: [id], onDelete: Restrict)
   created_at          DateTime       @default(now())
   updated_at          DateTime       @updatedAt
 
-  @@index([lead_id, follow_up_date])
+  @@index([leadId, follow_up_date])
   @@map("follow_ups")
 }
 
