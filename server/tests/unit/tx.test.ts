@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll } from 'vitest';
-import { runInTransaction, Tx } from '@/shared/tx';
-import { prisma, disconnect } from '@/config/prisma';
+import { runInTransaction, Tx } from '../../src/shared/tx';
+import { prisma, disconnect } from '../../src/config/prisma';
 
 describe('Transaction Helper (runInTransaction)', () => {
   afterAll(async () => {
