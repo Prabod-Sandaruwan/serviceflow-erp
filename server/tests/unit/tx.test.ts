@@ -1,5 +1,5 @@
 import { describe, it, expect, afterAll } from 'vitest';
-import { runInTransaction } from '@/shared/tx';
+import { runInTransaction, Tx } from '@/shared/tx';
 import { prisma, disconnect } from '@/config/prisma';
 
 describe('Transaction Helper (runInTransaction)', () => {
@@ -10,7 +10,7 @@ describe('Transaction Helper (runInTransaction)', () => {
   it('successfully commits operations inside runInTransaction', async () => {
     const uniqueName = `Test Client Commit ${Date.now()}`;
 
-    const createdClient = await runInTransaction(async (tx) => {
+    const createdClient = await runInTransaction(async (tx: Tx) => {
       return tx.client.create({
         data: {
           display_name: uniqueName,
@@ -39,7 +39,7 @@ describe('Transaction Helper (runInTransaction)', () => {
     const simulatedError = new Error('SIMULATED_TRANSACTION_FAILURE');
 
     await expect(
-      runInTransaction(async (tx) => {
+      runInTransaction(async (tx: Tx) => {
         await tx.client.create({
           data: {
             display_name: uniqueName,
