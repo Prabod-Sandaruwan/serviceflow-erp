@@ -2,7 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import prisma from './config/prisma';
-import errorHandler from './middleware/errorHandler';
+import { notFoundHandler, errorHandler } from './middleware/error';
 
 const app: Application = express();
 
@@ -40,15 +40,10 @@ const healthCheckHandler = async (_req: Request, res: Response) => {
 app.get('/health', healthCheckHandler);
 app.get('/api/v1/health', healthCheckHandler);
 
-// Fallback 404 Route Handler
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found',
-  });
-});
+// 404 Handler for undefined routes
+app.use(notFoundHandler);
 
-// Global Error Handler
+// Central Global Error Handler
 app.use(errorHandler);
 
 export { app };

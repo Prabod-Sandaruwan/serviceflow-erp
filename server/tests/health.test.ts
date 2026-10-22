@@ -53,9 +53,8 @@ describe('Health Check API', () => {
     const response = await request(app).get('/api/v1/unknown-endpoint');
 
     expect(response.status).toBe(404);
-    expect(response.body).toEqual({
-      success: false,
-      message: 'Route not found',
-    });
+    expect(response.body).toHaveProperty('error');
+    expect(response.body.error).toHaveProperty('code', 'NOT_FOUND');
+    expect(response.body.error.message).toContain('Route not found: GET /api/v1/unknown-endpoint');
   });
 });
