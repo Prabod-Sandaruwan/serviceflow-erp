@@ -38,3 +38,17 @@
 - [x] DB-011: Configure the isolated test database
 - [x] DB-012: Create the seed skeleton and the reset script (placeholder Argon2id hash until AUTH-002)
 
+## Phase 3 - Shared Backend Infrastructure
+- [ ] INFRA-001: Create the Prisma client singleton and transaction helper
+- [ ] INFRA-002: Implement AppError classes and the central error middleware
+- [ ] INFRA-003: Add request IDs and structured logging
+- [ ] INFRA-004: Create the Zod validation middleware and conventions
+- [ ] INFRA-005: Create response, pagination and sorting helpers
+- [ ] INFRA-006: Implement the decimal-safe Money module
+- [ ] INFRA-007: Implement the state-machine helper
+- [ ] INFRA-008: Add company-timezone date helpers and derived statuses
+- [ ] INFRA-009: Configure security headers and CORS
+- [ ] INFRA-010: Implement the transactional audit service
+- [ ] INFRA-011: Build test utilities: agent, login helper and factories
+- [ ] INFRA-012: Create the OpenAPI registry and Swagger UI skeleton
+
