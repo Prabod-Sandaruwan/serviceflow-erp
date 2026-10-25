@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INFRA-007 Complete (Phase 3 - Shared Backend Infrastructure)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007
+**Current Task:** INFRA-008 Complete (Phase 3 - Shared Backend Infrastructure)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -46,7 +46,7 @@
 - [x] INFRA-005: Create response, pagination and sorting helpers
 - [x] INFRA-006: Implement the decimal-safe Money module
 - [x] INFRA-007: Implement the state-machine helper
-- [ ] INFRA-008: Add company-timezone date helpers and derived statuses
+- [x] INFRA-008: Add company-timezone date helpers and derived statuses
 - [ ] INFRA-009: Configure security headers and CORS
 - [ ] INFRA-010: Implement the transactional audit service
 - [ ] INFRA-011: Build test utilities: agent, login helper and factories

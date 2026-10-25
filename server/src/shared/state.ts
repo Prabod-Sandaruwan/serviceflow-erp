@@ -1,4 +1,5 @@
 import { ConflictError } from './errors';
+import { isOverdueInvoice, isExpiredQuotation, isOverdueTask } from './dates';
 
 export type Role = 'ADMIN' | 'MANAGER' | 'STAFF';
 
@@ -88,4 +89,5 @@ export const expenseMachine = defineMachine('Expense', {
   ACTIVE: [{ to: 'VOIDED' }],
 });
 
-export const derivedStates = {};
+export const derivedStates = { isOverdueInvoice, isExpiredQuotation, isOverdueTask };
+export { isOverdueInvoice, isExpiredQuotation, isOverdueTask };
