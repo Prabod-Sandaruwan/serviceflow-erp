@@ -2,9 +2,15 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import prisma from './config/prisma';
+import { requestIdMiddleware } from './middleware/requestId';
+import { httpLogger } from './config/logger';
 import { notFoundHandler, errorHandler } from './middleware/error';
 
 const app: Application = express();
+
+// Request tracking and structured logging
+app.use(requestIdMiddleware);
+app.use(httpLogger);
 
 // Security and standard middlewares
 app.use(helmet());
