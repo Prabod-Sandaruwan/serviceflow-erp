@@ -1,9 +1,8 @@
 import express, { Application, Request, Response } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
 import prisma from './config/prisma';
 import { requestIdMiddleware } from './middleware/requestId';
 import { httpLogger } from './config/logger';
+import { securityHeaders, corsMiddleware } from './middleware/security';
 import { notFoundHandler, errorHandler } from './middleware/error';
 
 const app: Application = express();
@@ -12,14 +11,11 @@ const app: Application = express();
 app.use(requestIdMiddleware);
 app.use(httpLogger);
 
-// Security and standard middlewares
-app.use(helmet());
-app.use(
-  cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
-    credentials: true,
-  })
-);
+// Security headers and CORS middlewares
+app.use(securityHeaders);
+app.use(corsMiddleware);
+
+// Standard body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
