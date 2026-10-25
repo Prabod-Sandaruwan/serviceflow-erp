@@ -55,8 +55,16 @@ export class ConflictError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message = 'Validation failed', details?: ErrorDetail[], code = 'VALIDATION_ERROR') {
-    super(422, code, message, details);
+  constructor(
+    messageOrDetails: string | ErrorDetail[] = 'Validation failed',
+    details?: ErrorDetail[],
+    code = 'VALIDATION_ERROR'
+  ) {
+    if (Array.isArray(messageOrDetails)) {
+      super(422, code, 'Validation failed', messageOrDetails);
+    } else {
+      super(422, code, messageOrDetails, details);
+    }
   }
 }
 
