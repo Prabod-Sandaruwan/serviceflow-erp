@@ -50,10 +50,10 @@ export function parsePaging(query: Record<string, any>): PagingParams {
 export function parseSort<T extends string>(
   sortParam: unknown,
   allowedFields: readonly T[],
-  defaultSort: Record<T, 'asc' | 'desc'>
+  defaultSort: Partial<Record<T, 'asc' | 'desc'>>
 ): Record<string, 'asc' | 'desc'> {
   if (!sortParam || typeof sortParam !== 'string' || sortParam.trim() === '') {
-    return defaultSort;
+    return defaultSort as Record<string, 'asc' | 'desc'>;
   }
 
   const trimmed = sortParam.trim();
