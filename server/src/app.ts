@@ -1,8 +1,10 @@
 import express, { Application, Request, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
 import prisma from './config/prisma';
 import { requestIdMiddleware } from './middleware/requestId';
 import { httpLogger } from './config/logger';
 import { securityHeaders, corsMiddleware } from './middleware/security';
+import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 
 const app: Application = express();
@@ -41,6 +43,14 @@ const healthCheckHandler = async (_req: Request, res: Response) => {
 
 app.get('/health', healthCheckHandler);
 app.get('/api/v1/health', healthCheckHandler);
+
+// OpenAPI & Swagger UI (non-production)
+if (process.env.NODE_ENV !== 'production') {
+  app.get('/api-docs.json', (_req: Request, res: Response) => {
+    res.json(getOpenApiSpec());
+  });
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(getOpenApiSpec()));
+}
 
 // 404 Handler for undefined routes
 app.use(notFoundHandler);
