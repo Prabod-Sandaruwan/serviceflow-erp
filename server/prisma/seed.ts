@@ -13,9 +13,7 @@ if (process.env.NODE_ENV === 'production') {
 const adapter = process.env.DATABASE_URL ? new PrismaMariaDb(process.env.DATABASE_URL) : undefined;
 const prisma = new PrismaClient(adapter ? { adapter } : undefined);
 
-// Placeholder Argon2id hash until AUTH-002 implements password hashing
-const PLACEHOLDER_PASSWORD_HASH =
-  '$argon2id$v=19$m=65536,t=3,p=4$placeholderhashfortestingonly';
+import { hashPassword } from '../src/modules/auth/password';
 
 interface InitialProfile {
   employee: {
@@ -98,6 +96,9 @@ const initialProfiles: InitialProfile[] = [
 
 async function main() {
   console.log('Seeding initial employees and users...');
+  const defaultPassword = 'ServiceFlow@2026';
+  const passwordHash = await hashPassword(defaultPassword);
+  console.log(`Generated default initial password: ${defaultPassword}`);
 
   for (const profile of initialProfiles) {
     // 1. Check if user already exists
@@ -142,11 +143,12 @@ async function main() {
         role: profile.user.role,
         must_change_password: profile.user.must_change_password,
         is_active: profile.user.is_active,
+        password_hash: passwordHash,
         employeeId,
       },
       create: {
         email: profile.user.email,
-        password_hash: PLACEHOLDER_PASSWORD_HASH,
+        password_hash: passwordHash,
         role: profile.user.role,
         must_change_password: profile.user.must_change_password,
         is_active: profile.user.is_active,
