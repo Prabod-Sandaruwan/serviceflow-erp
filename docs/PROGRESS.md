@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INFRA-012 Complete (Phase 3 Complete)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012
+**Current Task:** AUTH-001 Complete (Phase 4 - Authentication & Authorization)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -51,4 +51,24 @@
 - [x] INFRA-010: Implement the transactional audit service
 - [x] INFRA-011: Build test utilities: agent, login helper and factories
 - [x] INFRA-012: Create the OpenAPI registry and Swagger UI skeleton
+
+## Phase 4 - Authentication & Authorization
+- [x] AUTH-001: Confirm the authentication contracts and rules
+- [ ] AUTH-002: Implement Argon2id hashing and the password policy
+- [ ] AUTH-003: Configure MySQL-backed sessions and cookie settings
+- [ ] AUTH-004: Implement CSRF protection and GET /auth/csrf
+- [ ] AUTH-005: Implement the login schema and login service
+- [ ] AUTH-006: Implement login, logout and current-user routes
+- [ ] AUTH-007: Add login rate limiting
+- [ ] AUTH-008: Implement requireAuth, absolute expiry and active-user check
+- [ ] AUTH-009: Implement role middleware, policies and the route registry
+- [ ] AUTH-010: Implement the first-login guard and change-password endpoint
+- [ ] AUTH-011: Add the session cleanup job and per-user session purge
+- [ ] AUTH-012: Implement the users API: list and create
+- [ ] AUTH-013: Implement user updates, role changes, deactivation and password reset
+- [ ] AUTH-014: Implement the employees API
+- [ ] AUTH-015: Implement the audit-log API
+- [ ] AUTH-016: Write auth unit and integration tests
+- [ ] AUTH-017: Create the authorization matrix test
+- [ ] AUTH-018: Extend the seed with a second Manager and demo employees
 
