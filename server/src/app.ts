@@ -10,6 +10,7 @@ import { requireAuth } from './middleware/auth';
 import { authRoutes } from './modules/auth/auth.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
+import { route, assertAllRoutesRegistered } from './shared/routeRegistry';
 
 const app: Application = express();
 
@@ -31,11 +32,14 @@ app.use(csrfMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Auth guard, routes & test mutation endpoint
+// Auth guard & routes
 app.use('/api/v1', requireAuth);
 app.use('/api/v1/auth', authRoutes);
-app.post('/api/v1/test-mutation', (_req: Request, res: Response) => {
-  res.status(200).json({ status: 'ok' });
+route(app as any, 'post', '/api/v1/test-mutation', {
+  roles: 'PUBLIC',
+  handler: (_req: Request, res: Response) => {
+    res.status(200).json({ status: 'ok' });
+  },
 });
 
 // Health Check Handler
@@ -59,7 +63,10 @@ const healthCheckHandler = async (_req: Request, res: Response) => {
 };
 
 app.get('/health', healthCheckHandler);
-app.get('/api/v1/health', healthCheckHandler);
+route(app as any, 'get', '/api/v1/health', {
+  roles: 'PUBLIC',
+  handler: healthCheckHandler,
+});
 
 // OpenAPI & Swagger UI (non-production)
 if (process.env.NODE_ENV !== 'production') {
@@ -74,6 +81,8 @@ app.use(notFoundHandler);
 
 // Central Global Error Handler
 app.use(errorHandler);
+
+assertAllRoutesRegistered(app);
 
 export { app };
 export default app;

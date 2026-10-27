@@ -4,17 +4,32 @@ import { ensureCsrfToken } from '../../middleware/csrf';
 import { loginLimiter } from '../../middleware/loginLimiter';
 import { AuthController } from './auth.controller';
 import { registry } from '../../config/openapi';
+import { route } from '../../shared/routeRegistry';
 
 const router = Router();
 
-router.get('/csrf', (req: Request, res: Response) => {
-  const csrfToken = ensureCsrfToken(req);
-  ok(res, { csrfToken });
+route(router, 'get', '/csrf', {
+  roles: 'PUBLIC',
+  handler: (req: Request, res: Response) => {
+    const csrfToken = ensureCsrfToken(req);
+    ok(res, { csrfToken });
+  },
 });
 
-router.post('/login', loginLimiter, AuthController.login);
-router.post('/logout', AuthController.logout);
-router.get('/me', AuthController.me);
+route(router, 'post', '/login', {
+  roles: 'PUBLIC',
+  handler: [loginLimiter, AuthController.login],
+});
+
+route(router, 'post', '/logout', {
+  roles: 'PUBLIC',
+  handler: AuthController.logout,
+});
+
+route(router, 'get', '/me', {
+  roles: 'PUBLIC',
+  handler: AuthController.me,
+});
 
 registry.registerPath({
   method: 'get',

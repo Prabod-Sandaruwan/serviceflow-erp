@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** AUTH-008 Complete (Phase 4 - Authentication & Authorization)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002, AUTH-003, AUTH-004, AUTH-005, AUTH-006, AUTH-007, AUTH-008
+**Current Task:** AUTH-009 Complete (Phase 4 - Authentication & Authorization)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002, AUTH-003, AUTH-004, AUTH-005, AUTH-006, AUTH-007, AUTH-008, AUTH-009
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -61,7 +61,7 @@
 - [x] AUTH-006: Implement login, logout and current-user routes
 - [x] AUTH-007: Add login rate limiting
 - [x] AUTH-008: Implement requireAuth, absolute expiry and active-user check
-- [ ] AUTH-009: Implement role middleware, policies and the route registry
+- [x] AUTH-009: Implement role middleware, policies and the route registry
 - [ ] AUTH-010: Implement the first-login guard and change-password endpoint
 - [ ] AUTH-011: Add the session cleanup job and per-user session purge
 - [ ] AUTH-012: Implement the users API: list and create
