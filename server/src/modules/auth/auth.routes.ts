@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { ok } from '../../shared/http';
 import { ensureCsrfToken } from '../../middleware/csrf';
+import { loginLimiter } from '../../middleware/loginLimiter';
 import { AuthController } from './auth.controller';
 import { registry } from '../../config/openapi';
 
@@ -11,7 +12,7 @@ router.get('/csrf', (req: Request, res: Response) => {
   ok(res, { csrfToken });
 });
 
-router.post('/login', AuthController.login);
+router.post('/login', loginLimiter, AuthController.login);
 router.post('/logout', AuthController.logout);
 router.get('/me', AuthController.me);
 
