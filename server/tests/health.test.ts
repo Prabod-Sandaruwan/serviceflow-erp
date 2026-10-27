@@ -49,12 +49,12 @@ describe('Health Check API', () => {
     }
   });
 
-  it('GET /api/v1/unknown-endpoint should return 404 for nonexistent routes', async () => {
-    const response = await request(app).get('/api/v1/unknown-endpoint');
+  it('GET /unknown-endpoint should return 404 for nonexistent routes', async () => {
+    const response = await request(app).get('/unknown-endpoint');
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty('error');
     expect(response.body.error).toHaveProperty('code', 'NOT_FOUND');
-    expect(response.body.error.message).toContain('Route not found: GET /api/v1/unknown-endpoint');
+    expect(response.body.error.message).toContain('Route not found: GET /unknown-endpoint');
   });
 });

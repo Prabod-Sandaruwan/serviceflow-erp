@@ -6,6 +6,7 @@ import { httpLogger } from './config/logger';
 import { securityHeaders, corsMiddleware } from './middleware/security';
 import { sessionMiddleware } from './middleware/session';
 import { csrfMiddleware } from './middleware/csrf';
+import { requireAuth } from './middleware/auth';
 import { authRoutes } from './modules/auth/auth.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -30,7 +31,8 @@ app.use(csrfMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Auth routes & test mutation endpoint
+// Auth guard, routes & test mutation endpoint
+app.use('/api/v1', requireAuth);
 app.use('/api/v1/auth', authRoutes);
 app.post('/api/v1/test-mutation', (_req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });
