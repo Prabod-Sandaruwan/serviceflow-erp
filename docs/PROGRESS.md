@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** AUTH-002 Complete (Phase 4 - Authentication & Authorization)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002
+**Current Task:** AUTH-003 Complete (Phase 4 - Authentication & Authorization)  
+**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002, AUTH-003
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -55,7 +55,7 @@
 ## Phase 4 - Authentication & Authorization
 - [x] AUTH-001: Confirm the authentication contracts and rules
 - [x] AUTH-002: Implement Argon2id hashing and the password policy
-- [ ] AUTH-003: Configure MySQL-backed sessions and cookie settings
+- [x] AUTH-003: Configure MySQL-backed sessions and cookie settings
 - [ ] AUTH-004: Implement CSRF protection and GET /auth/csrf
 - [ ] AUTH-005: Implement the login schema and login service
 - [ ] AUTH-006: Implement login, logout and current-user routes

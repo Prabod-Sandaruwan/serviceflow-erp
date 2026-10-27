@@ -4,6 +4,7 @@ import prisma from './config/prisma';
 import { requestIdMiddleware } from './middleware/requestId';
 import { httpLogger } from './config/logger';
 import { securityHeaders, corsMiddleware } from './middleware/security';
+import { sessionMiddleware } from './middleware/session';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 
@@ -16,6 +17,11 @@ app.use(httpLogger);
 // Security headers and CORS middlewares
 app.use(securityHeaders);
 app.use(corsMiddleware);
+
+if (process.env.TRUST_PROXY === 'true') {
+  app.set('trust proxy', 1);
+}
+app.use(sessionMiddleware);
 
 // Standard body parsers
 app.use(express.json());
