@@ -10,6 +10,7 @@ import { requireAuth } from './middleware/auth';
 import { mustChangePasswordGuard } from './middleware/mustChangePassword';
 import { authRoutes } from './modules/auth/auth.routes';
 import { userRoutes } from './modules/users/users.routes';
+import { employeeRoutes } from './modules/employees/employees.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 import { route, assertAllRoutesRegistered } from './shared/routeRegistry';
@@ -35,6 +36,7 @@ app.use('/api/v1', requireAuth);
 app.use('/api/v1', mustChangePasswordGuard);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/employees', employeeRoutes);
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),

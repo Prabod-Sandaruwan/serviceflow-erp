@@ -66,7 +66,7 @@
 - [x] AUTH-011: Add the session cleanup job and per-user session purge
 - [x] AUTH-012: Implement the users API: list and create
 - [x] AUTH-013: Implement user updates, role changes, deactivation and password reset
-- [ ] AUTH-014: Implement the employees API
+- [x] AUTH-014: Implement the employees API
 - [ ] AUTH-015: Implement the audit-log API
 - [ ] AUTH-016: Write auth unit and integration tests
 - [ ] AUTH-017: Create the authorization matrix test
