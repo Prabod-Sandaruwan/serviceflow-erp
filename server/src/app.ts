@@ -5,6 +5,8 @@ import { requestIdMiddleware } from './middleware/requestId';
 import { httpLogger } from './config/logger';
 import { securityHeaders, corsMiddleware } from './middleware/security';
 import { sessionMiddleware } from './middleware/session';
+import { csrfMiddleware } from './middleware/csrf';
+import { authRoutes } from './modules/auth/auth.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 
@@ -22,10 +24,17 @@ if (process.env.TRUST_PROXY === 'true') {
   app.set('trust proxy', 1);
 }
 app.use(sessionMiddleware);
+app.use(csrfMiddleware);
 
 // Standard body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Auth routes & test mutation endpoint
+app.use('/api/v1/auth', authRoutes);
+app.post('/api/v1/test-mutation', (_req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Health Check Handler
 const healthCheckHandler = async (_req: Request, res: Response) => {

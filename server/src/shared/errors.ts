@@ -9,11 +9,20 @@ export class AppError extends Error {
   public readonly details?: ErrorDetail[];
 
   constructor(
-    statusCode: number,
+    statusCodeOrMessage: number | string,
     code: string,
-    message: string,
+    messageOrStatus: string | number,
     details?: ErrorDetail[]
   ) {
+    let statusCode: number;
+    let message: string;
+    if (typeof statusCodeOrMessage === 'number') {
+      statusCode = statusCodeOrMessage;
+      message = typeof messageOrStatus === 'string' ? messageOrStatus : '';
+    } else {
+      message = statusCodeOrMessage;
+      statusCode = typeof messageOrStatus === 'number' ? messageOrStatus : 500;
+    }
     super(message);
     this.name = this.constructor.name;
     this.statusCode = statusCode;
