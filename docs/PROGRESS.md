@@ -68,7 +68,7 @@
 - [x] AUTH-013: Implement user updates, role changes, deactivation and password reset
 - [x] AUTH-014: Implement the employees API
 - [x] AUTH-015: Implement the audit-log API
-- [ ] AUTH-016: Write auth unit and integration tests
+- [x] AUTH-016: Write auth unit and integration tests
 - [ ] AUTH-017: Create the authorization matrix test
 - [ ] AUTH-018: Extend the seed with a second Manager and demo employees
 
