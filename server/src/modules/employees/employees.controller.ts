@@ -36,7 +36,7 @@ export class EmployeesController {
 
   static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const id = BigInt(req.params.id);
+      const id = BigInt(req.params.id as string);
       const { body: input } = updateEmployeeSchema.parse({ body: req.body });
       const reqId = (req as any).id || (req.headers['x-request-id'] as string);
       const actor = req.auth ? { userId: req.auth.userId, role: req.auth.role } : undefined;

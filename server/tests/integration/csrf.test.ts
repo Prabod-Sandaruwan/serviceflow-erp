@@ -14,7 +14,8 @@ describe('CSRF Protection & GET /api/v1/auth/csrf (AUTH-004)', () => {
 
     const cookies = res.headers['set-cookie'];
     expect(cookies).toBeDefined();
-    expect(cookies?.some((c: string) => c.startsWith('sf.sid='))).toBe(true);
+    const cookieList = Array.isArray(cookies) ? cookies : [cookies || ''];
+    expect(cookieList.some((c: string) => c.startsWith('sf.sid='))).toBe(true);
   });
 
   it('POST /api/v1/test-mutation without token returns 403 CSRF_INVALID', async () => {

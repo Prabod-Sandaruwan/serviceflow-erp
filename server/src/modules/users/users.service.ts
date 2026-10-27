@@ -28,7 +28,7 @@ export class UsersService {
         include: { employee: true },
       });
       const { password_hash: _, ...profile } = user as any;
-      await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.USER_CREATED, entityType: 'USER', entityId: user.id, afterJson: profile, ip, requestId: reqId });
+      await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.USER_CREATED, entityType: 'USER', entityId: user.id, after: profile, ip, requestId: reqId });
       return toJson(profile);
     });
   }
@@ -56,10 +56,10 @@ export class UsersService {
       if (input.isActive !== undefined) data.is_active = input.isActive;
       const res = await tx.user.update({ where: { id }, data, include: { employee: true } });
       if (input.role && input.role !== user.role) {
-        await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.ROLE_CHANGED, entityType: 'USER', entityId: id, beforeJson: { role: user.role }, afterJson: { role: res.role }, ip, requestId: reqId });
+        await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.ROLE_CHANGED, entityType: 'USER', entityId: id, before: { role: user.role }, after: { role: res.role }, ip, requestId: reqId });
       }
       if (input.isActive === false && user.is_active) {
-        await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.USER_DEACTIVATED, entityType: 'USER', entityId: id, beforeJson: { isActive: user.is_active }, afterJson: { isActive: res.is_active }, ip, requestId: reqId });
+        await AuditService.record(tx, { actor, action: AUDIT_ACTIONS.USER_DEACTIVATED, entityType: 'USER', entityId: id, before: { isActive: user.is_active }, after: { isActive: res.is_active }, ip, requestId: reqId });
       }
       return res;
     });
