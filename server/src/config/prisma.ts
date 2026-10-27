@@ -21,10 +21,20 @@ const createPrismaClient = (): PrismaClient => {
     ? new PrismaMariaDb(process.env.DATABASE_URL)
     : undefined;
 
-  return new PrismaClient({
+  const client = new PrismaClient({
     adapter,
     log: getLogLevels(),
   });
+
+  const origExecute = client.$executeRawUnsafe.bind(client);
+  client.$executeRawUnsafe = ((query: string, ...values: any[]) => {
+    if (/\bUPDATE\s+[`"]?audit_logs[`"]?\b/i.test(query)) {
+      return Promise.reject(new Error('audit_logs is append-only and immutable'));
+    }
+    return origExecute(query, ...values);
+  }) as any;
+
+  return client;
 };
 
 export const prisma: PrismaClient = globalThis.prisma ?? createPrismaClient();

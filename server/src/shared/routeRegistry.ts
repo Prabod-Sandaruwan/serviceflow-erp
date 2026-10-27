@@ -45,7 +45,13 @@ export function assertAllRoutesRegistered(app: any): void {
           if (match) routerPrefix = '/' + match[1].replace(/\\\//g, '/');
         }
         if (!routerPrefix && layer.matchers?.[0]) {
-          const prefixes = ['/api/v1/auth', '/api/v1/users', '/api/v1/employees', '/api/v1'];
+          const prefixes = [
+            '/api/v1/auth',
+            '/api/v1/users',
+            '/api/v1/employees',
+            '/api/v1/audit-logs',
+            '/api/v1',
+          ];
           for (const p of prefixes) {
             const res = layer.matchers[0](p);
             if (res && res.path === p) {

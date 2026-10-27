@@ -1,6 +1,8 @@
 import { Tx } from '../../shared/tx';
 import { toJson } from '../../shared/http';
 import { AuditAction } from './actions';
+import { ListAuditLogsQuery } from './audit.schemas';
+import prisma from '../../config/prisma';
 
 export interface AuditActor {
   userId?: bigint | number | string | null;
@@ -57,6 +59,33 @@ export class AuditService {
         ipAddress: entry.ip ?? null,
       },
     });
+  }
+
+  static async listLogs(query: ListAuditLogsQuery) {
+    const page = query.page || 1, limit = query.limit || 20;
+    const where: any = {};
+    if (query.entityType) where.entityType = query.entityType;
+    if (query.entityId !== undefined) where.entityId = query.entityId;
+    if (query.actorId !== undefined) where.actorUserId = query.actorId;
+    if (query.action) where.action = query.action;
+    if (query.from || query.to) {
+      where.createdAt = {};
+      if (query.from) where.createdAt.gte = new Date(query.from);
+      if (query.to) where.createdAt.lte = new Date(query.to);
+    }
+    const [total, logs] = await prisma.$transaction([
+      prisma.auditLog.count({ where }),
+      prisma.auditLog.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
+    ]);
+    return {
+      data: toJson(logs),
+      meta: { page, pageSize: limit, total, totalPages: Math.ceil(total / limit) || 1 },
+    };
   }
 }
 
