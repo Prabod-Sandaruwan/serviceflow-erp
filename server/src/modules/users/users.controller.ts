@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { createUserSchema, listUsersQuerySchema } from './users.schemas';
+import {
+  createUserSchema,
+  listUsersQuerySchema,
+  updateUserSchema,
+  resetPasswordSchema,
+} from './users.schemas';
 import { UsersService } from './users.service';
-import { created, paged } from '../../shared/http';
+import { created, ok, paged } from '../../shared/http';
 
 export class UsersController {
   static async create(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -25,6 +30,32 @@ export class UsersController {
         pageSize: result.meta.pageSize,
         total: result.meta.total,
       });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async update(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = BigInt(req.params.id);
+      const { body: input } = updateUserSchema.parse({ body: req.body });
+      const reqId = (req as any).id || (req.headers['x-request-id'] as string);
+      const actor = req.auth ? { userId: req.auth.userId, role: req.auth.role } : undefined;
+      const user = await UsersService.updateUser(id, input, actor, req.ip, reqId);
+      ok(res, user);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  static async resetPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = BigInt(req.params.id);
+      const { body: input } = resetPasswordSchema.parse({ body: req.body });
+      const reqId = (req as any).id || (req.headers['x-request-id'] as string);
+      const actor = req.auth ? { userId: req.auth.userId, role: req.auth.role } : undefined;
+      await UsersService.resetPassword(id, input.tempPassword, actor, req.ip, reqId);
+      res.status(204).send();
     } catch (err) {
       next(err);
     }

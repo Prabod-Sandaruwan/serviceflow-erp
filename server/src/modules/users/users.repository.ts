@@ -14,6 +14,14 @@ export class UserRepository {
     return tx.user.findUnique({ where: { email } });
   }
 
+  static async findById(id: bigint) {
+    return prisma.user.findUnique({ where: { id }, include: { employee: true } });
+  }
+
+  static async countActiveAdmins() {
+    return prisma.user.count({ where: { role: 'ADMIN', is_active: true } });
+  }
+
   static async updateLastLogin(tx: Tx, userId: bigint) {
     return tx.user.update({
       where: { id: userId },

@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import { paginationQuerySchema } from '../../shared/schemas';
 
+export const roles = ['ADMIN', 'MANAGER', 'STAFF'] as const;
+
 export const createUserSchema = z.object({
   body: z
     .object({
       email: z.string().trim().toLowerCase().email(),
       password: z.string().min(12, 'Password must be at least 12 characters').max(128),
-      role: z.enum(['ADMIN', 'MANAGER', 'STAFF']),
+      role: z.enum(roles),
       employeeId: z.union([z.string(), z.number(), z.bigint()]).optional(),
       fullName: z.string().trim().min(1).max(255).optional(),
     })
@@ -20,7 +22,7 @@ export const createUserSchema = z.object({
 export type CreateUserInput = z.infer<typeof createUserSchema>['body'];
 
 export const listUsersQuerySchema = paginationQuerySchema.extend({
-  role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
+  role: z.enum(roles).optional(),
   isActive: z
     .preprocess((val) => {
       if (val === 'true' || val === true) return true;
@@ -31,3 +33,24 @@ export const listUsersQuerySchema = paginationQuerySchema.extend({
 });
 
 export type ListUsersQuery = z.infer<typeof listUsersQuerySchema>;
+
+export const updateUserSchema = z.object({
+  body: z
+    .object({
+      role: z.enum(roles).optional(),
+      isActive: z.boolean().optional(),
+    })
+    .strict(),
+});
+
+export type UpdateUserInput = z.infer<typeof updateUserSchema>['body'];
+
+export const resetPasswordSchema = z.object({
+  body: z
+    .object({
+      tempPassword: z.string().min(12).max(128),
+    })
+    .strict(),
+});
+
+export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>['body'];
