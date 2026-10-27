@@ -10,9 +10,12 @@ const router = Router();
 
 route(router, 'get', '/csrf', {
   roles: 'PUBLIC',
-  handler: (req: Request, res: Response) => {
+  handler: (req: Request, res: Response, next: any) => {
     const csrfToken = ensureCsrfToken(req);
-    ok(res, { csrfToken });
+    req.session.save((err) => {
+      if (err) return next(err);
+      ok(res, { csrfToken });
+    });
   },
 });
 
@@ -27,7 +30,7 @@ route(router, 'post', '/logout', {
 });
 
 route(router, 'get', '/me', {
-  roles: 'PUBLIC',
+  roles: ['ADMIN', 'MANAGER', 'STAFF'],
   handler: AuthController.me,
 });
 

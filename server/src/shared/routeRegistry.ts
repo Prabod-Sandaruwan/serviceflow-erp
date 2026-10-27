@@ -25,18 +25,25 @@ export function route(
   const middleware =
     config.roles === 'PUBLIC' ? handlers : [requireRole(...config.roles), ...handlers];
   (router as any)[method](path, ...middleware);
+  const stack = (router as any).stack || (router as any).router?.stack;
+  if (stack?.length) {
+    const last = stack[stack.length - 1];
+    if (last?.route) (last.route as any)._roles = config.roles;
+  }
 }
 
 export function assertAllRoutesRegistered(app: any): void {
   const stack = app._router?.stack || app.router?.stack || [];
-  const extractedRoutes: Array<{ method: string; path: string }> = [];
+  const extractedRoutes: RegisteredRoute[] = [];
 
   function traverse(layers: any[], prefix = '') {
     for (const layer of layers) {
       if (layer.route?.path) {
-        const fullPath = (prefix + layer.route.path).replace(/\/+/g, '/');
-        for (const method of Object.keys(layer.route.methods || {})) {
-          extractedRoutes.push({ method: method.toLowerCase(), path: fullPath });
+        let p = (prefix + layer.route.path).replace(/\/+/g, '/');
+        if (p.length > 1 && p.endsWith('/')) p = p.slice(0, -1);
+        const roles = (layer.route as any)._roles;
+        for (const m of Object.keys(layer.route.methods || {})) {
+          extractedRoutes.push({ method: m.toLowerCase(), path: p, roles });
         }
       } else if (layer.name === 'router' && layer.handle?.stack) {
         let routerPrefix = layer.path || '';
@@ -52,10 +59,10 @@ export function assertAllRoutesRegistered(app: any): void {
             '/api/v1/audit-logs',
             '/api/v1',
           ];
-          for (const p of prefixes) {
-            const res = layer.matchers[0](p);
-            if (res && res.path === p) {
-              routerPrefix = p;
+          for (const pr of prefixes) {
+            const res = layer.matchers[0](pr);
+            if (res && res.path === pr) {
+              routerPrefix = pr;
               break;
             }
           }
@@ -69,15 +76,12 @@ export function assertAllRoutesRegistered(app: any): void {
 
   const apiV1Routes = extractedRoutes.filter((r) => r.path.startsWith('/api/v1'));
   for (const r of apiV1Routes) {
-    const isRegistered = registeredRoutes.some(
-      (reg) =>
-        reg.method.toLowerCase() === r.method.toLowerCase() &&
-        (reg.path === r.path || r.path.endsWith(reg.path))
-    );
-    if (!isRegistered) {
+    if (r.roles === undefined) {
       throw new Error(
         `Startup Assertion Failed: Unregistered route ${r.method.toUpperCase()} ${r.path}`
       );
     }
   }
+  registeredRoutes.length = 0;
+  registeredRoutes.push(...apiV1Routes);
 }
