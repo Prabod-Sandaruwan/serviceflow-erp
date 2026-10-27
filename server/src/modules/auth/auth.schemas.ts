@@ -10,3 +10,14 @@ export const loginSchema = z.object({
 });
 
 export type LoginInput = z.infer<typeof loginSchema>['body'];
+
+export const changePasswordSchema = z.object({
+  body: z
+    .object({
+      currentPassword: z.string().min(1),
+      newPassword: z.string().min(12).max(128),
+    })
+    .strict(),
+});
+
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>['body'];

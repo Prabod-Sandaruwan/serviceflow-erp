@@ -31,6 +31,11 @@ route(router, 'get', '/me', {
   handler: AuthController.me,
 });
 
+route(router, 'post', '/change-password', {
+  roles: ['ADMIN', 'MANAGER', 'STAFF'],
+  handler: AuthController.changePassword,
+});
+
 registry.registerPath({
   method: 'get',
   path: '/api/v1/auth/csrf',
@@ -66,6 +71,17 @@ registry.registerPath({
   responses: {
     200: { description: 'Profile returned' },
     401: { description: 'Unauthenticated' },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/auth/change-password',
+  summary: 'Change password',
+  responses: {
+    204: { description: 'Password changed successfully' },
+    403: { description: 'Forbidden or Password change required' },
+    422: { description: 'Validation error' },
   },
 });
 

@@ -46,13 +46,16 @@ export const createUser = async (overrides: any = {}) => {
     const emp = await createEmployee();
     employeeId = emp.id;
   }
-  const { passwordHash, isActive, ...rest } = overrides;
+  const { passwordHash, isActive, mustChangePassword, ...rest } = overrides;
   return prisma.user.create({
     data: {
       email: overrides.email || `user-${uid}@test.com`,
       password_hash: overrides.password_hash || passwordHash || 'hash',
       role: overrides.role || 'STAFF',
       is_active: overrides.is_active ?? (isActive !== undefined ? isActive : true),
+      must_change_password:
+        overrides.must_change_password ??
+        (mustChangePassword !== undefined ? mustChangePassword : true),
       ...(employeeId ? { employee: { connect: { id: employeeId } } } : {}),
       ...rest,
     },

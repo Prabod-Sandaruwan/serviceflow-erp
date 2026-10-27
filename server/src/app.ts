@@ -7,6 +7,7 @@ import { securityHeaders, corsMiddleware } from './middleware/security';
 import { sessionMiddleware } from './middleware/session';
 import { csrfMiddleware } from './middleware/csrf';
 import { requireAuth } from './middleware/auth';
+import { mustChangePasswordGuard } from './middleware/mustChangePassword';
 import { authRoutes } from './modules/auth/auth.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -14,11 +15,8 @@ import { route, assertAllRoutesRegistered } from './shared/routeRegistry';
 
 const app: Application = express();
 
-// Request tracking and structured logging
 app.use(requestIdMiddleware);
 app.use(httpLogger);
-
-// Security headers and CORS middlewares
 app.use(securityHeaders);
 app.use(corsMiddleware);
 
@@ -28,21 +26,22 @@ if (process.env.TRUST_PROXY === 'true') {
 app.use(sessionMiddleware);
 app.use(csrfMiddleware);
 
-// Standard body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Auth guard & routes
 app.use('/api/v1', requireAuth);
+app.use('/api/v1', mustChangePasswordGuard);
 app.use('/api/v1/auth', authRoutes);
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
-  handler: (_req: Request, res: Response) => {
-    res.status(200).json({ status: 'ok' });
-  },
+  handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
+});
+route(app as any, 'get', '/api/v1/test-protected', {
+  roles: ['ADMIN', 'MANAGER', 'STAFF'],
+  handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
 });
 
-// Health Check Handler
 const healthCheckHandler = async (_req: Request, res: Response) => {
   try {
     await prisma.$queryRawUnsafe('SELECT 1');
@@ -68,18 +67,12 @@ route(app as any, 'get', '/api/v1/health', {
   handler: healthCheckHandler,
 });
 
-// OpenAPI & Swagger UI (non-production)
 if (process.env.NODE_ENV !== 'production') {
-  app.get('/api-docs.json', (_req: Request, res: Response) => {
-    res.json(getOpenApiSpec());
-  });
+  app.get('/api-docs.json', (_req: Request, res: Response) => res.json(getOpenApiSpec()));
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(getOpenApiSpec()));
 }
 
-// 404 Handler for undefined routes
 app.use(notFoundHandler);
-
-// Central Global Error Handler
 app.use(errorHandler);
 
 assertAllRoutesRegistered(app);
