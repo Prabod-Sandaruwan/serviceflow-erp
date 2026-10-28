@@ -79,3 +79,4 @@
 - [x] UI-004: Implement the authentication state and hooks
 - [x] UI-005: Build the application shell with a role-aware sidebar
 - [x] UI-006: Create the reusable UI components
+- [x] UI-007: Create loading, empty and error state components
