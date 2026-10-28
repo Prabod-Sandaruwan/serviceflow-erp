@@ -7,6 +7,7 @@ import { navConfig } from '../layouts/navConfig';
 const Login = lazy(() => import('../features/auth/Login'));
 const Dashboard = lazy(() => import('../features/dashboard/Dashboard'));
 const Profile = lazy(() => import('../features/profile/Profile'));
+const ChangePassword = lazy(() => import('../features/profile/ChangePassword'));
 const ClientList = lazy(() => import('../features/clients/ClientList'));
 const LeadList = lazy(() => import('../features/leads/LeadList'));
 const FollowUpList = lazy(() => import('../features/followUps/FollowUpList'));
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
     children: [
       protectedChild('/', Dashboard, true),
       protectedChild('/profile', Profile),
+      { path: 'profile/password', element: <RequireAuth>{withSuspense(ChangePassword)}</RequireAuth> },
       protectedChild('/clients', ClientList),
       protectedChild('/leads', LeadList),
       protectedChild('/follow-ups', FollowUpList),

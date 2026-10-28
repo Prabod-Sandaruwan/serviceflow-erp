@@ -9,7 +9,7 @@ export interface RequireAuthProps {
 }
 
 export function RequireAuth({ children }: RequireAuthProps) {
-  const { status } = useAuth();
+  const { status, user } = useAuth();
   const location = useLocation();
 
   if (status === 'loading') {
@@ -18,6 +18,10 @@ export function RequireAuth({ children }: RequireAuthProps) {
 
   if (status === 'unauthenticated') {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (user?.mustChangePassword && location.pathname !== '/profile/password') {
+    return <Navigate to="/profile/password" replace />;
   }
 
   return <>{children}</>;
@@ -29,10 +33,14 @@ export interface RequireRoleProps {
 }
 
 export function RequireRole({ roles, children }: RequireRoleProps) {
-  const { status, hasRole } = useAuth();
+  const { status, user, hasRole } = useAuth();
 
   if (status === 'loading') {
     return <Skeleton />;
+  }
+
+  if (user?.mustChangePassword) {
+    return <Navigate to="/profile/password" replace />;
   }
 
   if (!hasRole(roles)) {

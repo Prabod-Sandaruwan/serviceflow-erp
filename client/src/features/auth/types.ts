@@ -4,6 +4,12 @@ export interface User {
   role: string;
   fullName?: string;
   mustChangePassword?: boolean;
+  employee?: {
+    id?: string;
+    fullName?: string;
+    department?: string;
+    position?: string;
+  };
 }
 
 export interface LoginInput {
