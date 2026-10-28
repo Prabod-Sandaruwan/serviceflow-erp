@@ -11,8 +11,6 @@ const loginSchema = z.object({
   password: z.string().min(1, 'Required'),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
-
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -25,7 +23,7 @@ export default function Login() {
     emailRef.current?.focus();
   }, []);
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setGlobalError(null);
     try {
       const res = (await login(data)) as any;
@@ -38,13 +36,9 @@ export default function Login() {
       }
     } catch (err: unknown) {
       if (err instanceof ApiError) {
-        if (err.status === 401) {
-          setGlobalError('Email or password is incorrect.');
-        } else if (err.status === 429) {
-          setGlobalError('Too many attempts. Please try again later.');
-        } else {
-          setGlobalError(applyApiErrors(form, err));
-        }
+        if (err.status === 401) setGlobalError('Email or password is incorrect.');
+        else if (err.status === 429) setGlobalError('Too many attempts. Please try again later.');
+        else setGlobalError(applyApiErrors(form, err));
       } else {
         setGlobalError((err as Error)?.message || 'An unexpected error occurred.');
       }
@@ -54,21 +48,23 @@ export default function Login() {
   const emailReg = form.register('email');
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', alignItems: 'center', justifyContent: 'center', background: '#f8fafc', padding: '1rem' }}>
-      <div style={{ width: '100%', maxWidth: '400px', background: '#fff', padding: '2rem', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
-        <h1 style={{ margin: '0 0 1.5rem', fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', textAlign: 'center' }}>
-          ServiceFlow ERP
-        </h1>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%)', padding: '1rem' }}>
+      <style>{`
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .login-btn:hover:not(:disabled) { transform: translateY(-2px); }
+      `}</style>
+      <div style={{ width: '100%', maxWidth: '400px', background: '#fff', borderRadius: '16px', padding: '2rem', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.01)', animation: 'slideUp 0.6s forwards' }}>
+        <h1 style={{ margin: '0 0 1.5rem', fontSize: '1.5rem', fontWeight: 700, color: '#0f172a', textAlign: 'center' }}>ServiceFlow ERP</h1>
         {globalError && (
-          <div role="alert" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '0.75rem', borderRadius: '6px', fontSize: '0.875rem', marginBottom: '1rem' }}>
+          <div role="alert" style={{ background: '#fef2f2', border: '1px solid #fecaca', color: '#991b1b', padding: '0.75rem', borderRadius: '8px', fontSize: '0.875rem', marginBottom: '1rem' }}>
             {globalError}
           </div>
         )}
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <Input id="email" label="Email" type="email" error={form.formState.errors.email?.message} {...emailReg} ref={(el) => { emailReg.ref(el); emailRef.current = el; }} />
           <Input id="password" label="Password" type="password" autoComplete="off" error={form.formState.errors.password?.message} {...form.register('password')} />
-          <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '0.5rem' }}>
-            {form.formState.isSubmitting ? 'Signing in...' : 'Sign in'}
+          <Button type="submit" disabled={form.formState.isSubmitting} className="login-btn" style={{ width: '100%', marginTop: '0.75rem', background: '#0f172a', transition: 'transform 0.2s ease, opacity 0.2s' }}>
+            {form.formState.isSubmitting ? 'Logging in...' : 'Sign In'}
           </Button>
         </form>
       </div>
