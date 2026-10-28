@@ -3,15 +3,9 @@ import { render, screen } from '@testing-library/react';
 import App from './App';
 
 describe('App Component', () => {
-  it('renders the ServiceFlow ERP Frontend Running header', () => {
+  it('renders the initial dashboard route', async () => {
     render(<App />);
-    const headingElement = screen.getByText(/ServiceFlow ERP Frontend Running/i);
-    expect(headingElement).toBeInTheDocument();
-  });
-
-  it('renders system online indicator', () => {
-    render(<App />);
-    const statusElement = screen.getByText(/System Online/i);
-    expect(statusElement).toBeInTheDocument();
+    const heading = await screen.findByText(/Dashboard Page/i);
+    expect(heading).toBeInTheDocument();
   });
 });
