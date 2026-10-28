@@ -13,14 +13,14 @@ describe('RBAC Middleware & Route Registry (AUTH-009)', () => {
       };
 
       // Allowed role: ADMIN
-      const reqAdmin = { auth: { role: 'ADMIN' } } as Request;
-      middleware(reqAdmin, {} as Response, next);
+      const reqAdmin = { auth: { role: 'ADMIN' } } as unknown as Request;
+      middleware(reqAdmin, {} as unknown as Response, next);
       expect(nextCalled).toBe(true);
 
       // Blocked role: STAFF
-      const reqStaff = { auth: { role: 'STAFF' } } as Request;
+      const reqStaff = { auth: { role: 'STAFF' } } as unknown as Request;
       try {
-        middleware(reqStaff, {} as Response, next);
+        middleware(reqStaff, {} as unknown as Response, next);
         expect.unreachable('Should throw FORBIDDEN');
       } catch (err: any) {
         expect(err.statusCode).toBe(403);
@@ -28,9 +28,9 @@ describe('RBAC Middleware & Route Registry (AUTH-009)', () => {
       }
 
       // Unauthenticated
-      const reqUnauth = {} as Request;
+      const reqUnauth = {} as unknown as Request;
       try {
-        middleware(reqUnauth, {} as Response, next);
+        middleware(reqUnauth, {} as unknown as Response, next);
         expect.unreachable('Should throw UNAUTHENTICATED');
       } catch (err: any) {
         expect(err.statusCode).toBe(401);
