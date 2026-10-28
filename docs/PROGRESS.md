@@ -72,3 +72,5 @@
 - [x] AUTH-017: Create the authorization matrix test
 - [x] AUTH-018: Extend the seed with a second Manager and demo employees
 
+## Phase 5 - Shared Frontend Foundation
+- [x] UI-001: Set up the React app entry and providers
