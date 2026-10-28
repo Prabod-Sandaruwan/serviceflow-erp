@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import type { RouteObject } from 'react-router-dom';
 import { router } from './router';
 
 describe('Router configuration', () => {
@@ -22,8 +23,21 @@ describe('Router configuration', () => {
     '*',
   ];
 
+  const getPaths = (routes: RouteObject[], parent = ''): string[] => {
+    return routes.flatMap((r) => {
+      const fullPath = r.index
+        ? parent || '/'
+        : r.path
+          ? r.path.startsWith('/') || r.path === '*'
+            ? r.path
+            : `${parent}/${r.path}`.replace(/\/+/g, '/')
+          : parent;
+      return [fullPath, ...(r.children ? getPaths(r.children, fullPath) : [])];
+    });
+  };
+
   it('defines all required application routes', () => {
-    const configuredPaths = router.routes.map((route) => route.path);
+    const configuredPaths = getPaths(router.routes);
     expectedPaths.forEach((path) => {
       expect(configuredPaths).toContain(path);
     });

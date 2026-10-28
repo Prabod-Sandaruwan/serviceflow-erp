@@ -77,3 +77,4 @@
 - [x] UI-002: Configure React Router and the route table
 - [x] UI-003: Build the API client with CSRF handling and ApiError
 - [x] UI-004: Implement the authentication state and hooks
+- [x] UI-005: Build the application shell with a role-aware sidebar
