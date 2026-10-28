@@ -69,7 +69,7 @@ export function UserModal({ isOpen, onClose, user, isSelf }: UserModalProps) {
         {!user && <Input id="password" label="Password" type="password" error={form.formState.errors.password?.message} {...form.register('password')} />}
         <Select id="role" label="Role" disabled={isSelf} options={[{ value: 'ADMIN', label: 'Admin' }, { value: 'MANAGER', label: 'Manager' }, { value: 'STAFF', label: 'Staff' }]} error={form.formState.errors.role?.message} {...form.register('role')} />
         {user && <Select id="isActive" label="Status" disabled={isSelf} options={[{ value: 'true', label: 'Active' }, { value: 'false', label: 'Inactive' }]} error={form.formState.errors.isActive?.message} {...form.register('isActive')} />}
-        <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '1rem' }}>
+        <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '1rem', background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)' }}>
           {user ? 'Save Changes' : 'Create User'}
         </Button>
       </form>

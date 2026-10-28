@@ -74,7 +74,7 @@ export function EmployeeModal({ isOpen, onClose, employee }: EmployeeModalProps)
         <Input id="jobTitle" label="Job Title" error={form.formState.errors.jobTitle?.message} {...form.register('jobTitle')} />
         <Input id="phone" label="Phone" error={form.formState.errors.phone?.message} {...form.register('phone')} />
         {employee && <Select id="isActive" label="Status" options={[{ value: 'true', label: 'Active' }, { value: 'false', label: 'Inactive' }]} error={form.formState.errors.isActive?.message} {...form.register('isActive')} />}
-        <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '1rem' }}>
+        <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '1rem', background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)' }}>
           {employee ? 'Save Changes' : 'Add Employee'}
         </Button>
       </form>
