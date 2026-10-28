@@ -21,6 +21,7 @@ const ProjectReport = lazy(() => import('../features/reports/ProjectReport'));
 const UserList = lazy(() => import('../features/admin/UserList'));
 const EmployeeList = lazy(() => import('../features/admin/EmployeeList'));
 const AuditLogs = lazy(() => import('../features/admin/AuditLogs'));
+const LogoutConfirm = lazy(() => import('../features/auth/LogoutConfirm'));
 const NotFound = lazy(() => import('../components/NotFound'));
 
 const withSuspense = (Component: React.ComponentType) => (
@@ -48,6 +49,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       protectedChild('/', Dashboard, true),
+      protectedChild('/logout', LogoutConfirm),
       protectedChild('/profile', Profile),
       { path: 'profile/password', element: <RequireAuth>{withSuspense(ChangePassword)}</RequireAuth> },
       protectedChild('/clients', ClientList),

@@ -4,13 +4,12 @@ import { useAuth } from '../features/auth/AuthProvider';
 import { navConfig } from './navConfig';
 
 export function AppShell() {
-  const { user, logout, hasRole } = useAuth();
+  const { user, hasRole } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
+  const handleLogout = () => {
+    navigate('/logout');
   };
 
   const navItems = navConfig.filter((item) => hasRole(item.roles));
