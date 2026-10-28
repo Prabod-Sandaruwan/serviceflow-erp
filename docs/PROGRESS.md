@@ -76,3 +76,4 @@
 - [x] UI-001: Set up the React app entry and providers
 - [x] UI-002: Configure React Router and the route table
 - [x] UI-003: Build the API client with CSRF handling and ApiError
+- [x] UI-004: Implement the authentication state and hooks
