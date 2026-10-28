@@ -1,6 +1,8 @@
 import React, { lazy, Suspense } from 'react';
 import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '../layouts/AppShell';
+import { RequireAuth, RequireRole } from './guards';
+import { navConfig } from '../layouts/navConfig';
 
 const Login = lazy(() => import('../features/auth/Login'));
 const Dashboard = lazy(() => import('../features/dashboard/Dashboard'));
@@ -26,27 +28,39 @@ const withSuspense = (Component: React.ComponentType) => (
   </Suspense>
 );
 
+const getRoles = (path: string) =>
+  navConfig.find((n) => n.path === path)?.roles || ['ADMIN', 'MANAGER', 'STAFF'];
+
+const protectedChild = (path: string, Component: React.ComponentType, index = false) => ({
+  ...(index ? { index: true } : { path: path.replace(/^\//, '') }),
+  element: <RequireRole roles={getRoles(path)}>{withSuspense(Component)}</RequireRole>,
+});
+
 export const router = createBrowserRouter([
   { path: '/login', element: withSuspense(Login) },
   {
     path: '/',
-    element: <AppShell />,
+    element: (
+      <RequireAuth>
+        <AppShell />
+      </RequireAuth>
+    ),
     children: [
-      { index: true, element: withSuspense(Dashboard) },
-      { path: 'profile', element: withSuspense(Profile) },
-      { path: 'clients', element: withSuspense(ClientList) },
-      { path: 'leads', element: withSuspense(LeadList) },
-      { path: 'follow-ups', element: withSuspense(FollowUpList) },
-      { path: 'quotations', element: withSuspense(QuotationList) },
-      { path: 'projects', element: withSuspense(ProjectList) },
-      { path: 'tasks', element: withSuspense(TaskList) },
-      { path: 'invoices', element: withSuspense(InvoiceList) },
-      { path: 'expenses', element: withSuspense(ExpenseList) },
-      { path: 'reports/finance', element: withSuspense(FinanceReport) },
-      { path: 'reports/projects', element: withSuspense(ProjectReport) },
-      { path: 'admin/users', element: withSuspense(UserList) },
-      { path: 'admin/employees', element: withSuspense(EmployeeList) },
-      { path: 'admin/audit', element: withSuspense(AuditLogs) },
+      protectedChild('/', Dashboard, true),
+      protectedChild('/profile', Profile),
+      protectedChild('/clients', ClientList),
+      protectedChild('/leads', LeadList),
+      protectedChild('/follow-ups', FollowUpList),
+      protectedChild('/quotations', QuotationList),
+      protectedChild('/projects', ProjectList),
+      protectedChild('/tasks', TaskList),
+      protectedChild('/invoices', InvoiceList),
+      protectedChild('/expenses', ExpenseList),
+      protectedChild('/reports/finance', FinanceReport),
+      protectedChild('/reports/projects', ProjectReport),
+      protectedChild('/admin/users', UserList),
+      protectedChild('/admin/employees', EmployeeList),
+      protectedChild('/admin/audit', AuditLogs),
     ],
   },
   { path: '*', element: withSuspense(NotFound) },

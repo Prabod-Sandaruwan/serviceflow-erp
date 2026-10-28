@@ -82,3 +82,4 @@
 - [x] UI-007: Create loading, empty and error state components
 - [x] UI-008: Establish the form pattern with React Hook Form and Zod
 - [x] UI-009: Build the login page
+- [x] UI-010: Implement route guards and the unauthorised and not-found pages
