@@ -1,17 +1,31 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from './App';
+import * as authProvider from './features/auth/AuthProvider';
+import { router } from './app/router';
 
 describe('App Component', () => {
-  it('renders the ServiceFlow ERP Frontend Running header', () => {
-    render(<App />);
-    const headingElement = screen.getByText(/ServiceFlow ERP Frontend Running/i);
-    expect(headingElement).toBeInTheDocument();
+  beforeEach(async () => {
+    vi.restoreAllMocks();
+    await router.navigate('/');
   });
 
-  it('renders system online indicator', () => {
+  it('redirects unauthenticated user to login', async () => {
     render(<App />);
-    const statusElement = screen.getByText(/System Online/i);
-    expect(statusElement).toBeInTheDocument();
+    expect(await screen.findByRole('button', { name: /Sign in/i })).toBeInTheDocument();
+  });
+
+  it('renders dashboard when authenticated', async () => {
+    vi.spyOn(authProvider, 'useAuth').mockReturnValue({
+      status: 'authenticated',
+      user: { id: '1', email: 'admin@serviceflow.lk', role: 'ADMIN' },
+      role: 'ADMIN',
+      login: vi.fn(),
+      logout: vi.fn(),
+      hasRole: () => true,
+    });
+
+    render(<App />);
+    expect(await screen.findByText(/Dashboard Page/i)).toBeInTheDocument();
   });
 });
