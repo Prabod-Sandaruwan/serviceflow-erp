@@ -48,7 +48,7 @@ export function assertAllRoutesRegistered(app: any): void {
       } else if (layer.name === 'router' && layer.handle?.stack) {
         let routerPrefix = layer.path || '';
         if (!routerPrefix && layer.regexp?.source) {
-          const match = layer.regexp.source.match(/\\\/(api\\\/v[0-9]+[a-zA-Z0-9_\/-]*)/);
+          const match = layer.regexp.source.match(/\\\/(api\\\/v[0-9]+[a-zA-Z0-9_/-]*)/);
           if (match) routerPrefix = '/' + match[1].replace(/\\\//g, '/');
         }
         if (!routerPrefix && layer.matchers?.[0]) {
@@ -57,6 +57,7 @@ export function assertAllRoutesRegistered(app: any): void {
             '/api/v1/users',
             '/api/v1/employees',
             '/api/v1/audit-logs',
+            '/api/v1/clients',
             '/api/v1',
           ];
           for (const pr of prefixes) {
