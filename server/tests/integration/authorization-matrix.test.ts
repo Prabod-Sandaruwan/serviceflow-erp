@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll } from 'vitest';
 import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
-import { truncateAll, createUser } from '../helpers/factories';
+import { truncateAll } from '../helpers/factories';
 import { registeredRoutes } from '../../src/shared/routeRegistry';
 
 const allRoles = ['ADMIN', 'MANAGER', 'STAFF'] as const;
@@ -26,6 +26,16 @@ beforeAll(async () => {
   for (const role of allRoles) {
     agents[role] = await loginAs(makeAgent(), role);
   }
+});
+
+describe('Authorization Matrix Sanity Checks', () => {
+  it('includes client routes in registered matrix', () => {
+    const paths = apiRoutes.map((r) => `${r.method.toUpperCase()} ${r.path}`);
+    expect(paths).toContain('GET /api/v1/clients');
+    expect(paths).toContain('POST /api/v1/clients');
+    expect(paths).toContain('GET /api/v1/clients/:id');
+    expect(paths).toContain('PATCH /api/v1/clients/:id');
+  });
 });
 
 if (apiRoutes.length === 0) {
