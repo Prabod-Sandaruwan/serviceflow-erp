@@ -35,6 +35,10 @@ describe('Authorization Matrix Sanity Checks', () => {
     expect(paths).toContain('POST /api/v1/clients');
     expect(paths).toContain('GET /api/v1/clients/:id');
     expect(paths).toContain('PATCH /api/v1/clients/:id');
+    expect(paths).toContain('GET /api/v1/leads');
+    expect(paths).toContain('POST /api/v1/leads');
+    expect(paths).toContain('GET /api/v1/leads/:id');
+    expect(paths).toContain('PATCH /api/v1/leads/:id');
   });
 });
 
