@@ -65,3 +65,18 @@ export function useUpdateEmployee() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['employees'] }),
   });
 }
+
+export function useAuditLogs(filters: any) {
+  return useQuery({
+    queryKey: ['audit', filters],
+    queryFn: async () => {
+      const q = new URLSearchParams();
+      if (filters) {
+        Object.entries(filters).forEach(([k, v]) => {
+          if (v !== undefined && v !== null && v !== '') q.set(k, String(v));
+        });
+      }
+      return api.get<{ data: any[]; meta: any }>(`/audit-logs?${q.toString()}`);
+    },
+  });
+}
