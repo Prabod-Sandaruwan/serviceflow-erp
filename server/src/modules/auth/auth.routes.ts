@@ -39,6 +39,11 @@ route(router, 'post', '/change-password', {
   handler: AuthController.changePassword,
 });
 
+route(router, 'patch', '/me/password', {
+  roles: ['ADMIN', 'MANAGER', 'STAFF'],
+  handler: AuthController.changePassword,
+});
+
 registry.registerPath({
   method: 'get',
   path: '/api/v1/auth/csrf',

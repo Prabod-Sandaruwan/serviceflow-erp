@@ -59,7 +59,7 @@ describe('Profile and ChangePassword', () => {
   });
 
   it('Password change form submits and shows success toast', async () => {
-    vi.mocked(api.patch).mockResolvedValueOnce({ success: true });
+    vi.mocked(api.post).mockResolvedValueOnce({ success: true });
     const queryClient = new QueryClient();
 
     render(
@@ -79,7 +79,7 @@ describe('Profile and ChangePassword', () => {
     fireEvent.click(screen.getByRole('button', { name: /Update Password/i }));
 
     await waitFor(() => {
-      expect(api.patch).toHaveBeenCalledWith('/auth/me/password', {
+      expect(api.post).toHaveBeenCalledWith('/auth/change-password', {
         currentPassword: 'OldPassword@123',
         newPassword: 'NewPassword@2026',
       });

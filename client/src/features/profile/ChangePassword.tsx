@@ -30,15 +30,7 @@ export default function ChangePassword() {
   const onSubmit = async ({ currentPassword, newPassword }: FormValues) => {
     setGlobalError(null);
     try {
-      try {
-        await api.patch('/auth/me/password', { currentPassword, newPassword });
-      } catch (err: any) {
-        if (err?.status === 404) {
-          await api.post('/auth/change-password', { currentPassword, newPassword });
-        } else {
-          throw err;
-        }
-      }
+      await api.post('/auth/change-password', { currentPassword, newPassword });
       await queryClient.invalidateQueries({ queryKey: ['me'] });
       addToast('Password updated successfully', 'success');
       navigate('/');

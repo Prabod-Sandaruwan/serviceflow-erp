@@ -11,7 +11,7 @@ export function mustChangePasswordGuard(
       return next();
     }
 
-    const allowPaths = ['/auth/me', '/auth/logout', '/auth/change-password'];
+    const allowPaths = ['/auth/me', '/auth/logout', '/auth/change-password', '/auth/me/password'];
     const isAllowed = allowPaths.some((p) => req.path.endsWith(p));
 
     if (!isAllowed) {
