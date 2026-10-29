@@ -8,10 +8,7 @@ import { ApiError } from '../../../src/lib/ApiError';
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual<any>('react-router-dom');
-  return {
-    ...actual,
-    useNavigate: () => mockNavigate,
-  };
+  return { ...actual, useNavigate: () => mockNavigate };
 });
 
 vi.mock('../../../src/features/auth/AuthProvider', () => ({
@@ -34,22 +31,13 @@ describe('Login Component', () => {
   });
 
   it('autofocuses email input on mount', () => {
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>,
-    );
+    render(<MemoryRouter><Login /></MemoryRouter>);
     expect(screen.getByLabelText('Email')).toHaveFocus();
   });
 
   it('displays 401 error message on invalid credentials', async () => {
     mockLogin.mockRejectedValueOnce(new ApiError(401, 'UNAUTHORIZED', 'Invalid creds'));
-
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>,
-    );
+    render(<MemoryRouter><Login /></MemoryRouter>);
 
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret123' } });
@@ -60,12 +48,7 @@ describe('Login Component', () => {
 
   it('displays 429 rate limit error message', async () => {
     mockLogin.mockRejectedValueOnce(new ApiError(429, 'RATE_LIMITED', 'Rate limited'));
-
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>,
-    );
+    render(<MemoryRouter><Login /></MemoryRouter>);
 
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'test@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'secret123' } });
@@ -76,12 +59,7 @@ describe('Login Component', () => {
 
   it('navigates to /profile/password if mustChangePassword is true', async () => {
     mockLogin.mockResolvedValueOnce({ id: '1', mustChangePassword: true });
-
-    render(
-      <MemoryRouter>
-        <Login />
-      </MemoryRouter>,
-    );
+    render(<MemoryRouter><Login /></MemoryRouter>);
 
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'admin@serviceflow.lk' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });

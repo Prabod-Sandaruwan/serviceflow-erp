@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** UI-013 Complete (Phase 5 - Shared Frontend Foundation)  
+**Current Task:** UI-014 Complete (Phase 5 - Shared Frontend Foundation)  
 **Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002, AUTH-003, AUTH-004, AUTH-005, AUTH-006, AUTH-007, AUTH-008, AUTH-009, AUTH-010, AUTH-011, AUTH-012
 
 ## Phase 0 - Pre-requisites and Planning
@@ -86,3 +86,4 @@
 - [x] UI-011: Build the profile page and first-login password change
 - [x] UI-012: Build the users and employees management pages
 - [x] UI-013: Build the audit-log viewer
+- [x] UI-014: Check responsive layout and accessibility baseline; add auth UI tests
