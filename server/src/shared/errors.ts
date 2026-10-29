@@ -86,3 +86,6 @@ export class RateLimitError extends AppError {
     super(429, code, message, details);
   }
 }
+
+export { AppError as ApiError };
+export default AppError;
