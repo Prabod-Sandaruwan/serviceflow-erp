@@ -71,7 +71,7 @@ export function AppShell() {
           </nav>
         </aside>
 
-        <main style={{ flex: 1, overflowY: 'auto', background: '#f8fafc' }}>
+        <main style={{ flex: 1, overflowY: 'auto', background: '#f8fafc', color: '#0f172a' }}>
           <Outlet />
         </main>
       </div>

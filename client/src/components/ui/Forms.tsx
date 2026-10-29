@@ -6,20 +6,14 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ style, variant = 'primary', ...props }, ref) => {
-    const bg = variant === 'danger' ? '#dc2626' : variant === 'secondary' ? '#475569' : '#2563eb';
+    const bg = variant === 'danger' ? '#dc2626' : variant === 'secondary' ? '#64748b' : '#2563eb';
     return (
       <button
         ref={ref}
         style={{
-          background: bg,
-          color: '#fff',
-          border: 'none',
-          borderRadius: '4px',
-          padding: '0.5rem 1rem',
-          cursor: props.disabled ? 'not-allowed' : 'pointer',
-          opacity: props.disabled ? 0.6 : 1,
-          fontWeight: 500,
-          ...style,
+          background: bg, color: '#fff', border: 'none', borderRadius: '6px',
+          padding: '0.5rem 1rem', cursor: props.disabled ? 'not-allowed' : 'pointer',
+          opacity: props.disabled ? 0.6 : 1, fontWeight: 600, fontSize: '0.875rem', ...style,
         }}
         {...props}
       />
@@ -37,9 +31,9 @@ export interface FormFieldProps {
 export function FormField({ id, label, error, children }: FormFieldProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', marginBottom: '0.75rem' }}>
-      {label && <label htmlFor={id} style={{ fontSize: '0.875rem', fontWeight: 500, color: '#334155' }}>{label}</label>}
+      {label && <label htmlFor={id} style={{ fontSize: '0.875rem', fontWeight: 600, color: '#334155' }}>{label}</label>}
       {children}
-      {error && <span id={`${id}-error`} role="alert" style={{ fontSize: '0.75rem', color: '#dc2626' }}>{error}</span>}
+      {error && <span id={`${id}-error`} role="alert" style={{ fontSize: '0.75rem', color: '#dc2626', fontWeight: 500 }}>{error}</span>}
     </div>
   );
 }
@@ -58,17 +52,18 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         id={id}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        style={{ padding: '0.5rem', borderRadius: '4px', border: `1px solid ${error ? '#dc2626' : '#cbd5e1'}`, fontSize: '0.875rem', outline: 'none', ...style }}
+        style={{
+          padding: '0.55rem 0.75rem', borderRadius: '6px', fontSize: '0.875rem', outline: 'none',
+          background: '#ffffff', color: '#0f172a', boxSizing: 'border-box',
+          border: `1px solid ${error ? '#dc2626' : '#cbd5e1'}`, ...style,
+        }}
         {...props}
       />
     </FormField>
   ),
 );
 
-export interface Option {
-  value: string | number;
-  label: string;
-}
+export interface Option { value: string | number; label: string; }
 
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   id: string;
@@ -85,7 +80,11 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         id={id}
         aria-invalid={!!error}
         aria-describedby={error ? `${id}-error` : undefined}
-        style={{ padding: '0.5rem', borderRadius: '4px', border: `1px solid ${error ? '#dc2626' : '#cbd5e1'}`, fontSize: '0.875rem', background: '#fff', ...style }}
+        style={{
+          padding: '0.55rem 0.75rem', borderRadius: '6px', fontSize: '0.875rem',
+          background: '#ffffff', color: '#0f172a', outline: 'none', boxSizing: 'border-box',
+          border: `1px solid ${error ? '#dc2626' : '#cbd5e1'}`, ...style,
+        }}
         {...props}
       >
         {options.map((opt) => (
