@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** CRM-005 Complete (Phase 6 - CRM and Client Management)  
-**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001, CRM-002, CRM-003, CRM-004, CRM-005
+**Current Task:** CRM-006 Complete (Phase 6 - CRM and Client Management)  
+**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001, CRM-002, CRM-003, CRM-004, CRM-005, CRM-006
 
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001: Collect source PDFs
@@ -94,3 +94,4 @@
 - [x] CRM-003: Implement client create, detail and update with Staff limits
 - [x] CRM-004: Write client API tests
 - [x] CRM-005: Build the client list page
+- [x] CRM-006: Build the client form and detail pages
