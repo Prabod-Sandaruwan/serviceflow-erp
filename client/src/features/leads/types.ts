@@ -45,3 +45,25 @@ export interface LeadsResponse {
     totalPages: number;
   };
 }
+
+export interface FollowUp {
+  id: string;
+  leadId: string;
+  scheduledAt: string;
+  status: 'PENDING' | 'DONE';
+  notes?: string | null;
+  isOverdue?: boolean;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface FollowUpsResponse {
+  data: FollowUp[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}

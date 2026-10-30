@@ -1,19 +1,23 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLead } from './hooks';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Button } from '../../components/ui/Forms';
+import { ConvertDialog } from './ConvertDialog';
+import { FollowUps } from './FollowUps';
 
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
   const leadQuery = useLead(id);
+  const [isConvertDialogOpen, setIsConvertDialogOpen] = useState(false);
 
   return (
     <div style={{ padding: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
       <QueryBoundary query={leadQuery}>
         {leadQuery.data?.data && (() => {
           const l = leadQuery.data.data;
-          const isConverted = l.status === 'CONVERTED';
+          const isConverted = l.status === 'CONVERTED' || l.status === 'WON' || Boolean(l.convertedClientId);
           return (
             <div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -28,7 +32,14 @@ export default function LeadDetailPage() {
                     Owner: {l.owner?.fullName || l.owner?.email || `User #${l.ownerId}`} {l.createdAt ? `• Created ${new Date(l.createdAt).toLocaleDateString()}` : ''}
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                  {isConverted ? (
+                    <Link to={`/clients/${l.convertedClientId}`} style={{ textDecoration: 'none' }}>
+                      <Button type="button" style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', borderRadius: '8px', fontWeight: 600 }}>View Client</Button>
+                    </Link>
+                  ) : (
+                    <Button type="button" onClick={() => setIsConvertDialogOpen(true)} style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)', borderRadius: '8px', fontWeight: 600 }}>Convert to Client</Button>
+                  )}
                   {!isConverted && (
                     <Link to={`/leads/${l.id}/edit`} style={{ textDecoration: 'none' }}>
                       <Button type="button" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)', borderRadius: '8px', fontWeight: 600 }}>Edit Lead</Button>
@@ -67,12 +78,8 @@ export default function LeadDetailPage() {
                 )}
               </div>
 
-              <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '14px', padding: '1.5rem', boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.04)' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 0.5rem' }}>Timeline</h3>
-                <div style={{ fontSize: '0.85rem', color: '#64748b' }}>
-                  Lead activity timeline, conversion status, and follow-up activities will appear here.
-                </div>
-              </div>
+              <FollowUps leadId={l.id} />
+              <ConvertDialog leadId={l.id} isOpen={isConvertDialogOpen} onClose={() => setIsConvertDialogOpen(false)} />
             </div>
           );
         })()}

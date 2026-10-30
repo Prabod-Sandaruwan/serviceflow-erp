@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** CRM-011 Complete (Phase 6 - CRM and Client Management)  
-**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..011
+**Current Task:** CRM-012 Complete (Phase 6 - CRM and Client Management)  
+**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..012
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001..005: Planning, reconciliation, and workstation setup completed.
 
@@ -95,3 +95,4 @@
 - [x] CRM-009: Implement lead conversion with duplicate protection
 - [x] CRM-010: Write lead, follow-up and conversion tests
 - [x] CRM-011: Build the leads list, form and detail pages
+- [x] CRM-012: Build follow-up management and the conversion dialog
