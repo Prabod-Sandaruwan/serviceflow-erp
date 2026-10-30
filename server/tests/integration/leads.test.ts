@@ -5,7 +5,7 @@ import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll } from '../helpers/factories';
 import prisma from '../../src/config/prisma';
 
-describe('Leads API Integration Tests (CRM-007)', () => {
+describe('Leads API Integration Tests (CRM-007, CRM-010)', () => {
   let adminAgent: any, staffAgent: any, staffUser: any, adminUser: any;
 
   beforeEach(async () => {
@@ -25,9 +25,7 @@ describe('Leads API Integration Tests (CRM-007)', () => {
     const res = await withCsrf(staffAgent.post('/api/v1/leads'), staffAgent)
       .send({ expectedValue: 5000, notes: 'Initial enquiry' });
     expect(res.status).toBe(201);
-    expect(res.body.data.status).toBe('NEW');
-    expect(res.body.data.ownerId).toBe(staffUser.id.toString());
-    expect(res.body.data.expectedValue).toBe(5000);
+    expect(res.body.data).toMatchObject({ status: 'NEW', ownerId: staffUser.id.toString(), expectedValue: 5000 });
   });
 
   it('POST /api/v1/leads as ADMIN can assign to another owner', async () => {
@@ -52,12 +50,10 @@ describe('Leads API Integration Tests (CRM-007)', () => {
 
   it('State rules: valid sequence NEW -> CONTACTED -> QUALIFIED -> PROPOSAL_SENT', async () => {
     const lead = await prisma.lead.create({ data: { ownerId: staffUser.id, status: 'NEW' } });
-    const patch1 = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ status: 'CONTACTED' });
-    expect(patch1.status).toBe(200);
-    const patch2 = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ status: 'QUALIFIED' });
-    expect(patch2.status).toBe(200);
-    const patch3 = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ status: 'PROPOSAL_SENT' });
-    expect(patch3.status).toBe(200);
+    for (const status of ['CONTACTED', 'QUALIFIED', 'PROPOSAL_SENT']) {
+      const res = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ status });
+      expect(res.status).toBe(200);
+    }
   });
 
   it('Invalid transition returns 409 INVALID_STATE_TRANSITION', async () => {
@@ -82,8 +78,7 @@ describe('Leads API Integration Tests (CRM-007)', () => {
     const resOk = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent)
       .send({ status: 'LOST', lostReason: 'Client budget cuts' });
     expect(resOk.status).toBe(200);
-    expect(resOk.body.data.status).toBe('LOST');
-    expect(resOk.body.data.lostReason).toBe('Client budget cuts');
+    expect(resOk.body.data).toMatchObject({ status: 'LOST', lostReason: 'Client budget cuts' });
   });
 
   it('Converted leads: modifying core fields returns 409', async () => {
@@ -91,5 +86,14 @@ describe('Leads API Integration Tests (CRM-007)', () => {
     const res = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ expectedValue: 9999 });
     expect(res.status).toBe(409);
     expect(res.body.error.code).toBe('INVALID_STATE_TRANSITION');
+  });
+
+  it('records LEAD_UPDATED audit log in DB when a lead is updated', async () => {
+    const lead = await prisma.lead.create({ data: { ownerId: staffUser.id, status: 'NEW' } });
+    const res = await withCsrf(staffAgent.patch(`/api/v1/leads/${lead.id}`), staffAgent).send({ expectedValue: 8000 });
+    expect(res.status).toBe(200);
+    const log = await prisma.auditLog.findFirst({ where: { entityId: lead.id, action: 'LEAD_UPDATED' } });
+    expect(log).not.toBeNull();
+    expect(log?.actorUserId).toBe(staffUser.id);
   });
 });

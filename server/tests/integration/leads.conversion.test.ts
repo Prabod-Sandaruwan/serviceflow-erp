@@ -3,7 +3,7 @@ import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient } from '../helpers/factories';
 import prisma from '../../src/config/prisma';
 
-describe('Lead Conversion API Integration Tests (CRM-009)', () => {
+describe('Lead Conversion API Integration Tests (CRM-009, CRM-010)', () => {
   let adminAgent: any, staffAgent: any, adminUser: any;
 
   beforeEach(async () => {
@@ -15,16 +15,13 @@ describe('Lead Conversion API Integration Tests (CRM-009)', () => {
 
   it('concurrency: simultaneous requests result in exactly one 2xx and one 409 with only 1 client created', async () => {
     const lead = await prisma.lead.create({ data: { ownerId: adminUser.id, status: 'QUALIFIED' } });
-
     const req1 = withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({});
     const req2 = withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({});
 
     const [res1, res2] = await Promise.all([req1, req2]);
     const statuses = [res1.status, res2.status].sort();
-
     expect(statuses).toEqual([200, 409]);
-    const count = await prisma.client.count();
-    expect(count).toBe(1);
+    expect(await prisma.client.count()).toBe(1);
 
     const updated = await prisma.lead.findUnique({ where: { id: lead.id } });
     expect(updated?.convertedClientId).not.toBeNull();
@@ -40,9 +37,7 @@ describe('Lead Conversion API Integration Tests (CRM-009)', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.data.id).toBe(existing.id.toString());
-
-    const count = await prisma.client.count();
-    expect(count).toBe(1);
+    expect(await prisma.client.count()).toBe(1);
 
     const updated = await prisma.lead.findUnique({ where: { id: lead.id } });
     expect(updated?.convertedClientId).toBe(existing.id);
@@ -69,5 +64,14 @@ describe('Lead Conversion API Integration Tests (CRM-009)', () => {
     const lead = await prisma.lead.create({ data: { ownerId: adminUser.id, status: 'NEW' } });
     const res = await withCsrf(staffAgent.post(`/api/v1/leads/${lead.id}/convert`), staffAgent).send({});
     expect(res.status).toBe(403);
+  });
+
+  it('converting a lead records LEAD_CONVERTED in audit logs', async () => {
+    const lead = await prisma.lead.create({ data: { ownerId: adminUser.id, status: 'QUALIFIED' } });
+    const res = await withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({});
+    expect(res.status).toBe(200);
+    const log = await prisma.auditLog.findFirst({ where: { entityId: lead.id, action: 'LEAD_CONVERTED' } });
+    expect(log).not.toBeNull();
+    expect(log?.actorUserId).toBe(adminUser.id);
   });
 });

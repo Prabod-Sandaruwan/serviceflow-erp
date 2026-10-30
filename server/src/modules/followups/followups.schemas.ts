@@ -20,10 +20,12 @@ export const createFollowUpSchema = z
     leadId: z.string().min(1, 'Lead ID is required'),
     scheduledAt: z.coerce.date(),
     notes: z.string().optional(),
+    status: followUpStatusEnum.optional(),
     type: z.enum(['CALL', 'EMAIL', 'MEETING', 'OTHER']).optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.scheduledAt < getColomboToday()) {
+    const status = data.status ?? 'PENDING';
+    if (status === 'PENDING' && data.scheduledAt < getColomboToday()) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'A PENDING follow-up cannot be scheduled before today',

@@ -60,6 +60,7 @@ export async function createFollowUp(data: CreateFollowUpInput, user: any) {
   const created = await FollowUpRepository.create({
     leadId: toBigIntId(data.leadId),
     scheduledAt: data.scheduledAt,
+    status: data.status,
     type: data.type,
     createdBy,
   });
