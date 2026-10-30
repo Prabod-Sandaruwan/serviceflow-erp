@@ -14,6 +14,7 @@ import { employeeRoutes } from './modules/employees/employees.routes';
 import { auditRoutes } from './modules/audit/audit.routes';
 import { clientRoutes } from './modules/clients/clients.routes';
 import { leadRoutes } from './modules/leads/leads.routes';
+import { followUpRoutes } from './modules/followups/followups.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 import { route, assertAllRoutesRegistered } from './shared/routeRegistry';
@@ -43,6 +44,7 @@ app.use('/api/v1/employees', employeeRoutes);
 app.use('/api/v1/audit-logs', auditRoutes);
 app.use('/api/v1/clients', clientRoutes);
 app.use('/api/v1/leads', leadRoutes);
+app.use('/api/v1/follow-ups', followUpRoutes);
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),

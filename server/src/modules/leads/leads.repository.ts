@@ -73,5 +73,10 @@ export async function update(
   });
 }
 
-export const LeadRepository = { findMany, findById, create, update };
+export async function findIdsByOwner(ownerId: bigint): Promise<bigint[]> {
+  const leads = await prisma.lead.findMany({ where: { ownerId }, select: { id: true } });
+  return leads.map((l) => l.id);
+}
+
+export const LeadRepository = { findMany, findById, findIdsByOwner, create, update };
 export default LeadRepository;
