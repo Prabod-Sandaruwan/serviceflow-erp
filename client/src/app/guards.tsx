@@ -17,7 +17,8 @@ export function RequireAuth({ children }: RequireAuthProps) {
   }
 
   if (status === 'unauthenticated') {
-    return <Navigate to="/login" state={{ from: location }} replace />;
+    const from = location.pathname !== '/logout' ? location : undefined;
+    return <Navigate to="/login" state={from ? { from } : undefined} replace />;
   }
 
   if (user?.mustChangePassword && location.pathname !== '/profile/password') {

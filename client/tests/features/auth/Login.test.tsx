@@ -69,4 +69,21 @@ describe('Login Component', () => {
       expect(mockNavigate).toHaveBeenCalledWith('/profile/password', { replace: true });
     });
   });
+
+  it('overrides /logout from path and navigates strictly to / on successful login', async () => {
+    mockLogin.mockResolvedValueOnce({ id: '1', mustChangePassword: false });
+    render(
+      <MemoryRouter initialEntries={[{ pathname: '/login', state: { from: { pathname: '/logout' } } }]}>
+        <Login />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'admin@serviceflow.lk' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'password123' } });
+    fireEvent.click(screen.getByRole('button', { name: /Sign in/i }));
+
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true });
+    });
+  });
 });
