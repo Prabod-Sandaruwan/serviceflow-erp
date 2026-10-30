@@ -1,23 +1,12 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** CRM-012 Complete (Phase 6 - CRM and Client Management)  
-**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..012
+**Current Task:** CRM-013 Complete (Phase 6 - CRM and Client Management)  
+**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..013
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001..005: Planning, reconciliation, and workstation setup completed.
 
 ## Phase 1 - Foundation
-- [x] FOUND-001: Create the Git repository, ignore rules and line-ending policy
-- [x] FOUND-002: Create the root folder structure
-- [x] FOUND-003: Add root scripts and Node version pins
-- [x] FOUND-004: Initialize the server package with strict TypeScript
-- [x] FOUND-005: Create the Express app and server entry points
-- [x] FOUND-006: Validate environment variables with Zod
-- [x] FOUND-007: Initialize the React + TypeScript + Vite client
-- [x] FOUND-008: Add Tailwind CSS and base styling
-- [x] FOUND-009: Configure ESLint and Prettier for both apps
-- [x] FOUND-010: Add the health endpoint and its first test
-- [x] FOUND-011: Configure Vitest and Testing Library for the client
-- [x] FOUND-012: Add the first GitHub Actions workflow and a README stub
+- [x] FOUND-001..012: Repository, app skeletons, configs, health checks and CI pipeline setup.
 
 ## Phase 2 - Database Architecture & Schema
 - [x] DB-001: Create the MySQL databases and application user
@@ -96,3 +85,5 @@
 - [x] CRM-010: Write lead, follow-up and conversion tests
 - [x] CRM-011: Build the leads list, form and detail pages
 - [x] CRM-012: Build follow-up management and the conversion dialog
+- [x] CRM-013: Add CRM frontend component tests
+- [ ] CRM-014: Run full regression and tag v0.6.0

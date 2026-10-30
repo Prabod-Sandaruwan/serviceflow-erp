@@ -9,24 +9,23 @@ export function FollowUps({ leadId }: { leadId: string }) {
   const createMutation = useCreateFollowUp();
   const updateMutation = useUpdateFollowUp();
   const { addToast } = useToast();
-
   const [date, setDate] = useState('');
   const [notes, setNotes] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!date) return;
     try {
-      await createMutation.mutateAsync({
-        leadId,
-        scheduledAt: new Date(date).toISOString(),
-        notes: notes.trim() || undefined,
-      });
+      setError(null);
+      await createMutation.mutateAsync({ leadId, scheduledAt: new Date(date).toISOString(), notes: notes.trim() || undefined });
       setDate('');
       setNotes('');
       addToast('Follow-up scheduled', 'success');
     } catch (err: any) {
-      addToast(err?.message || 'Failed to schedule follow-up', 'error');
+      const msg = err?.details?.[0]?.issue || err?.message || 'Failed to schedule follow-up';
+      setError(msg);
+      addToast(msg, 'error');
     }
   };
 
@@ -46,9 +45,10 @@ export function FollowUps({ leadId }: { leadId: string }) {
       <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#0f172a', margin: '0 0 1rem' }}>Follow-ups & Activities</h3>
 
       <form onSubmit={handleCreate} style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap', alignItems: 'flex-end', background: '#f8fafc', padding: '1rem', borderRadius: '10px', border: '1px solid #f1f5f9' }}>
+        {error && <div role="alert" style={{ width: '100%', color: '#dc2626', fontSize: '0.8rem', fontWeight: 500 }}>{error}</div>}
         <div style={{ flex: '1 1 200px' }}>
-          <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>Schedule Date & Time</label>
-          <input type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required style={{ width: '100%', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.875rem' }} />
+          <label htmlFor="scheduledAt" style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: '#475569', marginBottom: '0.25rem' }}>Schedule Date & Time</label>
+          <input id="scheduledAt" type="datetime-local" value={date} onChange={(e) => setDate(e.target.value)} required style={{ width: '100%', padding: '0.45rem 0.65rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.875rem' }} />
         </div>
         <div style={{ flex: '2 1 280px' }}>
           <Input id="notes" placeholder="Call / meeting notes..." value={notes} onChange={(e) => setNotes(e.target.value)} />
@@ -71,9 +71,7 @@ export function FollowUps({ leadId }: { leadId: string }) {
                   <span style={{ fontSize: '0.875rem', fontWeight: 600, color: '#0f172a' }}>{new Date(f.scheduledAt).toLocaleString()}</span>
                   <StatusBadge status={f.status} />
                   {f.isOverdue && (
-                    <span style={{ padding: '0.2rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>
-                      Overdue
-                    </span>
+                    <span style={{ padding: '0.2rem 0.5rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 600, background: '#fef2f2', color: '#dc2626', border: '1px solid #fecaca' }}>Overdue</span>
                   )}
                 </div>
                 {f.notes && <div style={{ fontSize: '0.85rem', color: '#475569' }}>{f.notes}</div>}
