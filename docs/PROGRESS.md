@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** CRM-013 Complete (Phase 6 - CRM and Client Management)  
-**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..013
+**Current Task:** CRM-014 Complete (Phase 6 - CRM and Client Management)  
+**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..014
 ## Phase 0 - Pre-requisites and Planning
 - [x] PREP-001..005: Planning, reconciliation, and workstation setup completed.
 
@@ -86,4 +86,4 @@
 - [x] CRM-011: Build the leads list, form and detail pages
 - [x] CRM-012: Build follow-up management and the conversion dialog
 - [x] CRM-013: Add CRM frontend component tests
-- [ ] CRM-014: Run full regression and tag v0.6.0
+- [x] CRM-014: Verify CRM acceptance (AS-02) and extend the seed
