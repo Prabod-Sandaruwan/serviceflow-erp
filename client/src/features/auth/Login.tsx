@@ -32,8 +32,9 @@ export default function Login() {
       if (user?.mustChangePassword) {
         navigate('/profile/password', { replace: true });
       } else {
-        const from = (location.state as any)?.from?.pathname || '/';
-        navigate(from, { replace: true });
+        const from = (location.state as any)?.from?.pathname;
+        const target = !from || from === '/logout' ? '/' : from;
+        navigate(target, { replace: true });
       }
     } catch (err: unknown) {
       if (err instanceof ApiError) {

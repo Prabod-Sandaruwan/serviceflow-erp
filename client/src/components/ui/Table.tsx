@@ -22,18 +22,18 @@ export function Table<T extends Record<string, any>>({
   emptyText = 'No data available',
 }: TableProps<T>) {
   if (isLoading) {
-    return <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>Loading...</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b', background: '#fff', borderRadius: '8px' }}>Loading...</div>;
   }
   if (isError) {
-    return <div style={{ padding: '2rem', textAlign: 'center', color: '#dc2626' }}>Failed to load data.</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center', color: '#dc2626', background: '#fff', borderRadius: '8px' }}>Failed to load data.</div>;
   }
   if (!data || data.length === 0) {
-    return <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b' }}>{emptyText}</div>;
+    return <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b', background: '#fff', borderRadius: '8px' }}>{emptyText}</div>;
   }
 
   return (
-    <div style={{ overflowX: 'auto', width: '100%', border: '1px solid #e2e8f0', borderRadius: '6px' }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
+    <div style={{ overflowX: 'auto', width: '100%', border: '1px solid #e2e8f0', borderRadius: '8px', background: '#ffffff' }}>
+      <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem', color: '#0f172a' }}>
         <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
           <tr>
             {columns.map((col) => (
@@ -47,7 +47,7 @@ export function Table<T extends Record<string, any>>({
           {data.map((row, idx) => (
             <tr key={row.id || idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
               {columns.map((col) => (
-                <td key={String(col.key)} style={{ padding: '0.75rem 1rem', color: '#475569' }}>
+                <td key={String(col.key)} style={{ padding: '0.75rem 1rem', color: '#1e293b' }}>
                   {col.render ? col.render(row) : String(row[col.key as keyof T] ?? '')}
                 </td>
               ))}

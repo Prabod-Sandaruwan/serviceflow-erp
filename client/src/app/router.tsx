@@ -9,7 +9,11 @@ const Dashboard = lazy(() => import('../features/dashboard/Dashboard'));
 const Profile = lazy(() => import('../features/profile/Profile'));
 const ChangePassword = lazy(() => import('../features/profile/ChangePassword'));
 const ClientList = lazy(() => import('../features/clients/ClientList'));
+const ClientFormPage = lazy(() => import('../features/clients/ClientFormPage'));
+const ClientDetailPage = lazy(() => import('../features/clients/ClientDetailPage'));
 const LeadList = lazy(() => import('../features/leads/LeadList'));
+const LeadFormPage = lazy(() => import('../features/leads/LeadFormPage'));
+const LeadDetailPage = lazy(() => import('../features/leads/LeadDetailPage'));
 const FollowUpList = lazy(() => import('../features/followUps/FollowUpList'));
 const QuotationList = lazy(() => import('../features/quotations/QuotationList'));
 const ProjectList = lazy(() => import('../features/projects/ProjectList'));
@@ -53,7 +57,13 @@ export const router = createBrowserRouter([
       protectedChild('/profile', Profile),
       { path: 'profile/password', element: <RequireAuth>{withSuspense(ChangePassword)}</RequireAuth> },
       protectedChild('/clients', ClientList),
+      protectedChild('/clients/new', ClientFormPage),
+      protectedChild('/clients/:id', ClientDetailPage),
+      protectedChild('/clients/:id/edit', ClientFormPage),
       protectedChild('/leads', LeadList),
+      protectedChild('/leads/new', LeadFormPage),
+      protectedChild('/leads/:id', LeadDetailPage),
+      protectedChild('/leads/:id/edit', LeadFormPage),
       protectedChild('/follow-ups', FollowUpList),
       protectedChild('/quotations', QuotationList),
       protectedChild('/projects', ProjectList),

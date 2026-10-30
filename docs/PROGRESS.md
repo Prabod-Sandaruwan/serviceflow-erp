@@ -1,28 +1,12 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** UI-014 Complete (Phase 5 - Shared Frontend Foundation)  
-**Completed Tasks:** PREP-001, PREP-002, PREP-003, PREP-004, PREP-005, FOUND-001, FOUND-002, FOUND-003, FOUND-004, FOUND-005, FOUND-006, FOUND-007, FOUND-008, FOUND-009, FOUND-010, FOUND-011, FOUND-012, DB-001, DB-002, DB-003, DB-004, DB-005, DB-006, DB-007, DB-008, DB-009, DB-010, DB-011, DB-012, INFRA-001, INFRA-002, INFRA-003, INFRA-004, INFRA-005, INFRA-006, INFRA-007, INFRA-008, INFRA-009, INFRA-010, INFRA-011, INFRA-012, AUTH-001, AUTH-002, AUTH-003, AUTH-004, AUTH-005, AUTH-006, AUTH-007, AUTH-008, AUTH-009, AUTH-010, AUTH-011, AUTH-012
-
+**Current Task:** CRM-014 Complete (Phase 6 - CRM and Client Management)  
+**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..014
 ## Phase 0 - Pre-requisites and Planning
-- [x] PREP-001: Collect source PDFs
-- [x] PREP-002: Reconcile contradictions
-- [x] PREP-003: Confirm scope
-- [x] PREP-004: Create task tracker
-- [x] PREP-005: Prepare workstation
+- [x] PREP-001..005: Planning, reconciliation, and workstation setup completed.
 
 ## Phase 1 - Foundation
-- [x] FOUND-001: Create the Git repository, ignore rules and line-ending policy
-- [x] FOUND-002: Create the root folder structure
-- [x] FOUND-003: Add root scripts and Node version pins
-- [x] FOUND-004: Initialize the server package with strict TypeScript
-- [x] FOUND-005: Create the Express app and server entry points
-- [x] FOUND-006: Validate environment variables with Zod
-- [x] FOUND-007: Initialize the React + TypeScript + Vite client
-- [x] FOUND-008: Add Tailwind CSS and base styling
-- [x] FOUND-009: Configure ESLint and Prettier for both apps
-- [x] FOUND-010: Add the health endpoint and its first test
-- [x] FOUND-011: Configure Vitest and Testing Library for the client
-- [x] FOUND-012: Add the first GitHub Actions workflow and a README stub
+- [x] FOUND-001..012: Repository, app skeletons, configs, health checks and CI pipeline setup.
 
 ## Phase 2 - Database Architecture & Schema
 - [x] DB-001: Create the MySQL databases and application user
@@ -87,3 +71,19 @@
 - [x] UI-012: Build the users and employees management pages
 - [x] UI-013: Build the audit-log viewer
 - [x] UI-014: Check responsive layout and accessibility baseline; add auth UI tests
+
+## Phase 6 - CRM and Client Management
+- [x] CRM-001: Confirm the CRM requirements and API contracts
+- [x] CRM-002: Implement client schemas, repository and the list endpoint
+- [x] CRM-003: Implement client create, detail and update with Staff limits
+- [x] CRM-004: Write client API tests
+- [x] CRM-005: Build the client list page
+- [x] CRM-006: Build the client form and detail pages
+- [x] CRM-007: Implement lead schemas, rules and API
+- [x] CRM-008: Implement the follow-up API
+- [x] CRM-009: Implement lead conversion with duplicate protection
+- [x] CRM-010: Write lead, follow-up and conversion tests
+- [x] CRM-011: Build the leads list, form and detail pages
+- [x] CRM-012: Build follow-up management and the conversion dialog
+- [x] CRM-013: Add CRM frontend component tests
+- [x] CRM-014: Verify CRM acceptance (AS-02) and extend the seed

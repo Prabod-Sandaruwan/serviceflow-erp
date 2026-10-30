@@ -29,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     setOnUnauthenticated(() => {
-      queryClient.clear();
+      queryClient.setQueryData(['me'], null);
       clearCsrfToken();
     });
     return () => setOnUnauthenticated(null);

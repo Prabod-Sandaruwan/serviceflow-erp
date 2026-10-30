@@ -54,4 +54,5 @@ export async function requireAuth(
   }
 }
 
+export { requireRole } from './rbac';
 export default requireAuth;
