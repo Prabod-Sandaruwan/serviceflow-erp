@@ -49,7 +49,7 @@ async function request<T>(
 
   const body = res.status === 204 ? null : await res.json().catch(() => null);
 
-  if (res.status === 401 && onUnauth) {
+  if (res.status === 401 && onUnauth && !path.includes('/auth/me') && !path.includes('/auth/login')) {
     onUnauth();
   }
 

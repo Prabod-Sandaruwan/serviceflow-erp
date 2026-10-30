@@ -14,6 +14,7 @@ export function useMe() {
         throw e;
       }
     },
+    retry: false,
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -31,7 +32,7 @@ export function useLogout() {
   return useMutation({
     mutationFn: () => api.post('/auth/logout'),
     onSuccess: () => {
-      queryClient.clear();
+      queryClient.setQueryData(['me'], null);
       clearCsrfToken();
     },
   });
