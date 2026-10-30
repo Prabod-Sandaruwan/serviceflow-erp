@@ -8,6 +8,13 @@ export type StatusType =
   | 'COMPLETED'
   | 'PAID'
   | 'VOID'
+  | 'NEW'
+  | 'CONTACTED'
+  | 'QUALIFIED'
+  | 'PROPOSAL_SENT'
+  | 'CONVERTED'
+  | 'WON'
+  | 'LOST'
   | string;
 
 interface StatusConfig {
@@ -26,6 +33,13 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   COMPLETED: { label: 'Completed', bg: '#dcfce7', color: '#15803d' },
   PAID: { label: 'Paid', bg: '#d1fae5', color: '#065f46' },
   VOID: { label: 'Void', bg: '#fee2e2', color: '#991b1b' },
+  NEW: { label: 'New', bg: '#eff6ff', color: '#1d4ed8' },
+  CONTACTED: { label: 'Contacted', bg: '#e0f2fe', color: '#0369a1' },
+  QUALIFIED: { label: 'Qualified', bg: '#f5f3ff', color: '#6d28d9' },
+  PROPOSAL_SENT: { label: 'Proposal Sent', bg: '#fdf4ff', color: '#a21caf' },
+  CONVERTED: { label: 'Converted', bg: '#dcfce7', color: '#15803d' },
+  WON: { label: 'Won', bg: '#dcfce7', color: '#15803d' },
+  LOST: { label: 'Lost', bg: '#fee2e2', color: '#991b1b' },
 };
 
 export interface StatusBadgeProps {
