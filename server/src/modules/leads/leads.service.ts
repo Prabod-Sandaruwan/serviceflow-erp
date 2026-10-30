@@ -83,5 +83,8 @@ export async function updateLead(id: string | bigint, data: UpdateLeadInput, use
   return formatted;
 }
 
-export const LeadsService = { listLeads, getLead, createLead, updateLead };
+import { convertLead } from './leads.conversion';
+
+export { convertLead };
+export const LeadsService = { listLeads, getLead, createLead, updateLead, convertLead };
 export default LeadsService;

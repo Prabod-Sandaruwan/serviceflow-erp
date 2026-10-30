@@ -41,6 +41,11 @@ export const updateLeadSchema = z
     { message: 'lostReason is required when status is LOST', path: ['lostReason'] }
   );
 
+export const convertLeadSchema = z.object({
+  existingClientId: z.string().optional(),
+});
+
 export type LeadQuery = z.infer<typeof leadQuerySchema>;
 export type CreateLeadInput = z.infer<typeof createLeadSchema>;
 export type UpdateLeadInput = z.infer<typeof updateLeadSchema>;
+export type ConvertLeadInput = z.infer<typeof convertLeadSchema>;
