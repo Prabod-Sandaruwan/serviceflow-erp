@@ -20,9 +20,11 @@ export function AppShell() {
         .nav-link { display: flex; align-items: center; padding: 0.55rem 0.85rem; border-radius: 8px; color: #94a3b8; text-decoration: none; font-size: 0.85rem; border: 1px solid transparent; transition: all 0.15s ease; }
         .nav-link:hover { color: #f8fafc !important; background: rgba(255, 255, 255, 0.05) !important; }
         .nav-link.active { background: linear-gradient(135deg, rgba(79, 70, 229, 0.25) 0%, rgba(99, 102, 241, 0.12) 100%) !important; color: #a5b4fc !important; border: 1px solid rgba(99, 102, 241, 0.35) !important; font-weight: 600 !important; }
-        .hdr-btn { display: inline-flex; align-items: center; gap: 0.4rem; height: 32px; padding: 0 0.75rem; border-radius: 6px; font-size: 0.8125rem; font-weight: 500; text-decoration: none; transition: all 0.15s ease; cursor: pointer; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #cbd5e1; }
-        .hdr-btn:hover { background: rgba(255, 255, 255, 0.1) !important; border-color: rgba(255, 255, 255, 0.2) !important; color: #fff !important; }
-        .hdr-logout:hover { background: rgba(239, 68, 68, 0.15) !important; border-color: rgba(239, 68, 68, 0.35) !important; color: #fca5a5 !important; }
+        .hdr-btn { display: inline-flex; align-items: center; gap: 0.4rem; height: 32px; padding: 0 0.8rem; border-radius: 7px; font-size: 0.8125rem; font-weight: 500; text-decoration: none; transition: all 0.15s ease; cursor: pointer; }
+        .hdr-profile { background: #1e1b4b; border: 1px solid #3730a3; color: #c7d2fe; }
+        .hdr-profile:hover { background: #312e81 !important; border-color: #4f46e5 !important; color: #ffffff !important; }
+        .hdr-logout { background: #450a0a; border: 1px solid #7f1d1d; color: #fca5a5; }
+        .hdr-logout:hover { background: #7f1d1d !important; border-color: #991b1b !important; color: #ffffff !important; }
       `}</style>
 
       <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.65rem 1.5rem', background: '#0b0f19', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', boxShadow: '0 4px 16px rgba(0, 0, 0, 0.35)' }}>
@@ -52,8 +54,8 @@ export function AppShell() {
 
           <div style={{ width: '1px', height: '20px', background: 'rgba(255, 255, 255, 0.12)' }} />
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
-            <NavLink to="/profile" className="hdr-btn"><UserIcon size={14} /><span>Profile</span></NavLink>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+            <NavLink to="/profile" className="hdr-btn hdr-profile"><UserIcon size={14} /><span>Profile</span></NavLink>
             <button type="button" className="hdr-btn hdr-logout" onClick={handleLogout}><LogOut size={14} /><span>Logout</span></button>
           </div>
         </div>
