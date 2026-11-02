@@ -1,5 +1,6 @@
 import prisma from '../../config/prisma';
 import { Prisma } from '../../generated/prisma';
+import { Tx } from '../../shared/tx';
 
 export interface QuotationFilters {
   status?: string;
@@ -56,5 +57,19 @@ export async function findById(id: bigint) {
   });
 }
 
-export const QuotationsRepository = { findMany, findById };
+export async function replaceItems(tx: Tx, quotationId: bigint, items: any[], lines: any[]) {
+  await tx.quotationItem.deleteMany({ where: { quotationId } });
+  await tx.quotationItem.createMany({
+    data: items.map((it, idx) => ({
+      quotationId,
+      lineNo: idx + 1,
+      description: it.description,
+      quantity: lines[idx].quantity,
+      unitPrice: lines[idx].unitPrice,
+      lineAmount: lines[idx].lineAmount,
+    })),
+  });
+}
+
+export const QuotationsRepository = { findMany, findById, replaceItems };
 export default QuotationsRepository;

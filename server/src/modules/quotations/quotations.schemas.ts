@@ -33,6 +33,23 @@ export const createQuotationSchema = z
     }
   });
 
+export const updateQuotationSchema = z
+  .object({
+    title: z.string().trim().min(1).max(160).optional(),
+    validUntil: z.coerce.date().optional(),
+    items: z.array(quotationItemInputSchema).optional(),
+    tax: quotationTaxSchema.optional(),
+    notes: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.items !== undefined && data.items.length === 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Quotation must have at least one item', path: ['items'] });
+    }
+    if (data.validUntil && data.validUntil < getColomboToday()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'validUntil cannot be before today', path: ['validUntil'] });
+    }
+  });
+
 export const quotationStatusEnum = z.enum([
   'DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SENT', 'ACCEPTED', 'DECLINED',
 ]);
@@ -48,5 +65,6 @@ export const listQuotationsQuerySchema = z.object({
 });
 
 export type CreateQuotationInput = z.infer<typeof createQuotationSchema>;
+export type UpdateQuotationInput = z.infer<typeof updateQuotationSchema>;
 export type QuotationItemInput = z.infer<typeof quotationItemInputSchema>;
 export type ListQuotationsQuery = z.infer<typeof listQuotationsQuerySchema>;
