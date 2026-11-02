@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** QUOT-013 Complete (Phase 7 — Quotations)  
+**Current Task:** QUOT-014 Complete (Phase 7 — Quotations)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM)
 
 ## Completed Phases
@@ -26,6 +26,6 @@
 - [x] QUOT-011: Write quotation integration tests
 - [x] QUOT-012: Build the quotation list and approval queue pages
 - [x] QUOT-013: Build the quotation form with the item editor
-- [ ] QUOT-014: Build the quotation detail page and workflow actions
+- [x] QUOT-014: Build the quotation detail page and workflow actions
 - [ ] QUOT-015: Add quotation frontend tests
 - [ ] QUOT-016: Verify quotation acceptance (AS-03, AS-04, AS-05) and extend seed
