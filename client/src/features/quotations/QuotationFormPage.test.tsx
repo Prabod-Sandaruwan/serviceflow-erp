@@ -3,14 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import QuotationFormPage from './QuotationFormPage';
 import * as quotationHooks from './hooks';
+import * as clientHooks from '../clients/hooks';
 import { ApiError } from '../../lib/ApiError';
 import { ToastProvider } from '../../components/ui/Toast';
 
-vi.mock('./hooks', () => ({
-  useQuotation: vi.fn(),
-  useCreateQuotation: vi.fn(),
-  useUpdateQuotation: vi.fn(),
-}));
+vi.mock('../clients/hooks', () => ({ useClients: vi.fn() }));
+vi.mock('./hooks', () => ({ useQuotation: vi.fn(), useCreateQuotation: vi.fn(), useUpdateQuotation: vi.fn() }));
 
 describe('QuotationFormPage Component (QUOT-013)', () => {
   const mockCreate = vi.fn();
@@ -18,6 +16,7 @@ describe('QuotationFormPage Component (QUOT-013)', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(clientHooks.useClients).mockReturnValue({ isLoading: false, data: { data: [{ id: '10', displayName: 'Apex Holdings', clientType: 'BUSINESS' }] } } as any);
     vi.mocked(quotationHooks.useQuotation).mockReturnValue({ isLoading: false, data: undefined } as any);
     vi.mocked(quotationHooks.useCreateQuotation).mockReturnValue({ mutateAsync: mockCreate, isPending: false } as any);
     vi.mocked(quotationHooks.useUpdateQuotation).mockReturnValue({ mutateAsync: mockUpdate, isPending: false } as any);
@@ -48,7 +47,8 @@ describe('QuotationFormPage Component (QUOT-013)', () => {
 
   it('Test 2: Validation prevents submission if 0 items or quantity <= 0', async () => {
     renderComponent();
-    fireEvent.change(screen.getByPlaceholderText('Client ID'), { target: { value: '10' } });
+    fireEvent.change(screen.getByLabelText(/Select Client/i), { target: { value: '10' } });
+    expect(screen.getByPlaceholderText('Client ID')).toHaveValue('10');
     fireEvent.change(screen.getByPlaceholderText(/Website Revamp/i), { target: { value: 'Revamp' } });
     fireEvent.change(screen.getByLabelText(/Valid Until/i), { target: { value: '2026-12-01' } });
 
