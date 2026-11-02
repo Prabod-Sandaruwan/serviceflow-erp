@@ -5,6 +5,7 @@ import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PrismaClient } from '../src/generated/prisma';
 import { hashPassword } from '../src/modules/auth/password';
 import { getColomboToday } from '../src/lib/date';
+import { seedQuotations } from './seed.quotations';
 
 if (process.env.NODE_ENV === 'production') {
   console.error('Database seeding is not permitted in production.');
@@ -51,14 +52,19 @@ async function main() {
     clients.push(found || (await prisma.client.create({ data: c })));
   }
 
-  const staff = await prisma.user.findUniqueOrThrow({ where: { email: 'staff1@serviceflow.lk' } });
-  const admin = await prisma.user.findUniqueOrThrow({ where: { email: 'admin@serviceflow.lk' } });
+  const [admin, manager1, manager2, staff1, staff2] = await Promise.all([
+    prisma.user.findUniqueOrThrow({ where: { email: 'admin@serviceflow.lk' } }),
+    prisma.user.findUniqueOrThrow({ where: { email: 'manager1@serviceflow.lk' } }),
+    prisma.user.findUniqueOrThrow({ where: { email: 'manager2@serviceflow.lk' } }),
+    prisma.user.findUniqueOrThrow({ where: { email: 'staff1@serviceflow.lk' } }),
+    prisma.user.findUniqueOrThrow({ where: { email: 'staff2@serviceflow.lk' } }),
+  ]);
 
   const seedLeads = [
-    { ownerId: staff.id, status: 'NEW' as const, expected_value: 25000 },
-    { ownerId: staff.id, status: 'QUALIFIED' as const, expected_value: 75000 },
+    { ownerId: staff1.id, status: 'NEW' as const, expected_value: 25000 },
+    { ownerId: staff1.id, status: 'QUALIFIED' as const, expected_value: 75000 },
     { ownerId: admin.id, status: 'CONVERTED' as const, expected_value: 120000, convertedClientId: clients[0].id },
-    { ownerId: staff.id, status: 'LOST' as const, expected_value: 40000, lost_reason: 'Budget cancelled by client' },
+    { ownerId: staff1.id, status: 'LOST' as const, expected_value: 40000, lost_reason: 'Budget cancelled by client' },
   ];
 
   const colomboToday = getColomboToday();
@@ -67,18 +73,15 @@ async function main() {
     const lead = existing || (await prisma.lead.create({ data: l }));
     const hasFollowUp = await prisma.followUp.findFirst({ where: { leadId: lead.id } });
     if (!hasFollowUp) {
-      if (i === 0) {
-        await prisma.followUp.create({
-          data: { leadId: lead.id, follow_up_date: new Date(colomboToday.getTime() + 86400000 * 2), type: 'CALL', status: 'SCHEDULED', createdBy: staff.id },
-        });
-      } else if (i === 1) {
-        await prisma.followUp.create({
-          data: { leadId: lead.id, follow_up_date: new Date(colomboToday.getTime() - 86400000 * 2), type: 'MEETING', status: 'COMPLETED', createdBy: staff.id },
-        });
-      }
+      const fDate = new Date(colomboToday.getTime() + (i === 0 ? 86400000 * 2 : -86400000 * 2));
+      const fType = i === 0 ? 'CALL' : 'MEETING';
+      const fStat = i === 0 ? 'SCHEDULED' : 'COMPLETED';
+      if (i <= 1) await prisma.followUp.create({ data: { leadId: lead.id, follow_up_date: fDate, type: fType, status: fStat, createdBy: staff1.id } });
     }
   }
-  console.log('Database seeded with users, clients, leads, and follow-ups.');
+
+  await seedQuotations(prisma, clients, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
+  console.log('Database seeded with users, clients, leads, follow-ups, and quotations.');
 }
 
 main()

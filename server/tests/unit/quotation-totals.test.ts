@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { computeTotals } from '../../src/modules/quotations/totals';
 
-describe('Quotation Totals Calculator (QUOT-002)', () => {
+describe('Quotation Totals Calculator (QUOT-002 & QUOT-010)', () => {
   it('calculates totals matching SRS example: 1 @ 1.5M + 2 @ 125K', () => {
     const items = [
       { description: 'Server Setup', quantity: 1, unitPrice: 1500000 },
@@ -31,16 +31,13 @@ describe('Quotation Totals Calculator (QUOT-002)', () => {
     expect(result.total).toBe(21.52);
   });
 
-  it('handles zero tax amount and defaults correctly', () => {
-    const items = [{ quantity: 5, unitPrice: 40 }];
-    const explicitZero = computeTotals(items, 0);
-    expect(explicitZero.taxAmount).toBe(0);
-    expect(explicitZero.subtotal).toBe(200);
-    expect(explicitZero.total).toBe(200);
+  it('handles various taxAmount values: 0, 500.50, and large amounts', () => {
+    const items = [{ quantity: 3, unitPrice: 1000 }];
 
-    const defaultTax = computeTotals(items);
-    expect(defaultTax.taxAmount).toBe(0);
-    expect(defaultTax.total).toBe(200);
+    expect(computeTotals(items, 0)).toMatchObject({ subtotal: 3000, taxAmount: 0, total: 3000 });
+    expect(computeTotals(items, 500.5)).toMatchObject({ subtotal: 3000, taxAmount: 500.5, total: 3500.5 });
+    expect(computeTotals(items, 315000.75)).toMatchObject({ subtotal: 3000, taxAmount: 315000.75, total: 318000.75 });
+    expect(computeTotals(items)).toMatchObject({ subtotal: 3000, taxAmount: 0, total: 3000 });
   });
 
   it('throws validation errors for invalid quantities, prices, taxes, and empty items', () => {
