@@ -1,3 +1,5 @@
+import { isExpiredQuotation } from '../../shared/dates';
+
 export const formatQuotationItem = (item: any) => ({
   id: item.id?.toString(),
   quotationId: item.quotationId?.toString() ?? item.quotation_id?.toString(),
@@ -16,6 +18,10 @@ export const formatQuotation = (quotation: any) => ({
   revisionOfId: quotation.revisionOfId?.toString() ?? quotation.revision_of_id?.toString() ?? null,
   title: quotation.title,
   status: quotation.status,
+  isExpired: isExpiredQuotation({
+    status: quotation.status,
+    validUntil: quotation.validUntil ?? quotation.valid_until,
+  }),
   quotationDate: quotation.quotationDate ?? quotation.quotation_date,
   validUntil: quotation.validUntil ?? quotation.valid_until,
   subtotal: Number(quotation.subtotal),
@@ -25,8 +31,10 @@ export const formatQuotation = (quotation: any) => ({
   taxReference: quotation.taxReference ?? quotation.tax_reference ?? null,
   total: Number(quotation.total),
   createdBy: quotation.createdBy?.toString() ?? quotation.created_by?.toString(),
+  creatorName: quotation.creator?.employee?.full_name ?? quotation.creator?.email ?? null,
   submittedAt: quotation.submittedAt ?? quotation.submitted_at ?? null,
   approvedBy: quotation.approvedBy?.toString() ?? quotation.approved_by?.toString() ?? null,
+  approverName: quotation.approver?.employee?.full_name ?? quotation.approver?.email ?? null,
   decidedAt: quotation.decidedAt ?? quotation.decided_at ?? null,
   rejectionReason: quotation.rejectionReason ?? quotation.rejection_reason ?? null,
   sentAt: quotation.sentAt ?? quotation.sent_at ?? null,

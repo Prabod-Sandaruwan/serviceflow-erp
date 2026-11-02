@@ -1,6 +1,28 @@
 import { Request, Response, NextFunction } from 'express';
-import { createQuotationSchema } from './quotations.schemas';
-import { createQuotation } from './quotations.service';
+import { createQuotationSchema, listQuotationsQuerySchema } from './quotations.schemas';
+import { createQuotation, getQuotations, getQuotationById } from './quotations.service';
+import { paged } from '../../shared/http';
+
+export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const query = listQuotationsQuerySchema.parse(req.query);
+    const actor = req.auth || (req as any).user;
+    const result = await getQuotations(query, actor);
+    paged(res, result.data, result.meta);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const actor = req.auth || (req as any).user;
+    const result = await getQuotationById(req.params.id as string, actor);
+    res.json({ data: result });
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function create(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -17,5 +39,5 @@ export async function create(req: Request, res: Response, next: NextFunction): P
   }
 }
 
-export const QuotationsController = { create };
+export const QuotationsController = { list, getById, create };
 export default QuotationsController;

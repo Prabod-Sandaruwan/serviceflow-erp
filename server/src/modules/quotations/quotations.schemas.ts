@@ -26,22 +26,27 @@ export const createQuotationSchema = z
   })
   .superRefine((data, ctx) => {
     if (!data.items || data.items.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Quotation must have at least one item',
-        path: ['items'],
-      });
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Quotation must have at least one item', path: ['items'] });
     }
-    const today = getColomboToday();
-    if (data.validUntil && data.validUntil < today) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'validUntil cannot be before today',
-        path: ['validUntil'],
-      });
+    if (data.validUntil && data.validUntil < getColomboToday()) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'validUntil cannot be before today', path: ['validUntil'] });
     }
   });
 
+export const quotationStatusEnum = z.enum([
+  'DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SENT', 'ACCEPTED', 'DECLINED',
+]);
+
+export const listQuotationsQuerySchema = z.object({
+  status: quotationStatusEnum.optional(),
+  clientId: z.string().optional(),
+  createdBy: z.string().optional(),
+  pendingApproval: z.enum(['true', 'false']).transform((v) => v === 'true').or(z.boolean()).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  search: z.string().optional(),
+});
+
 export type CreateQuotationInput = z.infer<typeof createQuotationSchema>;
 export type QuotationItemInput = z.infer<typeof quotationItemInputSchema>;
-export type QuotationTaxInput = z.infer<typeof quotationTaxSchema>;
+export type ListQuotationsQuery = z.infer<typeof listQuotationsQuerySchema>;
