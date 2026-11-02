@@ -66,7 +66,7 @@ export function ActionBar({ quotation, refetch }: { quotation: Quotation; refetc
         <Button type="button" style={{ background: '#0d9488' }} onClick={() => run(() => sendM.mutateAsync(quotation.id), 'Quotation sent to client')}>Send to Client</Button>
       )}
       {quotation.status === 'SENT' && (
-        <Button type="button" style={{ background: '#7c3aed' }} onClick={() => setShowRespond(true)}>Record Response</Button>
+        <Button type="button" style={{ background: '#7c3aed' }} onClick={() => setShowRespond(true)}>Respond</Button>
       )}
       {(quotation.status === 'REJECTED' || quotation.status === 'DECLINED' || isExpired) && (
         <Button type="button" style={{ background: '#ea580c' }} onClick={() => run(() => reviseM.mutateAsync(quotation.id), 'Quotation revised')}>Revise</Button>

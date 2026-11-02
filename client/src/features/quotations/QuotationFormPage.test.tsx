@@ -23,24 +23,13 @@ describe('QuotationFormPage Component (QUOT-013)', () => {
   });
 
   const renderComponent = (path = '/quotations/new') =>
-    render(
-      <ToastProvider>
-        <MemoryRouter initialEntries={[path]}>
-          <Routes>
-            <Route path="/quotations/new" element={<QuotationFormPage />} />
-            <Route path="/quotations/:id/edit" element={<QuotationFormPage />} />
-          </Routes>
-        </MemoryRouter>
-      </ToastProvider>,
-    );
+    render(<ToastProvider><MemoryRouter initialEntries={[path]}><Routes><Route path="/quotations/new" element={<QuotationFormPage />} /><Route path="/quotations/:id/edit" element={<QuotationFormPage />} /></Routes></MemoryRouter></ToastProvider>);
 
   it('Test 1: Add and remove item rows successfully', async () => {
     renderComponent();
     expect(screen.getAllByTestId('item-row')).toHaveLength(1);
-
     fireEvent.click(screen.getByRole('button', { name: /\+ Add Item/i }));
     expect(screen.getAllByTestId('item-row')).toHaveLength(2);
-
     fireEvent.click(screen.getAllByRole('button', { name: /Remove/i })[1]);
     expect(screen.getAllByTestId('item-row')).toHaveLength(1);
   });
@@ -58,6 +47,12 @@ describe('QuotationFormPage Component (QUOT-013)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Create Quotation/i }));
     expect(await screen.findByText(/Quantity must be greater than 0/i)).toBeInTheDocument();
     expect(mockCreate).not.toHaveBeenCalled();
+
+    // Unit price < 0 check
+    fireEvent.change(screen.getByPlaceholderText('Qty'), { target: { value: '1' } });
+    fireEvent.change(screen.getByPlaceholderText('Unit Price'), { target: { value: '-5' } });
+    fireEvent.click(screen.getByRole('button', { name: /Create Quotation/i }));
+    expect(await screen.findByText(/Unit price cannot be negative/i)).toBeInTheDocument();
 
     // 0 items check
     fireEvent.click(screen.getByRole('button', { name: /Remove/i }));
