@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update } from './quotations.controller';
+import { list, getById, create, update, submit } from './quotations.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -11,6 +11,7 @@ route(router, 'get', '/', { roles, handler: [requireAuth, requireRole(roles), li
 route(router, 'post', '/', { roles, handler: [requireAuth, requireRole(roles), create] });
 route(router, 'get', '/:id', { roles, handler: [requireAuth, requireRole(roles), getById] });
 route(router, 'patch', '/:id', { roles, handler: [requireAuth, requireRole(roles), update] });
+route(router, 'post', '/:id/submit', { roles, handler: [requireAuth, requireRole(roles), submit] });
 
 registry.registerPath({
   method: 'get',
@@ -38,6 +39,13 @@ registry.registerPath({
   path: '/api/v1/quotations/{id}',
   summary: 'Update a DRAFT quotation',
   responses: { 200: { description: 'Quotation updated' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' } },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/quotations/{id}/submit',
+  summary: 'Submit a quotation for approval',
+  responses: { 200: { description: 'Quotation submitted' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' }, 422: { description: 'Validation error' } },
 });
 
 export const quotationRoutes = router;

@@ -7,7 +7,9 @@ import { computeTotals } from './totals';
 import { CreateQuotationInput, ListQuotationsQuery, UpdateQuotationInput } from './quotations.schemas';
 import { formatQuotation } from './quotations.formatter';
 import { findMany, findById, replaceItems } from './quotations.repository';
+import { submitQuotation } from './quotations.workflow';
 
+export { submitQuotation };
 export interface QuotationServiceContext { ip?: string; requestId?: string; }
 type Actor = { userId?: bigint | string; role?: string };
 
@@ -91,5 +93,5 @@ export async function updateQuotation(id: string, data: UpdateQuotationInput, ac
   });
 }
 
-export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation };
+export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation, submitQuotation };
 export default QuotationsService;

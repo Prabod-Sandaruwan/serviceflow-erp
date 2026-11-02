@@ -74,3 +74,20 @@ export const createClient = async (overrides: any = {}) => {
     },
   });
 };
+
+export const createQuotation = async (overrides: any = {}) => {
+  assertTestDb();
+  const uid = `${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const now = new Date();
+  return prisma.quotation.create({
+    data: {
+      quotationNumber: overrides.quotationNumber || `QT-${uid}`,
+      title: overrides.title || 'Quotation', status: overrides.status || 'DRAFT',
+      quotationDate: overrides.quotationDate || now,
+      validUntil: overrides.validUntil || new Date(now.getTime() + 86400000),
+      subtotal: overrides.subtotal ?? 100, taxAmount: overrides.taxAmount ?? 0,
+      total: overrides.total ?? 100, createdBy: overrides.createdBy || 1n,
+      clientId: overrides.clientId || 1n, ...overrides,
+    },
+  });
+};
