@@ -7,9 +7,12 @@ import { computeTotals } from './totals';
 import { CreateQuotationInput, ListQuotationsQuery, UpdateQuotationInput } from './quotations.schemas';
 import { formatQuotation } from './quotations.formatter';
 import { findMany, findById, replaceItems } from './quotations.repository';
+import { isExpiredQuotation } from '../../shared/dates';
 import { submitQuotation } from './quotations.workflow';
 import { approveQuotation, rejectQuotation } from './quotations.approval';
-export { submitQuotation, approveQuotation, rejectQuotation };
+import { reviseQuotation } from './quotations.revise';
+import { sendQuotation, respondQuotation } from './quotations.lifecycle';
+export { isExpiredQuotation, submitQuotation, approveQuotation, rejectQuotation, reviseQuotation, sendQuotation, respondQuotation };
 export interface QuotationServiceContext { ip?: string; requestId?: string; }
 type Actor = { userId?: bigint | string; role?: string };
 
@@ -22,12 +25,11 @@ export async function createQuotation(data: CreateQuotationInput, actor?: Actor,
 
   const totals = computeTotals(data.items, data.tax?.amount ?? 0);
   const creatorId = actor?.userId ? BigInt(actor.userId) : BigInt(1);
-
   return runInTransaction(async (tx) => {
     const q = await tx.quotation.create({
       data: {
-        quotationNumber: `TMP-${Date.now()}-${Math.floor(Math.random() * 100)}`,
-        clientId, leadId: data.leadId ? BigInt(data.leadId) : null, title: data.title, status: 'DRAFT',
+        quotationNumber: `TMP-${Date.now()}-${Math.floor(Math.random() * 100)}`, clientId,
+        leadId: data.leadId ? BigInt(data.leadId) : null, title: data.title, status: 'DRAFT',
         quotationDate: getColomboToday(), validUntil: data.validUntil, subtotal: totals.subtotal,
         taxType: data.tax?.type ?? 'NONE', taxRate: data.tax?.rate ?? 0, taxAmount: totals.taxAmount,
         taxReference: data.tax?.reference ?? null, total: totals.total, notes: data.notes ?? null, createdBy: creatorId,
@@ -84,8 +86,7 @@ export async function updateQuotation(id: string, data: UpdateQuotationInput, ac
         notes: data.notes !== undefined ? data.notes : existing.notes, subtotal: totals.subtotal,
         taxType: data.tax?.type ?? existing.taxType, taxRate: data.tax?.rate ?? existing.taxRate,
         taxAmount: totals.taxAmount, taxReference: data.tax?.reference ?? existing.taxReference, total: totals.total,
-      },
-      include: { items: true },
+      }, include: { items: true },
     });
     const formatted = formatQuotation(updated);
     await AuditService.record(tx, { actor, action: 'QUOTATION_UPDATED', entityType: 'QUOTATION', entityId: rawId, before: formatQuotation(existing), after: formatted, ip: ctx?.ip, requestId: ctx?.requestId });
@@ -93,5 +94,5 @@ export async function updateQuotation(id: string, data: UpdateQuotationInput, ac
   });
 }
 
-export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation, submitQuotation, approveQuotation, rejectQuotation };
+export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation, submitQuotation, approveQuotation, rejectQuotation, reviseQuotation, sendQuotation, respondQuotation };
 export default QuotationsService;

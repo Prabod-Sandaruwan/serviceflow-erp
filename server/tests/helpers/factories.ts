@@ -18,6 +18,7 @@ export const truncateAll = async (): Promise<void> => {
   await prisma.milestone.deleteMany();
   await prisma.project.deleteMany();
   await prisma.quotationItem.deleteMany();
+  await prisma.quotation.updateMany({ data: { revisionOfId: null } });
   await prisma.quotation.deleteMany();
   await prisma.followUp.deleteMany();
   await prisma.lead.deleteMany();

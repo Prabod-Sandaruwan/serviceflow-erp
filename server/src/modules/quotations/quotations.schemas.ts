@@ -54,6 +54,12 @@ export const rejectQuotationSchema = z.object({
   reason: z.string().trim().min(5, 'Rejection reason must be at least 5 characters').max(500),
 });
 
+export const respondQuotationSchema = z.object({
+  outcome: z.enum(['ACCEPTED', 'DECLINED']),
+  date: z.string().date(),
+  note: z.string().trim().max(500).optional(),
+});
+
 export const quotationStatusEnum = z.enum([
   'DRAFT', 'PENDING_APPROVAL', 'APPROVED', 'REJECTED', 'SENT', 'ACCEPTED', 'DECLINED',
 ]);
@@ -71,5 +77,6 @@ export const listQuotationsQuerySchema = z.object({
 export type CreateQuotationInput = z.infer<typeof createQuotationSchema>;
 export type UpdateQuotationInput = z.infer<typeof updateQuotationSchema>;
 export type RejectQuotationInput = z.infer<typeof rejectQuotationSchema>;
+export type RespondQuotationInput = z.infer<typeof respondQuotationSchema>;
 export type QuotationItemInput = z.infer<typeof quotationItemInputSchema>;
 export type ListQuotationsQuery = z.infer<typeof listQuotationsQuerySchema>;

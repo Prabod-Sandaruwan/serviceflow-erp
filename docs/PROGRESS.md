@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** QUOT-007 Complete (Phase 7 — Quotations)  
+**Current Task:** QUOT-008 Complete (Phase 7 — Quotations)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM)
 
 ## Completed Phases
@@ -20,7 +20,7 @@
 - [x] QUOT-005: Implement editing of DRAFT quotations
 - [x] QUOT-006: Implement submit for approval
 - [x] QUOT-007: Implement approval, rejection and the self-approval rule
-- [ ] QUOT-008: Implement revise, send, client response and expiry
+- [x] QUOT-008: Implement revise, send, client response and expiry
 - [ ] QUOT-009: Implement the quotation PDF
 - [ ] QUOT-010: Write quotation unit tests
 - [ ] QUOT-011: Write quotation integration tests

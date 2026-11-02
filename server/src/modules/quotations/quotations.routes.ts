@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update, submit, approve, reject } from './quotations.controller';
+import { list, getById, create, update, submit, approve, reject, revise, send, respond } from './quotations.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -15,35 +15,25 @@ route(router, 'patch', '/:id', { roles: allRoles, handler: [requireAuth, require
 route(router, 'post', '/:id/submit', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), submit] });
 route(router, 'post', '/:id/approve', { roles: approverRoles, handler: [requireAuth, requireRole(approverRoles), approve] });
 route(router, 'post', '/:id/reject', { roles: approverRoles, handler: [requireAuth, requireRole(approverRoles), reject] });
+route(router, 'post', '/:id/revise', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), revise] });
+route(router, 'post', '/:id/send', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), send] });
+route(router, 'post', '/:id/respond', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), respond] });
 
-registry.registerPath({
-  method: 'get', path: '/api/v1/quotations', summary: 'List quotations with filtering and pagination',
-  responses: { 200: { description: 'Paginated list' }, 401: { description: 'Unauthenticated' } },
+const reg = (m: 'get' | 'post' | 'patch', p: string, s: string) => registry.registerPath({
+  method: m, path: `/api/v1/quotations${p}`, summary: s,
+  responses: { 200: { description: 'Success' }, 201: { description: 'Created' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' }, 422: { description: 'Validation error' } },
 });
-registry.registerPath({
-  method: 'post', path: '/api/v1/quotations', summary: 'Create a quotation',
-  responses: { 201: { description: 'Created' }, 401: { description: 'Unauthenticated' }, 422: { description: 'Validation error' } },
-});
-registry.registerPath({
-  method: 'get', path: '/api/v1/quotations/{id}', summary: 'Get quotation details by ID',
-  responses: { 200: { description: 'Quotation' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' } },
-});
-registry.registerPath({
-  method: 'patch', path: '/api/v1/quotations/{id}', summary: 'Update a DRAFT quotation',
-  responses: { 200: { description: 'Updated' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' } },
-});
-registry.registerPath({
-  method: 'post', path: '/api/v1/quotations/{id}/submit', summary: 'Submit a quotation for approval',
-  responses: { 200: { description: 'Submitted' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' }, 422: { description: 'Validation error' } },
-});
-registry.registerPath({
-  method: 'post', path: '/api/v1/quotations/{id}/approve', summary: 'Approve a quotation',
-  responses: { 200: { description: 'Approved' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' } },
-});
-registry.registerPath({
-  method: 'post', path: '/api/v1/quotations/{id}/reject', summary: 'Reject a quotation with reason',
-  responses: { 200: { description: 'Rejected' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' }, 409: { description: 'Conflict' }, 422: { description: 'Validation error' } },
-});
+
+reg('get', '', 'List quotations with filtering and pagination');
+reg('post', '', 'Create a quotation');
+reg('get', '/{id}', 'Get quotation details by ID');
+reg('patch', '/{id}', 'Update a DRAFT quotation');
+reg('post', '/{id}/submit', 'Submit a quotation for approval');
+reg('post', '/{id}/approve', 'Approve a quotation');
+reg('post', '/{id}/reject', 'Reject a quotation with reason');
+reg('post', '/{id}/revise', 'Revise a rejected, declined, or expired quotation');
+reg('post', '/{id}/send', 'Send an approved quotation to client');
+reg('post', '/{id}/respond', 'Record client acceptance or decline');
 
 export const quotationRoutes = router;
 export default router;
