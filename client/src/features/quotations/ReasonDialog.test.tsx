@@ -37,3 +37,4 @@ describe('ReasonDialog Component (QUOT-015)', () => {
     expect(onClose).toHaveBeenCalled();
   });
 });
+

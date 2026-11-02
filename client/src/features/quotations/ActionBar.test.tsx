@@ -78,3 +78,4 @@ describe('ActionBar Component (QUOT-015)', () => {
     await waitFor(() => expect(refetch).toHaveBeenCalled());
   });
 });
+
