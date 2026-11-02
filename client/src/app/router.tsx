@@ -15,7 +15,9 @@ const LeadList = lazy(() => import('../features/leads/LeadList'));
 const LeadFormPage = lazy(() => import('../features/leads/LeadFormPage'));
 const LeadDetailPage = lazy(() => import('../features/leads/LeadDetailPage'));
 const FollowUpList = lazy(() => import('../features/followUps/FollowUpList'));
-const QuotationList = lazy(() => import('../features/quotations/QuotationList'));
+const QuotationsPage = lazy(() => import('../features/quotations/QuotationsPage'));
+const QuotationFormPage = lazy(() => import('../features/quotations/QuotationFormPage'));
+const QuotationDetailPage = lazy(() => import('../features/quotations/QuotationDetailPage'));
 const ProjectList = lazy(() => import('../features/projects/ProjectList'));
 const TaskList = lazy(() => import('../features/tasks/TaskList'));
 const InvoiceList = lazy(() => import('../features/invoices/InvoiceList'));
@@ -65,7 +67,10 @@ export const router = createBrowserRouter([
       protectedChild('/leads/:id', LeadDetailPage),
       protectedChild('/leads/:id/edit', LeadFormPage),
       protectedChild('/follow-ups', FollowUpList),
-      protectedChild('/quotations', QuotationList),
+      protectedChild('/quotations', QuotationsPage),
+      protectedChild('/quotations/new', QuotationFormPage),
+      protectedChild('/quotations/:id', QuotationDetailPage),
+      protectedChild('/quotations/:id/edit', QuotationFormPage),
       protectedChild('/projects', ProjectList),
       protectedChild('/tasks', TaskList),
       protectedChild('/invoices', InvoiceList),

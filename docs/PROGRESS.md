@@ -1,89 +1,32 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** CRM-014 Complete (Phase 6 - CRM and Client Management)  
-**Completed Tasks:** PREP-001..005, FOUND-001..012, DB-001..012, INFRA-001..012, AUTH-001..018, UI-001..014, CRM-001..014
-## Phase 0 - Pre-requisites and Planning
-- [x] PREP-001..005: Planning, reconciliation, and workstation setup completed.
+**Current Task:** QUOT-016 Complete (Phase 7 — Quotations Complete!)  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
 
-## Phase 1 - Foundation
-- [x] FOUND-001..012: Repository, app skeletons, configs, health checks and CI pipeline setup.
+## Completed Phases
+- [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
+- [x] Phase 1 - Foundation (FOUND-001..012)
+- [x] Phase 2 - Database Architecture & Schema (DB-001..012)
+- [x] Phase 3 - Shared Backend Infrastructure (INFRA-001..012)
+- [x] Phase 4 - Authentication & Authorization (AUTH-001..018)
+- [x] Phase 5 - Shared Frontend Foundation (UI-001..014)
+- [x] Phase 6 - CRM and Client Management (CRM-001..014)
+- [x] Phase 7 - Quotations (QUOT-001..016)
 
-## Phase 2 - Database Architecture & Schema
-- [x] DB-001: Create the MySQL databases and application user
-- [x] DB-002: Install Prisma and verify its MySQL setup
-- [x] DB-003: Establish database connections and schema conventions
-- [x] DB-004: Model identity tables: employees and users
-- [x] DB-005: Model CRM tables: clients, leads, follow_ups
-- [x] DB-006: Model quotations and quotation items
-- [x] DB-007: Model projects, milestones and tasks
-- [x] DB-008: Model finance tables: invoices, items, payments, expenses
-- [x] DB-009: Model audit logs, create the first migration and add SQL constraints
-- [x] DB-010: Apply the migration and verify constraints in MySQL
-- [x] DB-011: Configure the isolated test database
-- [x] DB-012: Create the seed skeleton and the reset script (placeholder Argon2id hash until AUTH-002)
-
-## Phase 3 - Shared Backend Infrastructure
-- [x] INFRA-001: Create the Prisma client singleton and transaction helper
-- [x] INFRA-002: Implement AppError classes and the central error middleware
-- [x] INFRA-003: Add request IDs and structured logging
-- [x] INFRA-004: Create the Zod validation middleware and conventions
-- [x] INFRA-005: Create response, pagination and sorting helpers
-- [x] INFRA-006: Implement the decimal-safe Money module
-- [x] INFRA-007: Implement the state-machine helper
-- [x] INFRA-008: Add company-timezone date helpers and derived statuses
-- [x] INFRA-009: Configure security headers and CORS
-- [x] INFRA-010: Implement the transactional audit service
-- [x] INFRA-011: Build test utilities: agent, login helper and factories
-- [x] INFRA-012: Create the OpenAPI registry and Swagger UI skeleton
-
-## Phase 4 - Authentication & Authorization
-- [x] AUTH-001: Confirm the authentication contracts and rules
-- [x] AUTH-002: Implement Argon2id hashing and the password policy
-- [x] AUTH-003: Configure MySQL-backed sessions and cookie settings
-- [x] AUTH-004: Implement CSRF protection and GET /auth/csrf
-- [x] AUTH-005: Implement the login schema and login service
-- [x] AUTH-006: Implement login, logout and current-user routes
-- [x] AUTH-007: Add login rate limiting
-- [x] AUTH-008: Implement requireAuth, absolute expiry and active-user check
-- [x] AUTH-009: Implement role middleware, policies and the route registry
-- [x] AUTH-010: Implement the first-login guard and change-password endpoint
-- [x] AUTH-011: Add the session cleanup job and per-user session purge
-- [x] AUTH-012: Implement the users API: list and create
-- [x] AUTH-013: Implement user updates, role changes, deactivation and password reset
-- [x] AUTH-014: Implement the employees API
-- [x] AUTH-015: Implement the audit-log API
-- [x] AUTH-016: Write auth unit and integration tests
-- [x] AUTH-017: Create the authorization matrix test
-- [x] AUTH-018: Extend the seed with a second Manager and demo employees
-
-## Phase 5 - Shared Frontend Foundation
-- [x] UI-001: Set up the React app entry and providers
-- [x] UI-002: Configure React Router and the route table
-- [x] UI-003: Build the API client with CSRF handling and ApiError
-- [x] UI-004: Implement the authentication state and hooks
-- [x] UI-005: Build the application shell with a role-aware sidebar
-- [x] UI-006: Create the reusable UI components
-- [x] UI-007: Create loading, empty and error state components
-- [x] UI-008: Establish the form pattern with React Hook Form and Zod
-- [x] UI-009: Build the login page
-- [x] UI-010: Implement route guards and the unauthorised and not-found pages
-- [x] UI-011: Build the profile page and first-login password change
-- [x] UI-012: Build the users and employees management pages
-- [x] UI-013: Build the audit-log viewer
-- [x] UI-014: Check responsive layout and accessibility baseline; add auth UI tests
-
-## Phase 6 - CRM and Client Management
-- [x] CRM-001: Confirm the CRM requirements and API contracts
-- [x] CRM-002: Implement client schemas, repository and the list endpoint
-- [x] CRM-003: Implement client create, detail and update with Staff limits
-- [x] CRM-004: Write client API tests
-- [x] CRM-005: Build the client list page
-- [x] CRM-006: Build the client form and detail pages
-- [x] CRM-007: Implement lead schemas, rules and API
-- [x] CRM-008: Implement the follow-up API
-- [x] CRM-009: Implement lead conversion with duplicate protection
-- [x] CRM-010: Write lead, follow-up and conversion tests
-- [x] CRM-011: Build the leads list, form and detail pages
-- [x] CRM-012: Build follow-up management and the conversion dialog
-- [x] CRM-013: Add CRM frontend component tests
-- [x] CRM-014: Verify CRM acceptance (AS-02) and extend the seed
+## Phase 7 — Quotations
+- [x] QUOT-001: Confirm quotation contracts and transitions
+- [x] QUOT-002: Implement the quotation totals calculator
+- [x] QUOT-003: Create the quotation creation endpoint with numbering
+- [x] QUOT-004: Implement quotation list and detail endpoints
+- [x] QUOT-005: Implement editing of DRAFT quotations
+- [x] QUOT-006: Implement submit for approval
+- [x] QUOT-007: Implement approval, rejection and the self-approval rule
+- [x] QUOT-008: Implement revise, send, client response and expiry
+- [x] QUOT-009: Implement the quotation PDF
+- [x] QUOT-010: Write quotation unit tests
+- [x] QUOT-011: Write quotation integration tests
+- [x] QUOT-012: Build the quotation list and approval queue pages
+- [x] QUOT-013: Build the quotation form with the item editor
+- [x] QUOT-014: Build the quotation detail page and workflow actions
+- [x] QUOT-015: Add quotation frontend tests
+- [x] QUOT-016: Verify quotation acceptance (AS-03, AS-04, AS-05) and extend seed

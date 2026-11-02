@@ -40,6 +40,12 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   CONVERTED: { label: 'Converted', bg: '#dcfce7', color: '#15803d' },
   WON: { label: 'Won', bg: '#dcfce7', color: '#15803d' },
   LOST: { label: 'Lost', bg: '#fee2e2', color: '#991b1b' },
+  PENDING_APPROVAL: { label: 'Pending Approval', bg: '#ffedd5', color: '#9a3412' },
+  REJECTED: { label: 'Rejected', bg: '#fee2e2', color: '#991b1b' },
+  SENT: { label: 'Sent', bg: '#e0f2fe', color: '#0369a1' },
+  ACCEPTED: { label: 'Accepted', bg: '#dcfce7', color: '#15803d' },
+  DECLINED: { label: 'Declined', bg: '#fee2e2', color: '#991b1b' },
+  EXPIRED: { label: 'Expired', bg: '#f1f5f9', color: '#475569' },
 };
 
 export interface StatusBadgeProps {
