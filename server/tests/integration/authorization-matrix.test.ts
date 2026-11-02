@@ -29,20 +29,17 @@ beforeAll(async () => {
 });
 
 describe('Authorization Matrix Sanity Checks', () => {
-  it('includes client routes in registered matrix', () => {
+  it('includes client, lead, follow-up, and quotation routes in registered matrix', () => {
     const paths = apiRoutes.map((r) => `${r.method.toUpperCase()} ${r.path}`);
-    expect(paths).toContain('GET /api/v1/clients');
-    expect(paths).toContain('POST /api/v1/clients');
-    expect(paths).toContain('GET /api/v1/clients/:id');
-    expect(paths).toContain('PATCH /api/v1/clients/:id');
-    expect(paths).toContain('GET /api/v1/leads');
-    expect(paths).toContain('POST /api/v1/leads');
-    expect(paths).toContain('GET /api/v1/leads/:id');
-    expect(paths).toContain('PATCH /api/v1/leads/:id');
-    expect(paths).toContain('POST /api/v1/leads/:id/convert');
-    expect(paths).toContain('GET /api/v1/follow-ups');
-    expect(paths).toContain('POST /api/v1/follow-ups');
-    expect(paths).toContain('PATCH /api/v1/follow-ups/:id');
+    const expected = [
+      'GET /api/v1/clients', 'POST /api/v1/clients', 'GET /api/v1/clients/:id', 'PATCH /api/v1/clients/:id',
+      'GET /api/v1/leads', 'POST /api/v1/leads', 'GET /api/v1/leads/:id', 'PATCH /api/v1/leads/:id',
+      'POST /api/v1/leads/:id/convert', 'GET /api/v1/follow-ups', 'POST /api/v1/follow-ups', 'PATCH /api/v1/follow-ups/:id',
+      'GET /api/v1/quotations', 'POST /api/v1/quotations', 'GET /api/v1/quotations/:id', 'GET /api/v1/quotations/:id/pdf',
+      'PATCH /api/v1/quotations/:id', 'POST /api/v1/quotations/:id/submit', 'POST /api/v1/quotations/:id/approve',
+      'POST /api/v1/quotations/:id/reject', 'POST /api/v1/quotations/:id/send', 'POST /api/v1/quotations/:id/respond',
+    ];
+    for (const p of expected) expect(paths).toContain(p);
   });
 });
 
