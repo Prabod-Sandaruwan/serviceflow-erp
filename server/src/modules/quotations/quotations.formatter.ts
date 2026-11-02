@@ -14,6 +14,7 @@ export const formatQuotation = (quotation: any) => ({
   id: quotation.id.toString(),
   quotationNumber: quotation.quotationNumber ?? quotation.quotation_number,
   clientId: quotation.clientId?.toString() ?? quotation.client_id?.toString(),
+  clientName: quotation.client?.display_name ?? null,
   leadId: quotation.leadId?.toString() ?? quotation.lead_id?.toString() ?? null,
   revisionOfId: quotation.revisionOfId?.toString() ?? quotation.revision_of_id?.toString() ?? null,
   title: quotation.title,

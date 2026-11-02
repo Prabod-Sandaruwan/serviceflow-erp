@@ -53,6 +53,7 @@ export async function findById(id: bigint) {
       items: { orderBy: { lineNo: 'asc' } },
       creator: userInclude,
       approver: userInclude,
+      client: { select: { id: true, display_name: true } },
     },
   });
 }

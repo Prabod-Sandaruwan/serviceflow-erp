@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update, submit, approve, reject, revise, send, respond } from './quotations.controller';
+import { list, getById, create, update, submit, approve, reject, revise, send, respond, getPdf } from './quotations.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -11,6 +11,7 @@ const approverRoles = ['ADMIN', 'MANAGER'];
 route(router, 'get', '/', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), list] });
 route(router, 'post', '/', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), create] });
 route(router, 'get', '/:id', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), getById] });
+route(router, 'get', '/:id/pdf', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), getPdf] });
 route(router, 'patch', '/:id', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), update] });
 route(router, 'post', '/:id/submit', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), submit] });
 route(router, 'post', '/:id/approve', { roles: approverRoles, handler: [requireAuth, requireRole(approverRoles), approve] });
@@ -27,6 +28,7 @@ const reg = (m: 'get' | 'post' | 'patch', p: string, s: string) => registry.regi
 reg('get', '', 'List quotations with filtering and pagination');
 reg('post', '', 'Create a quotation');
 reg('get', '/{id}', 'Get quotation details by ID');
+reg('get', '/{id}/pdf', 'Download quotation PDF');
 reg('patch', '/{id}', 'Update a DRAFT quotation');
 reg('post', '/{id}/submit', 'Submit a quotation for approval');
 reg('post', '/{id}/approve', 'Approve a quotation');
