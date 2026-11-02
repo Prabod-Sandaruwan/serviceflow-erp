@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** QUOT-002 Complete (Phase 7 — Quotations)  
+**Current Task:** QUOT-003 Complete (Phase 7 — Quotations)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM)
 
 ## Completed Phases
@@ -15,7 +15,7 @@
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
 - [x] QUOT-002: Implement the quotation totals calculator
-- [ ] QUOT-003: Create the quotation creation endpoint with numbering
+- [x] QUOT-003: Create the quotation creation endpoint with numbering
 - [ ] QUOT-004: Implement quotation list and detail endpoints
 - [ ] QUOT-005: Implement editing of DRAFT quotations
 - [ ] QUOT-006: Implement submit for approval

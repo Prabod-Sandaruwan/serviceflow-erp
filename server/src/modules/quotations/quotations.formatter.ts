@@ -1,0 +1,41 @@
+export const formatQuotationItem = (item: any) => ({
+  id: item.id?.toString(),
+  quotationId: item.quotationId?.toString() ?? item.quotation_id?.toString(),
+  lineNo: item.lineNo ?? item.line_no,
+  description: item.description,
+  quantity: Number(item.quantity),
+  unitPrice: Number(item.unitPrice ?? item.unit_price),
+  lineAmount: Number(item.lineAmount ?? item.line_amount),
+});
+
+export const formatQuotation = (quotation: any) => ({
+  id: quotation.id.toString(),
+  quotationNumber: quotation.quotationNumber ?? quotation.quotation_number,
+  clientId: quotation.clientId?.toString() ?? quotation.client_id?.toString(),
+  leadId: quotation.leadId?.toString() ?? quotation.lead_id?.toString() ?? null,
+  revisionOfId: quotation.revisionOfId?.toString() ?? quotation.revision_of_id?.toString() ?? null,
+  title: quotation.title,
+  status: quotation.status,
+  quotationDate: quotation.quotationDate ?? quotation.quotation_date,
+  validUntil: quotation.validUntil ?? quotation.valid_until,
+  subtotal: Number(quotation.subtotal),
+  taxType: quotation.taxType ?? quotation.tax_type ?? null,
+  taxRate: quotation.taxRate != null ? Number(quotation.taxRate) : null,
+  taxAmount: Number(quotation.taxAmount ?? quotation.tax_amount ?? 0),
+  taxReference: quotation.taxReference ?? quotation.tax_reference ?? null,
+  total: Number(quotation.total),
+  createdBy: quotation.createdBy?.toString() ?? quotation.created_by?.toString(),
+  submittedAt: quotation.submittedAt ?? quotation.submitted_at ?? null,
+  approvedBy: quotation.approvedBy?.toString() ?? quotation.approved_by?.toString() ?? null,
+  decidedAt: quotation.decidedAt ?? quotation.decided_at ?? null,
+  rejectionReason: quotation.rejectionReason ?? quotation.rejection_reason ?? null,
+  sentAt: quotation.sentAt ?? quotation.sent_at ?? null,
+  respondedAt: quotation.respondedAt ?? quotation.responded_at ?? null,
+  responseNote: quotation.responseNote ?? quotation.response_note ?? null,
+  notes: quotation.notes ?? null,
+  createdAt: quotation.createdAt ?? quotation.created_at,
+  updatedAt: quotation.updatedAt ?? quotation.updated_at,
+  items: Array.isArray(quotation.items) ? quotation.items.map(formatQuotationItem) : undefined,
+});
+
+export default formatQuotation;
