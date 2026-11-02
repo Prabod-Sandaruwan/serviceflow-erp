@@ -8,8 +8,8 @@ import { CreateQuotationInput, ListQuotationsQuery, UpdateQuotationInput } from 
 import { formatQuotation } from './quotations.formatter';
 import { findMany, findById, replaceItems } from './quotations.repository';
 import { submitQuotation } from './quotations.workflow';
-
-export { submitQuotation };
+import { approveQuotation, rejectQuotation } from './quotations.approval';
+export { submitQuotation, approveQuotation, rejectQuotation };
 export interface QuotationServiceContext { ip?: string; requestId?: string; }
 type Actor = { userId?: bigint | string; role?: string };
 
@@ -46,7 +46,7 @@ export async function getQuotations(query: ListQuotationsQuery, actor?: Actor) {
   const createdBy = actor?.role === 'STAFF' && actor.userId ? BigInt(actor.userId) : query.createdBy ? BigInt(query.createdBy) : undefined;
   const status = query.pendingApproval ? 'PENDING_APPROVAL' : query.status;
   let clientId: bigint | undefined;
-  if (query.clientId) { try { clientId = BigInt(query.clientId); } catch {} }
+  if (query.clientId) { try { clientId = BigInt(query.clientId); } catch { clientId = undefined; } }
   const page = query.page ?? 1, pageSize = query.pageSize ?? 20;
   const [items, total] = await findMany({ status, clientId, createdBy, search: query.search?.trim() }, { skip: (page - 1) * pageSize, take: pageSize });
   return { data: items.map(formatQuotation), meta: { page, pageSize, total } };
@@ -93,5 +93,5 @@ export async function updateQuotation(id: string, data: UpdateQuotationInput, ac
   });
 }
 
-export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation, submitQuotation };
+export const QuotationsService = { createQuotation, getQuotations, getQuotationById, updateQuotation, submitQuotation, approveQuotation, rejectQuotation };
 export default QuotationsService;

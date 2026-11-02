@@ -14,7 +14,7 @@ export interface PaginationParams {
   take?: number;
 }
 
-const userInclude = {
+export const userInclude = {
   select: {
     id: true,
     email: true,
