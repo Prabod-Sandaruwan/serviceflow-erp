@@ -45,7 +45,8 @@ export async function createQuotation(data: CreateQuotationInput, actor?: Actor,
 }
 
 export async function getQuotations(query: ListQuotationsQuery, actor?: Actor) {
-  const createdBy = actor?.role === 'STAFF' && actor.userId ? BigInt(actor.userId) : query.createdBy ? BigInt(query.createdBy) : undefined;
+  const meId = actor?.userId ? BigInt(actor.userId) : undefined;
+  const createdBy = actor?.role === 'STAFF' ? meId : query.createdBy === 'me' ? meId : query.createdBy ? BigInt(query.createdBy) : undefined;
   const status = query.pendingApproval ? 'PENDING_APPROVAL' : query.status;
   let clientId: bigint | undefined;
   if (query.clientId) { try { clientId = BigInt(query.clientId); } catch { clientId = undefined; } }
