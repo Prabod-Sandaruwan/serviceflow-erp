@@ -4,11 +4,10 @@ import { formatProject } from './projects.formatter';
 import { findMany, findById } from './projects.repository';
 import { createProject } from './projects.create';
 import { updateProject } from './projects.update';
+import { computeTaskProgress, computeMilestoneProgress } from './progress';
 
-export { createProject, updateProject };
+export { createProject, updateProject, computeTaskProgress, computeMilestoneProgress };
 export type { ProjectServiceContext } from './projects.create';
-
-const computeProgressStub = (_tasks: any[]) => 0;
 
 type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | string | null };
 
@@ -32,7 +31,7 @@ export async function getProjects(query: ListProjectsQuery, actor?: Actor) {
     delete formatted.milestones;
     return {
       ...formatted,
-      progressPercent: computeProgressStub(p.tasks || []),
+      progressPercent: computeTaskProgress(p.tasks || []),
     };
   });
 
@@ -60,7 +59,7 @@ export async function getProjectById(id: string, actor?: Actor) {
   const formatted = formatProject(project);
   const result: Record<string, any> = {
     ...formatted,
-    progressPercent: computeProgressStub(project.tasks || []),
+    progressPercent: computeTaskProgress(project.tasks || []),
   };
 
   if (actor?.role !== 'STAFF') {
