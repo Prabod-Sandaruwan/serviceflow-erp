@@ -24,7 +24,7 @@ export async function convertLead(
     throw new ApiError(403, 'FORBIDDEN', 'Not authorized to convert this lead');
   }
 
-  if (lead.status === 'WON' || lead.status === 'CONVERTED' || lead.convertedClientId) {
+  if ((lead.status as string) === 'WON' || lead.status === 'CONVERTED' || lead.convertedClientId) {
     throw new ApiError(409, 'LEAD_ALREADY_CONVERTED', 'Lead has already been converted');
   }
 
