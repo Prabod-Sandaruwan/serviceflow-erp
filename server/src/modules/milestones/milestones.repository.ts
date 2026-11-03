@@ -1,8 +1,13 @@
 import prisma from '../../config/prisma';
 
-export async function hasNonCancelledInvoices(_milestoneId: bigint): Promise<boolean> {
-  // Stub for PROJ-008 invoice eligibility / PROJ-006
-  return false;
+export async function hasNonCancelledInvoices(milestoneId: bigint): Promise<boolean> {
+  const count = await prisma.invoice.count({
+    where: {
+      milestoneId,
+      status: { not: 'CANCELLED' },
+    },
+  });
+  return count > 0;
 }
 
 export async function findMilestoneById(id: bigint) {

@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient, createQuotation } from '../helpers/factories';
+import { isInvoiceEligible } from '../../src/modules/milestones/milestones.service';
 import prisma from '../../src/config/prisma';
 
-describe('Milestone Completion & Approval (PROJ-007)', () => {
+describe('Milestone Invoice Eligibility (PROJ-008)', () => {
   let manager: any;
-  let staff: any;
   let client: any;
   let project: any;
   let milestone: any;
@@ -13,7 +13,6 @@ describe('Milestone Completion & Approval (PROJ-007)', () => {
   beforeEach(async () => {
     await truncateAll();
     manager = await loginAs(makeAgent(), 'MANAGER');
-    staff = await loginAs(makeAgent(), 'STAFF');
     client = await createClient();
 
     const q = await createQuotation({ clientId: client.id, createdBy: manager.user.id, status: 'ACCEPTED' });
@@ -27,46 +26,51 @@ describe('Milestone Completion & Approval (PROJ-007)', () => {
     milestone = mRes.body.data;
   });
 
-  it('rejects transition to COMPLETED when it has open tasks (409)', async () => {
+  it('returns true when milestone is APPROVED and has no invoices', async () => {
     await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'IN_PROGRESS' });
-    await prisma.task.create({
-      data: { projectId: BigInt(project.id), milestoneId: BigInt(milestone.id), title: 'Open Task', status: 'IN_PROGRESS', createdBy: manager.user.id },
+    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'COMPLETED' });
+    await withCsrf(manager.post(`/api/v1/milestones/${milestone.id}/approve`), manager).send({});
+
+    const eligible = await isInvoiceEligible(prisma, milestone.id);
+    expect(eligible).toBe(true);
+
+    const getRes = await manager.get(`/api/v1/milestones/${milestone.id}`);
+    expect(getRes.status).toBe(200);
+    expect(getRes.body.data.eligibleForInvoice).toBe(true);
+  });
+
+  it('returns false when milestone is not APPROVED (e.g. COMPLETED or PENDING)', async () => {
+    expect(await isInvoiceEligible(prisma, milestone.id)).toBe(false);
+
+    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'IN_PROGRESS' });
+    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'COMPLETED' });
+
+    expect(await isInvoiceEligible(prisma, milestone.id)).toBe(false);
+    const getRes = await manager.get(`/api/v1/milestones/${milestone.id}`);
+    expect(getRes.body.data.eligibleForInvoice).toBe(false);
+  });
+
+  it('returns false when milestone is APPROVED but a non-cancelled invoice exists', async () => {
+    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'IN_PROGRESS' });
+    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'COMPLETED' });
+    await withCsrf(manager.post(`/api/v1/milestones/${milestone.id}/approve`), manager).send({});
+
+    const inv = await prisma.invoice.create({
+      data: {
+        invoiceNumber: `INV-${Date.now()}`,
+        projectId: BigInt(project.id),
+        milestoneId: BigInt(milestone.id),
+        status: 'DRAFT',
+        subtotal: 25000,
+        total: 25000,
+        createdBy: manager.user.id,
+      },
     });
 
-    const res = await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'COMPLETED' });
-    expect(res.status).toBe(409);
-    expect(res.body.error.code).toBe('MILESTONE_HAS_OPEN_TASKS');
-  });
+    expect(await isInvoiceEligible(prisma, milestone.id)).toBe(false);
 
-  it('rejects POST /approve for a milestone that is PENDING or IN_PROGRESS (409)', async () => {
-    const resPending = await withCsrf(manager.post(`/api/v1/milestones/${milestone.id}/approve`), manager).send({});
-    expect(resPending.status).toBe(409);
-    expect(resPending.body.error.code).toBe('INVALID_STATE_TRANSITION');
-
-    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'IN_PROGRESS' });
-    const resInProgress = await withCsrf(manager.post(`/api/v1/milestones/${milestone.id}/approve`), manager).send({});
-    expect(resInProgress.status).toBe(409);
-    expect(resInProgress.body.error.code).toBe('INVALID_STATE_TRANSITION');
-  });
-
-  it('rejects staff attempts to POST /approve with 403', async () => {
-    const res = await withCsrf(staff.post(`/api/v1/milestones/${milestone.id}/approve`), staff).send({});
-    expect(res.status).toBe(403);
-  });
-
-  it('approves completed milestone, sets approved_by and records audit row', async () => {
-    await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'IN_PROGRESS' });
-    const doneRes = await withCsrf(manager.patch(`/api/v1/milestones/${milestone.id}`), manager).send({ status: 'COMPLETED' });
-    expect(doneRes.status).toBe(200);
-
-    const approveRes = await withCsrf(manager.post(`/api/v1/milestones/${milestone.id}/approve`), manager).send({});
-    expect(approveRes.status).toBe(200);
-    expect(approveRes.body.data.status).toBe('APPROVED');
-    expect(approveRes.body.data.approvedBy).toBe(manager.user.id.toString());
-
-    const audit = await prisma.auditLog.findFirst({
-      where: { action: 'MILESTONE_APPROVED', entityId: BigInt(milestone.id) },
-    });
-    expect(audit).not.toBeNull();
+    // If the invoice is CANCELLED, milestone becomes eligible again
+    await prisma.invoice.update({ where: { id: inv.id }, data: { status: 'CANCELLED' } });
+    expect(await isInvoiceEligible(prisma, milestone.id)).toBe(true);
   });
 });

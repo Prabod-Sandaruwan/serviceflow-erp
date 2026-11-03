@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { createMilestoneSchema, updateMilestoneSchema } from './milestones.schemas';
-import { createMilestone, updateMilestone, approveMilestone } from './milestones.service';
+import {
+  createMilestone,
+  updateMilestone,
+  approveMilestone,
+  getMilestones,
+  getMilestoneById,
+} from './milestones.service';
 import { ok } from '../../shared/http';
 
 const actorOf = (req: Request) => req.auth || (req as any).user;
@@ -36,5 +42,23 @@ export async function approve(req: Request, res: Response, next: NextFunction): 
   }
 }
 
-export const MilestonesController = { create, update, approve };
+export async function listByProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await getMilestones(req.params.id as string);
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await getMilestoneById(req.params.id as string);
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const MilestonesController = { create, update, approve, listByProject, getById };
 export default MilestonesController;
