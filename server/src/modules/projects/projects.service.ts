@@ -3,8 +3,9 @@ import { ListProjectsQuery } from './projects.schemas';
 import { formatProject } from './projects.formatter';
 import { findMany, findById } from './projects.repository';
 import { createProject } from './projects.create';
+import { updateProject } from './projects.update';
 
-export { createProject };
+export { createProject, updateProject };
 export type { ProjectServiceContext } from './projects.create';
 
 const computeProgressStub = (_tasks: any[]) => 0;
@@ -70,5 +71,5 @@ export async function getProjectById(id: string, actor?: Actor) {
   return result;
 }
 
-export const ProjectsService = { createProject, getProjects, getProjectById };
+export const ProjectsService = { createProject, getProjects, getProjectById, updateProject };
 export default ProjectsService;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { createProjectSchema, listProjectsQuerySchema } from './projects.schemas';
-import { createProject, getProjects, getProjectById } from './projects.service';
+import { createProjectSchema, listProjectsQuerySchema, updateProjectSchema } from './projects.schemas';
+import { createProject, getProjects, getProjectById, updateProject } from './projects.service';
 import { ok, paged } from '../../shared/http';
 
 const actorOf = (req: Request) => req.auth || (req as any).user;
@@ -36,5 +36,15 @@ export async function create(req: Request, res: Response, next: NextFunction): P
   }
 }
 
-export const ProjectsController = { list, getById, create };
+export async function update(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const parsed = updateProjectSchema.parse(req.body);
+    const result = await updateProject(req.params.id as string, parsed, actorOf(req), ctxOf(req));
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const ProjectsController = { list, getById, create, update };
 export default ProjectsController;

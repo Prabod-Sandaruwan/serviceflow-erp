@@ -21,6 +21,32 @@ export const createProjectSchema = z
     { message: 'End date must not precede start date', path: ['endDate'] }
   );
 
+export const updateProjectSchema = z
+  .object({
+    status: projectStatusEnum.optional(),
+    reason: z.string().trim().max(500).optional(),
+    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.startDate && data.endDate && new Date(data.endDate) < new Date(data.startDate)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'End date must not precede start date',
+        path: ['endDate'],
+      });
+    }
+    if (data.status === 'CANCELLED') {
+      if (!data.reason || data.reason.trim().length < 5) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Cancellation reason is required and must be at least 5 characters',
+          path: ['reason'],
+        });
+      }
+    }
+  });
+
 export const listProjectsQuerySchema = z.object({
   status: projectStatusEnum.optional(),
   clientId: z.string().optional(),
@@ -30,4 +56,5 @@ export const listProjectsQuerySchema = z.object({
 });
 
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export type UpdateProjectInput = z.infer<typeof updateProjectSchema>;
 export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;

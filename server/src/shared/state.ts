@@ -59,7 +59,7 @@ export const quotationMachine = defineMachine('Quotation', {
 export const projectMachine = defineMachine('Project', {
   PLANNED: [{ to: 'ACTIVE' }, { to: 'CANCELLED' }],
   ACTIVE: [{ to: 'ON_HOLD' }, { to: 'COMPLETED' }, { to: 'CANCELLED' }],
-  ON_HOLD: [{ to: 'ACTIVE' }],
+  ON_HOLD: [{ to: 'ACTIVE' }, { to: 'CANCELLED' }],
 });
 
 export const milestoneMachine = defineMachine('Milestone', {

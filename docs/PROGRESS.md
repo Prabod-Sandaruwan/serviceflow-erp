@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PROJ-004: Implement the project status machine and completion rules  
+**Current Task:** PROJ-005: Implement project progress calculation  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
 
 ## Completed Phases
@@ -35,7 +35,7 @@
 - [x] PROJ-001: Confirm project, milestone and task contracts
 - [x] PROJ-002: Implement project creation from an accepted quotation
 - [x] PROJ-003: Implement project list and detail endpoints
-- [ ] PROJ-004: Implement the project status machine and completion rules
+- [x] PROJ-004: Implement the project status machine and completion rules
 - [ ] PROJ-005: Implement project progress calculation
 - [ ] PROJ-006: Implement milestone create and edit
 - [ ] PROJ-007: Implement milestone completion and approval
