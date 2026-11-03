@@ -21,7 +21,7 @@ function assertStaffLimits(task: any, data: UpdateTaskInput, actor?: Actor) {
 async function resolveRelations(data: UpdateTaskInput, task: any) {
   let assigneeId: bigint | null | undefined;
   if (data.assigneeId !== undefined) {
-    if (data.assigneeId === null) assigneeId = null;
+    if (data.assigneeId === null || data.assigneeId === '') assigneeId = null;
     else {
       let raw: bigint;
       try { raw = BigInt(data.assigneeId); } catch { throw new ApiError(422, 'EMPLOYEE_NOT_FOUND', 'Employee not found'); }
@@ -33,7 +33,7 @@ async function resolveRelations(data: UpdateTaskInput, task: any) {
   }
   let milestoneId: bigint | null | undefined;
   if (data.milestoneId !== undefined) {
-    if (data.milestoneId === null) milestoneId = null;
+    if (data.milestoneId === null || data.milestoneId === '') milestoneId = null;
     else {
       let raw: bigint;
       try { raw = BigInt(data.milestoneId); } catch { throw new ApiError(422, 'FOREIGN_MILESTONE', 'Milestone not found'); }

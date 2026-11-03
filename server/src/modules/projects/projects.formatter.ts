@@ -1,3 +1,6 @@
+import { formatMilestone } from '../milestones/milestones.formatter';
+import { formatTask } from '../tasks/tasks.formatter';
+
 export const formatProject = (p: any) => ({
   id: p.id.toString(),
   projectCode: p.projectCode ?? p.project_code,
@@ -15,8 +18,8 @@ export const formatProject = (p: any) => ({
   updatedAt: p.updatedAt ?? p.updated_at,
   client: p.client ? { id: p.client.id.toString(), displayName: p.client.display_name ?? p.client.displayName } : undefined,
   quotation: p.quotation ? { id: p.quotation.id.toString(), quotationNumber: p.quotation.quotationNumber } : undefined,
-  milestones: Array.isArray(p.milestones) ? p.milestones : undefined,
-  tasks: Array.isArray(p.tasks) ? p.tasks : undefined,
+  milestones: Array.isArray(p.milestones) ? p.milestones.map((m: any) => formatMilestone(m)) : undefined,
+  tasks: Array.isArray(p.tasks) ? p.tasks.map((t: any) => formatTask(t)) : undefined,
 });
 
 export default formatProject;

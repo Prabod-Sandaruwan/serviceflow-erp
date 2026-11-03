@@ -22,7 +22,7 @@ const STATUSES: Option[] = [
 export interface TaskFormProps {
   task?: Task | null;
   projectId: string;
-  milestones?: Array<{ id: string; title: string }>;
+  milestones?: Array<{ id: string; title?: string; name?: string }>;
   employees?: Array<{ id: string; fullName: string }>;
   onClose: () => void;
 }
@@ -51,12 +51,21 @@ export function TaskForm({ task, projectId, milestones = [], employees = [], onC
 
   const onSubmit = async (values: any) => {
     try {
+      const sanitized = {
+        title: values.title,
+        description: values.description?.trim() ? values.description.trim() : null,
+        priority: values.priority || 'MEDIUM',
+        status: values.status || 'TODO',
+        assigneeId: values.assigneeId ? values.assigneeId : null,
+        milestoneId: values.milestoneId ? values.milestoneId : null,
+        dueDate: values.dueDate ? values.dueDate : null,
+      };
       if (isEdit && task) {
-        const payload = isStaff ? { status: values.status } : values;
+        const payload = isStaff ? { status: values.status } : sanitized;
         await updateM.mutateAsync({ id: task.id, data: payload });
         addToast('Task updated successfully', 'success');
       } else {
-        await createM.mutateAsync(values);
+        await createM.mutateAsync(sanitized);
         addToast('Task created successfully', 'success');
       }
       onClose();
@@ -65,7 +74,7 @@ export function TaskForm({ task, projectId, milestones = [], employees = [], onC
     }
   };
 
-  const msOptions = [{ value: '', label: 'None' }, ...milestones.map((m) => ({ value: m.id, label: m.title }))];
+  const msOptions = [{ value: '', label: 'None' }, ...milestones.map((m: any) => ({ value: String(m.id), label: m.title || m.name || `Milestone ${m.id}` }))];
   const empOptions = [{ value: '', label: 'Unassigned' }, ...employees.map((e) => ({ value: e.id, label: e.fullName }))];
 
   return (

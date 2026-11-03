@@ -12,18 +12,12 @@ import { TaskForm } from './TaskForm';
 import type { Task } from './types';
 
 const PRIORITIES = [
-  { value: '', label: 'All Priorities' },
-  { value: 'LOW', label: 'Low' },
-  { value: 'MEDIUM', label: 'Medium' },
-  { value: 'HIGH', label: 'High' },
-  { value: 'URGENT', label: 'Urgent' },
+  { value: '', label: 'All Priorities' }, { value: 'LOW', label: 'Low' },
+  { value: 'MEDIUM', label: 'Medium' }, { value: 'HIGH', label: 'High' }, { value: 'URGENT', label: 'Urgent' },
 ];
 const STATUSES = [
-  { value: '', label: 'All Statuses' },
-  { value: 'TODO', label: 'To Do' },
-  { value: 'IN_PROGRESS', label: 'In Progress' },
-  { value: 'DONE', label: 'Done' },
-  { value: 'CANCELLED', label: 'Cancelled' },
+  { value: '', label: 'All Statuses' }, { value: 'TODO', label: 'To Do' },
+  { value: 'IN_PROGRESS', label: 'In Progress' }, { value: 'DONE', label: 'Done' }, { value: 'CANCELLED', label: 'Cancelled' },
 ];
 
 export function TasksPage() {
@@ -75,7 +69,6 @@ export function TasksPage() {
         <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#0f172a' }}>Tasks</h1>
         <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Manage assignments, priorities, and deadlines across projects</p>
       </div>
-
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ width: '160px' }}><Select id="task-filter-priority" value={priority} options={PRIORITIES} onChange={(e) => setFilter('priority', e.target.value)} /></div>
         <div style={{ width: '160px' }}><Select id="task-filter-status" value={status} options={STATUSES} onChange={(e) => setFilter('status', e.target.value)} /></div>
@@ -83,14 +76,12 @@ export function TasksPage() {
           <input type="checkbox" id="overdue-filter" checked={overdue} onChange={(e) => setFilter('overdue', e.target.checked ? 'true' : '')} /> Overdue Only
         </label>
       </div>
-
       <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', padding: '1.25rem' }}>
         <QueryBoundary query={query} isEmpty={(d) => !d?.data || d.data.length === 0} emptyMessage="No tasks found matching filters">
           <Table columns={columns} data={query.data?.data} />
           <Pagination page={Number(page)} totalPages={query.data?.meta?.totalPages || 1} onPageChange={(p) => setFilter('page', String(p))} />
         </QueryBoundary>
       </div>
-
       <Modal isOpen={Boolean(editingTask)} onClose={() => setEditingTask(null)} title="Edit Task">
         {editingTask && <TaskForm task={editingTask} projectId={editingTask.projectId} onClose={() => setEditingTask(null)} />}
       </Modal>

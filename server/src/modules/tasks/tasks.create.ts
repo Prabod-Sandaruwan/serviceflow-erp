@@ -24,7 +24,7 @@ export async function createTask(
   }
 
   let rawAssigneeId: bigint | null = null;
-  if (data.assigneeId != null) {
+  if (data.assigneeId != null && data.assigneeId !== '') {
     try {
       rawAssigneeId = BigInt(data.assigneeId);
     } catch {
@@ -36,7 +36,7 @@ export async function createTask(
   }
 
   let rawMilestoneId: bigint | null = null;
-  if (data.milestoneId != null) {
+  if (data.milestoneId != null && data.milestoneId !== '') {
     try {
       rawMilestoneId = BigInt(data.milestoneId);
     } catch {
@@ -70,4 +70,3 @@ export async function createTask(
 
   return formatTask(task);
 }
-
