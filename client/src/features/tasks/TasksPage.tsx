@@ -91,7 +91,7 @@ export function TasksPage() {
         </QueryBoundary>
       </div>
       <Modal isOpen={Boolean(editingTask)} onClose={() => setEditingTask(null)} title="Edit Task">
-        {editingTask && <TaskForm task={editingTask} projectId={editingTask.projectId} onClose={() => setEditingTask(null)} />}
+        {editingTask && <TaskForm key={editingTask.id} task={editingTask} projectId={editingTask.projectId} onClose={() => setEditingTask(null)} />}
       </Modal>
     </div>
   );

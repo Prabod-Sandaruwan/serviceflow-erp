@@ -91,7 +91,7 @@ export function MilestonesTab({ projectId }: { projectId: string }) {
         <Table columns={columns} data={query.data?.data} />
       </QueryBoundary>
       <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Create Milestone">
-        <MilestoneForm projectId={projectId} onClose={() => setIsCreateOpen(false)} />
+        {isCreateOpen && <MilestoneForm projectId={projectId} onClose={() => setIsCreateOpen(false)} />}
       </Modal>
     </div>
   );

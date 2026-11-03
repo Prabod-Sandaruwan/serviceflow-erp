@@ -11,12 +11,17 @@ export const billingAmountSchema = z
     message: 'billingAmount must be a non-negative number',
   });
 
+const dueDateSchema = z
+  .union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'), z.literal('')])
+  .optional()
+  .nullable();
+
 export const createMilestoneSchema = z
   .object({
     title: z.string().trim().min(1).max(160).optional(),
     name: z.string().trim().min(1).max(160).optional(),
-    description: z.string().trim().max(1000).optional(),
-    dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+    description: z.string().trim().max(1000).optional().nullable(),
+    dueDate: dueDateSchema,
     billingAmount: billingAmountSchema.optional().default('0'),
   })
   .refine((d) => !!(d.title || d.name), {
@@ -27,8 +32,8 @@ export const createMilestoneSchema = z
 export const updateMilestoneSchema = z.object({
   title: z.string().trim().min(1).max(160).optional(),
   name: z.string().trim().min(1).max(160).optional(),
-  description: z.string().trim().max(1000).optional(),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+  description: z.string().trim().max(1000).optional().nullable(),
+  dueDate: dueDateSchema,
   billingAmount: billingAmountSchema.optional(),
   status: milestoneStatusEnum.optional(),
 });

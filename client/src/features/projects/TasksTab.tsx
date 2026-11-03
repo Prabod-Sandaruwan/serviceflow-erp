@@ -75,7 +75,9 @@ export function TasksTab({ projectId, milestones = [] }: { projectId: string; mi
       </QueryBoundary>
 
       <Modal isOpen={selectedTask !== undefined} onClose={() => setSelectedTask(undefined)} title={selectedTask ? 'Edit Task' : 'Create Task'}>
-        <TaskForm task={selectedTask} projectId={projectId} milestones={milestones} employees={employees} onClose={() => setSelectedTask(undefined)} />
+        {selectedTask !== undefined && (
+          <TaskForm key={selectedTask?.id || 'new'} task={selectedTask} projectId={projectId} milestones={milestones} employees={employees} onClose={() => setSelectedTask(undefined)} />
+        )}
       </Modal>
     </div>
   );
