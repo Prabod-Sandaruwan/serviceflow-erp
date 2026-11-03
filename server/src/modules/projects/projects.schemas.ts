@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export const projectStatusEnum = z.enum([
+  'PLANNED', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'CANCELLED',
+]);
+
 export const createProjectSchema = z
   .object({
     quotationId: z.union([z.string(), z.number(), z.bigint()]),
@@ -17,5 +21,13 @@ export const createProjectSchema = z
     { message: 'End date must not precede start date', path: ['endDate'] }
   );
 
-export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export const listProjectsQuerySchema = z.object({
+  status: projectStatusEnum.optional(),
+  clientId: z.string().optional(),
+  search: z.string().trim().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
 
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export type ListProjectsQuery = z.infer<typeof listProjectsQuerySchema>;

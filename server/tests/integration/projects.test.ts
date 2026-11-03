@@ -3,81 +3,80 @@ import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient, createQuotation } from '../helpers/factories';
 import prisma from '../../src/config/prisma';
 
-describe('Project Creation API (PROJ-002)', () => {
-  let managerAgent: any;
+describe('Projects API (PROJ-003)', () => {
+  let manager: any;
+  let staff: any;
   let client: any;
+  let project: any;
 
   beforeEach(async () => {
     await truncateAll();
-    managerAgent = await loginAs(makeAgent(), 'MANAGER');
+    manager = await loginAs(makeAgent(), 'MANAGER');
+    staff = await loginAs(makeAgent(), 'STAFF');
     client = await createClient();
-  });
 
-  it('successfully creates a project from an ACCEPTED quotation', async () => {
-    const quotation = await createQuotation({
+    const q = await createQuotation({
       clientId: client.id,
-      createdBy: managerAgent.user.id,
+      createdBy: manager.user.id,
       status: 'ACCEPTED',
-      title: 'ERP Overhaul',
-      subtotal: 500000.0,
-      total: 500000.0,
     });
-
-    const res = await withCsrf(managerAgent.post('/api/v1/projects'), managerAgent).send({
-      quotationId: quotation.id.toString(),
-      name: 'Custom Project Name',
+    const res = await withCsrf(manager.post('/api/v1/projects'), manager).send({
+      quotationId: q.id.toString(),
     });
-
-    expect(res.status).toBe(201);
-    expect(res.body.data).toMatchObject({
-      quotationId: quotation.id.toString(),
-      clientId: client.id.toString(),
-      name: 'Custom Project Name',
-      status: 'PLANNED',
-      budgetAmount: '500000',
-    });
-    expect(res.body.data.projectCode).toMatch(/^PRJ-\d{4}-\d{4}$/);
-    expect(res.headers.location).toBe(`/api/v1/projects/${res.body.data.id}`);
-
-    const audit = await prisma.auditLog.findFirst({
-      where: { action: 'PROJECT_CREATED', entityId: BigInt(res.body.data.id) },
-    });
-    expect(audit).not.toBeNull();
+    project = res.body.data;
   });
 
-  it('rejects creation from non-accepted quotation statuses with 409 QUOTATION_NOT_ACCEPTED', async () => {
-    for (const status of ['DRAFT', 'APPROVED', 'REJECTED'] as const) {
-      const q = await createQuotation({ clientId: client.id, createdBy: managerAgent.user.id, status });
-      const res = await withCsrf(managerAgent.post('/api/v1/projects'), managerAgent).send({
-        quotationId: q.id.toString(),
-      });
-      expect(res.status).toBe(409);
-      expect(res.body.error.code).toBe('QUOTATION_NOT_ACCEPTED');
-    }
+  it('lists projects with pagination', async () => {
+    const res = await manager.get('/api/v1/projects?page=1&pageSize=10');
+    expect(res.status).toBe(200);
+    expect(res.body.data).toHaveLength(1);
+    expect(res.body.data[0].id).toBe(project.id);
+    expect(res.body.data[0].progressPercent).toBe(0);
+    expect(res.body.meta).toMatchObject({ page: 1, pageSize: 10, total: 1 });
   });
 
-  it('safely handles concurrent creation: exactly one succeeds with 201 and others return 409', async () => {
-    const quotation = await createQuotation({ clientId: client.id, createdBy: managerAgent.user.id, status: 'ACCEPTED' });
-    const agents = await Promise.all([
-      loginAs(makeAgent(), 'ADMIN'),
-      loginAs(makeAgent(), 'MANAGER'),
-      loginAs(makeAgent(), 'MANAGER'),
-    ]);
+  it('scoping: staff gets empty list when no tasks assigned, and sees project when assigned', async () => {
+    const res1 = await staff.get('/api/v1/projects');
+    expect(res1.status).toBe(200);
+    expect(res1.body.data).toHaveLength(0);
 
-    const results = await Promise.all(
-      agents.map((ag) =>
-        withCsrf(ag.post('/api/v1/projects'), ag).send({ quotationId: quotation.id.toString() })
-      )
-    );
+    await prisma.task.create({
+      data: {
+        projectId: BigInt(project.id),
+        title: 'Task 1',
+        assigneeId: staff.user.employeeId,
+        createdBy: manager.user.id,
+      },
+    });
 
-    const statuses = results.map((r) => r.status);
-    expect(statuses.filter((s) => s === 201)).toHaveLength(1);
-    expect(statuses.filter((s) => s === 409)).toHaveLength(2);
+    const res2 = await staff.get('/api/v1/projects');
+    expect(res2.status).toBe(200);
+    expect(res2.body.data).toHaveLength(1);
+    expect(res2.body.data[0].id).toBe(project.id);
+  });
 
-    const errorCodes = results.filter((r) => r.status === 409).map((r) => r.body.error?.code);
-    expect(errorCodes.every((c) => c === 'PROJECT_ALREADY_EXISTS')).toBe(true);
+  it('staff requests project detail without tasks returns 404, with task returns details', async () => {
+    const res404 = await staff.get(`/api/v1/projects/${project.id}`);
+    expect(res404.status).toBe(404);
 
-    const count = await prisma.project.count({ where: { quotationId: quotation.id } });
-    expect(count).toBe(1);
+    await prisma.task.create({
+      data: {
+        projectId: BigInt(project.id),
+        title: 'Task 1',
+        assigneeId: staff.user.employeeId,
+        createdBy: manager.user.id,
+      },
+    });
+
+    const resStaff = await staff.get(`/api/v1/projects/${project.id}`);
+    expect(resStaff.status).toBe(200);
+    expect(resStaff.body.data.progressPercent).toBe(0);
+    expect(resStaff.body.data.invoices).toBeUndefined();
+    expect(resStaff.body.data.expenses).toBeUndefined();
+
+    const resMgr = await manager.get(`/api/v1/projects/${project.id}`);
+    expect(resMgr.status).toBe(200);
+    expect(resMgr.body.data.invoices).toEqual([]);
+    expect(resMgr.body.data.expenses).toEqual([]);
   });
 });

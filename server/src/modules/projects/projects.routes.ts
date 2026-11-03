@@ -1,15 +1,47 @@
 import { Router } from 'express';
-import { create } from './projects.controller';
+import { create, list, getById } from './projects.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
 
 const router = Router();
+const allRoles = ['ADMIN', 'MANAGER', 'STAFF'];
 const managerRoles = ['ADMIN', 'MANAGER'];
+
+route(router, 'get', '/', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), list],
+});
+
+route(router, 'get', '/:id', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), getById],
+});
 
 route(router, 'post', '/', {
   roles: managerRoles,
   handler: [requireAuth, requireRole(managerRoles), create],
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/projects',
+  summary: 'List projects',
+  responses: {
+    200: { description: 'Paginated projects list' },
+    401: { description: 'Unauthenticated' },
+  },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/projects/{id}',
+  summary: 'Get project details',
+  responses: {
+    200: { description: 'Project details' },
+    401: { description: 'Unauthenticated' },
+    404: { description: 'Project not found' },
+  },
 });
 
 registry.registerPath({
@@ -28,4 +60,3 @@ registry.registerPath({
 
 export const projectRoutes = router;
 export default router;
-

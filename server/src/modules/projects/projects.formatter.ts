@@ -13,11 +13,10 @@ export const formatProject = (p: any) => ({
   createdBy: p.createdBy?.toString() ?? p.created_by?.toString(),
   createdAt: p.createdAt ?? p.created_at,
   updatedAt: p.updatedAt ?? p.updated_at,
-  client: p.client ? { id: p.client.id.toString(), displayName: p.client.display_name } : undefined,
+  client: p.client ? { id: p.client.id.toString(), displayName: p.client.display_name ?? p.client.displayName } : undefined,
   quotation: p.quotation ? { id: p.quotation.id.toString(), quotationNumber: p.quotation.quotationNumber } : undefined,
   milestones: Array.isArray(p.milestones) ? p.milestones : undefined,
   tasks: Array.isArray(p.tasks) ? p.tasks : undefined,
 });
 
 export default formatProject;
-
