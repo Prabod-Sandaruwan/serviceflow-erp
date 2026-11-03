@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { createMilestoneSchema, updateMilestoneSchema } from './milestones.schemas';
-import { createMilestone, updateMilestone } from './milestones.service';
+import { createMilestone, updateMilestone, approveMilestone } from './milestones.service';
 import { ok } from '../../shared/http';
 
 const actorOf = (req: Request) => req.auth || (req as any).user;
@@ -27,5 +27,14 @@ export async function update(req: Request, res: Response, next: NextFunction): P
   }
 }
 
-export const MilestonesController = { create, update };
+export async function approve(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await approveMilestone(req.params.id as string, actorOf(req), ctxOf(req));
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export const MilestonesController = { create, update, approve };
 export default MilestonesController;

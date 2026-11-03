@@ -8,7 +8,7 @@ export async function hasNonCancelledInvoices(_milestoneId: bigint): Promise<boo
 export async function findMilestoneById(id: bigint) {
   return prisma.milestone.findUnique({
     where: { id },
-    include: { project: true },
+    include: { project: true, tasks: true },
   });
 }
 
