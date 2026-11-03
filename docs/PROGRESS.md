@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PROJ-006: Implement milestone create and edit  
+**Current Task:** PROJ-007: Implement milestone completion and approval  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
 
 ## Completed Phases
@@ -37,7 +37,7 @@
 - [x] PROJ-003: Implement project list and detail endpoints
 - [x] PROJ-004: Implement the project status machine and completion rules
 - [x] PROJ-005: Implement project progress calculation
-- [ ] PROJ-006: Implement milestone create and edit
+- [x] PROJ-006: Implement milestone create and edit
 - [ ] PROJ-007: Implement milestone completion and approval
 - [ ] PROJ-008: Implement the invoice-eligibility function
 - [ ] PROJ-009: Implement task create, edit and assignment
