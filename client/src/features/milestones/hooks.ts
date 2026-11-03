@@ -10,6 +10,17 @@ export function useMilestones(projectId?: string) {
   });
 }
 
+export function useCreateMilestone(projectId?: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => api.post<{ data: Milestone }>(`/projects/${projectId}/milestones`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['milestones', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
+    },
+  });
+}
+
 export function useApproveMilestone(projectId?: string) {
   const queryClient = useQueryClient();
   return useMutation({

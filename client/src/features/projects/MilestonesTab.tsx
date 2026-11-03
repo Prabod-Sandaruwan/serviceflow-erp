@@ -1,15 +1,19 @@
+import { useState } from 'react';
 import { useAuth } from '../auth/AuthProvider';
 import { useToast } from '../../components/ui/Toast';
 import { Table, type Column } from '../../components/ui/Table';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Button } from '../../components/ui/Forms';
+import { Modal } from '../../components/ui/Modal';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { useMilestones, useApproveMilestone } from '../milestones/hooks';
+import { MilestoneForm } from '../milestones/MilestoneForm';
 import type { Milestone } from '../milestones/types';
 
 export function MilestonesTab({ projectId }: { projectId: string }) {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const query = useMilestones(projectId);
   const approveM = useApproveMilestone(projectId);
   const isManager = user?.role === 'ADMIN' || user?.role === 'MANAGER';
@@ -63,9 +67,21 @@ export function MilestonesTab({ projectId }: { projectId: string }) {
 
   return (
     <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginTop: '1rem' }}>
+      {isManager && (
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
+          <Button type="button" onClick={() => setIsCreateOpen(true)} style={{ background: '#4f46e5' }}>
+            + Create Milestone
+          </Button>
+        </div>
+      )}
+
       <QueryBoundary query={query} isEmpty={(d) => !d?.data || d.data.length === 0} emptyMessage="No milestones found for this project">
         <Table columns={columns} data={query.data?.data} />
       </QueryBoundary>
+
+      <Modal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} title="Create Milestone">
+        <MilestoneForm projectId={projectId} onClose={() => setIsCreateOpen(false)} />
+      </Modal>
     </div>
   );
 }
