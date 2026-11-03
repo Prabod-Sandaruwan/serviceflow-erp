@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 
-export type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'success' | 'error' | 'info' | 'warning';
 
 export interface ToastItem {
   id: string;
@@ -46,7 +46,9 @@ export function ToastProvider({ children }: { children: ReactNode }) {
               ? '#dc2626'
               : toast.type === 'success'
                 ? '#16a34a'
-                : '#2563eb';
+                : toast.type === 'warning'
+                  ? '#d97706'
+                  : '#2563eb';
           return (
             <div
               key={toast.id}

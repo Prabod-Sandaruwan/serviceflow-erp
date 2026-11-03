@@ -68,7 +68,7 @@ export default function QuotationFormPage() {
       </div>
       <Input id="title" label="Quotation Title" placeholder="e.g. Website Revamp & Maintenance" error={errors.title?.message} disabled={isLocked} {...register('title')} />
       <Input id="validUntil" label="Valid Until" type="date" error={errors.validUntil?.message} disabled={isLocked} {...register('validUntil')} />
-      <ItemEditor control={control} register={register} errors={errors} disabled={isLocked} />
+      <ItemEditor control={control as any} register={register} errors={errors} disabled={isLocked} />
       <Input id="taxAmount" label="Tax Amount ($)" type="number" step="0.01" error={errors.taxAmount?.message} disabled={isLocked} {...register('taxAmount')} />
       <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
         <div style={{ fontWeight: 700, color: '#334155', marginBottom: '0.4rem' }}>Live Running Estimate</div>

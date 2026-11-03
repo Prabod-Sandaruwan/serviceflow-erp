@@ -14,7 +14,7 @@ export const navConfig: NavItem[] = [
   { path: '/leads', label: 'Leads', roles: ALL },
   { path: '/follow-ups', label: 'Follow-ups', roles: ALL },
   { path: '/quotations', label: 'Quotations', roles: ALL },
-  { path: '/projects', label: 'Projects', roles: ADMIN_MGR },
+  { path: '/projects', label: 'Projects', roles: ALL },
   { path: '/tasks', label: 'Tasks', roles: ALL },
   { path: '/invoices', label: 'Invoices', roles: ALL },
   { path: '/expenses', label: 'Expenses', roles: ADMIN_MGR },

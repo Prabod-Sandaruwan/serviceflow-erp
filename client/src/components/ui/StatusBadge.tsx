@@ -15,6 +15,9 @@ export type StatusType =
   | 'CONVERTED'
   | 'WON'
   | 'LOST'
+  | 'PLANNED'
+  | 'ON_HOLD'
+  | 'CANCELLED'
   | string;
 
 interface StatusConfig {
@@ -46,6 +49,9 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   ACCEPTED: { label: 'Accepted', bg: '#dcfce7', color: '#15803d' },
   DECLINED: { label: 'Declined', bg: '#fee2e2', color: '#991b1b' },
   EXPIRED: { label: 'Expired', bg: '#f1f5f9', color: '#475569' },
+  PLANNED: { label: 'Planned', bg: '#f1f5f9', color: '#475569' },
+  ON_HOLD: { label: 'On Hold', bg: '#fef3c7', color: '#92400e' },
+  CANCELLED: { label: 'Cancelled', bg: '#fee2e2', color: '#991b1b' },
 };
 
 export interface StatusBadgeProps {
