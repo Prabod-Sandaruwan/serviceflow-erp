@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
-import type { Project, ProjectsResponse, CreateProjectInput } from './types';
+import type { Project, ProjectsResponse, CreateProjectInput, UpdateProjectInput } from './types';
 
 export interface UseProjectsParams {
   status?: string;
@@ -44,3 +44,14 @@ export function useCreateProject() {
   });
 }
 
+export function useUpdateProject() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: UpdateProjectInput }) =>
+      api.patch<{ data: Project }>(`/projects/${id}`, data),
+    onSuccess: (_, vars) => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      queryClient.invalidateQueries({ queryKey: ['projects', vars.id] });
+    },
+  });
+}
