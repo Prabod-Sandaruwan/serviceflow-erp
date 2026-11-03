@@ -55,3 +55,4 @@ describe('ProjectOverviewTab Component (PROJ-013)', () => {
     expect(screen.queryByTestId('finance-panels')).not.toBeInTheDocument();
   });
 });
+

@@ -1,11 +1,17 @@
+import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useProject } from './hooks';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { ProjectStatusControl } from './ProjectStatusControl';
 import { ProjectOverviewTab } from './ProjectOverviewTab';
+import { MilestonesTab } from './MilestonesTab';
+import { TasksTab } from './TasksTab';
+
+type TabType = 'overview' | 'milestones' | 'tasks';
 
 export function ProjectDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [tab, setTab] = useState<TabType>('overview');
   const query = useProject(id);
   const project = query.data?.data;
 
@@ -37,7 +43,32 @@ export function ProjectDetailPage() {
               <ProjectStatusControl project={project} />
             </div>
 
-            <ProjectOverviewTab project={project} />
+            <div style={{ display: 'flex', gap: '1.5rem', borderBottom: '1px solid #e2e8f0', marginTop: '1.25rem' }}>
+              {(['overview', 'milestones', 'tasks'] as const).map((t) => (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setTab(t)}
+                  style={{
+                    padding: '0.6rem 0.25rem',
+                    border: 'none',
+                    background: 'none',
+                    fontSize: '0.9rem',
+                    fontWeight: tab === t ? 700 : 500,
+                    color: tab === t ? '#4f46e5' : '#64748b',
+                    borderBottom: tab === t ? '2px solid #4f46e5' : '2px solid transparent',
+                    cursor: 'pointer',
+                    textTransform: 'capitalize',
+                  }}
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+
+            {tab === 'overview' && <ProjectOverviewTab project={project} />}
+            {tab === 'milestones' && <MilestonesTab projectId={project.id} />}
+            {tab === 'tasks' && <TasksTab projectId={project.id} milestones={project.milestones} />}
           </div>
         )}
       </QueryBoundary>

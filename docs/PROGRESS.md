@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PROJ-014: Build milestone and task views and the tasks page  
+**Current Task:** PROJ-015: Add project frontend tests  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
 
 ## Completed Phases
@@ -45,6 +45,6 @@
 - [x] PROJ-011: Write project, milestone and task tests
 - [x] PROJ-012: Build the project list and create-from-quotation flow
 - [x] PROJ-013: Build the project overview page
-- [ ] PROJ-014: Build milestone and task views and the tasks page
+- [x] PROJ-014: Build milestone and task views and the tasks page
 - [ ] PROJ-015: Add project frontend tests
 - [ ] PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed

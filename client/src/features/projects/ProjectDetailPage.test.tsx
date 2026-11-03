@@ -71,3 +71,4 @@ describe('ProjectDetailPage Component (PROJ-013)', () => {
     expect(screen.queryByText('Acme Portal')).not.toBeInTheDocument();
   });
 });
+
