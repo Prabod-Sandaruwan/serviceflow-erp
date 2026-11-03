@@ -30,7 +30,7 @@ const seedClients = [
 ];
 
 async function main() {
-  const passwordHash = await hashPassword('ServiceFlow@2026');
+  const passwordHash = await hashPassword('12345');
 
   for (const u of seedUsers) {
     const existing = await prisma.user.findUnique({ where: { email: u.email } });
