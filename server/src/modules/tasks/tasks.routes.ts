@@ -1,11 +1,22 @@
 import { Router } from 'express';
-import { create, update } from './tasks.controller';
+import { list, listByProject, create, update } from './tasks.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
 
 const router = Router();
+const allRoles = ['ADMIN', 'MANAGER', 'STAFF'];
 const managerRoles = ['ADMIN', 'MANAGER'];
+
+route(router, 'get', '/tasks', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), list],
+});
+
+route(router, 'get', '/projects/:id/tasks', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), listByProject],
+});
 
 route(router, 'post', '/projects/:id/tasks', {
   roles: managerRoles,
@@ -13,8 +24,22 @@ route(router, 'post', '/projects/:id/tasks', {
 });
 
 route(router, 'patch', '/tasks/:id', {
-  roles: managerRoles,
-  handler: [requireAuth, requireRole(managerRoles), update],
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), update],
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/tasks',
+  summary: 'List tasks with filtering and pagination',
+  responses: { 200: { description: 'Task list' }, 401: { description: 'Unauthenticated' } },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/projects/{id}/tasks',
+  summary: 'List project tasks',
+  responses: { 200: { description: 'Task list' }, 401: { description: 'Unauthenticated' } },
 });
 
 registry.registerPath({

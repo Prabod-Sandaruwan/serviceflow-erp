@@ -1,9 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
-import { createTaskSchema, updateTaskSchema } from './tasks.schemas';
-import { createTask, updateTask } from './tasks.service';
-import { ok } from '../../shared/http';
+import { createTaskSchema, updateTaskSchema, listTasksQuerySchema } from './tasks.schemas';
+import { createTask, updateTask, getTasks } from './tasks.service';
+import { ok, paged } from '../../shared/http';
 
 const actorOf = (req: Request) => req.auth || (req as any).user;
+
+export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const query = listTasksQuerySchema.parse(req.query);
+    const result = await getTasks(query, actorOf(req));
+    paged(res, result.data, result.meta);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function listByProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const query = listTasksQuerySchema.parse({ ...req.query, projectId: req.params.id });
+    const result = await getTasks(query, actorOf(req));
+    paged(res, result.data, result.meta);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function create(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -26,5 +46,5 @@ export async function update(req: Request, res: Response, next: NextFunction): P
   }
 }
 
-export const TasksController = { create, update };
+export const TasksController = { list, listByProject, create, update };
 export default TasksController;

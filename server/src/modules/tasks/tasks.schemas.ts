@@ -22,5 +22,21 @@ export const updateTaskSchema = z.object({
   status: taskStatusEnum.optional(),
 });
 
+export const listTasksQuerySchema = z.object({
+  projectId: z.union([z.string(), z.number(), z.bigint()]).optional(),
+  milestoneId: z.union([z.string(), z.number(), z.bigint()]).optional(),
+  assigneeId: z.union([z.string(), z.number(), z.bigint()]).optional(),
+  priority: taskPriorityEnum.optional(),
+  status: taskStatusEnum.optional(),
+  overdue: z
+    .union([z.boolean(), z.enum(['true', 'false'])])
+    .transform((val) => val === true || val === 'true')
+    .optional(),
+  search: z.string().trim().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+});
+
 export type CreateTaskInput = z.infer<typeof createTaskSchema>;
 export type UpdateTaskInput = z.infer<typeof updateTaskSchema>;
+export type ListTasksQuery = z.infer<typeof listTasksQuerySchema>;

@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PROJ-010: Implement task listing, filters and Staff status updates  
+**Current Task:** PROJ-011: Write project, milestone and task tests  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
 
 ## Completed Phases
@@ -41,7 +41,7 @@
 - [x] PROJ-007: Implement milestone completion and approval
 - [x] PROJ-008: Implement the invoice-eligibility function
 - [x] PROJ-009: Implement task create, edit and assignment
-- [ ] PROJ-010: Implement task listing, filters and Staff status updates
+- [x] PROJ-010: Implement task listing, filters and Staff status updates
 - [ ] PROJ-011: Write project, milestone and task tests
 - [ ] PROJ-012: Build the project list and create-from-quotation flow
 - [ ] PROJ-013: Build the project overview page
