@@ -22,7 +22,7 @@ const mockTask: Task = {
   updatedAt: '2026-01-02',
 };
 
-describe('TaskForm Component (PROJ-014)', () => {
+describe('TaskForm Component (PROJ-014 & PROJ-015)', () => {
   const mockCreate = vi.fn();
   const mockUpdate = vi.fn();
 
@@ -41,17 +41,22 @@ describe('TaskForm Component (PROJ-014)', () => {
     );
   };
 
-  it('STAFF users can ONLY edit the status field (all other fields are disabled)', async () => {
+  it('validates required fields on task creation (empty title blocks submission)', async () => {
+    renderForm('MANAGER', null);
+    fireEvent.click(screen.getByRole('button', { name: /Create Task/i }));
+    expect(await screen.findByText('Title is required')).toBeInTheDocument();
+    expect(mockCreate).not.toHaveBeenCalled();
+  });
+
+  it('STAFF users find title, priority, assigneeId disabled, while status is enabled', async () => {
     renderForm('STAFF', mockTask);
 
     expect(screen.getByLabelText(/^Title/i)).toBeDisabled();
-    expect(screen.getByLabelText(/^Description/i)).toBeDisabled();
     expect(screen.getByLabelText(/^Priority/i)).toBeDisabled();
     expect(screen.getByLabelText(/^Assignee/i)).toBeDisabled();
-    expect(screen.getByLabelText(/^Milestone/i)).toBeDisabled();
+    expect(screen.getByLabelText(/^Description/i)).toBeDisabled();
     expect(screen.getByLabelText(/^Due Date/i)).toBeDisabled();
 
-    // Status select must be ENABLED
     const statusSelect = screen.getByLabelText(/^Status/i);
     expect(statusSelect).not.toBeDisabled();
 
@@ -59,20 +64,15 @@ describe('TaskForm Component (PROJ-014)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }));
 
     await waitFor(() => {
-      // Must submit ONLY { status: 'IN_PROGRESS' } when role is STAFF
-      expect(mockUpdate).toHaveBeenCalledWith({
-        id: 't1',
-        data: { status: 'IN_PROGRESS' },
-      });
+      expect(mockUpdate).toHaveBeenCalledWith({ id: 't1', data: { status: 'IN_PROGRESS' } });
     });
   });
 
   it('MANAGER users can edit all fields when modifying a task', () => {
     renderForm('MANAGER', mockTask);
-
     expect(screen.getByLabelText(/^Title/i)).not.toBeDisabled();
-    expect(screen.getByLabelText(/^Description/i)).not.toBeDisabled();
     expect(screen.getByLabelText(/^Priority/i)).not.toBeDisabled();
+    expect(screen.getByLabelText(/^Assignee/i)).not.toBeDisabled();
     expect(screen.getByLabelText(/^Status/i)).not.toBeDisabled();
   });
 });

@@ -24,7 +24,7 @@ vi.mock('./workflowHooks', () => ({
   useReviseQuotation: vi.fn(),
 }));
 
-describe('ActionBar Component (QUOT-015 & PROJ-012)', () => {
+describe('ActionBar Component (QUOT-015, PROJ-012 & PROJ-015)', () => {
   const mockMutate = vi.fn(), mockCreateProject = vi.fn();
   beforeEach(() => {
     vi.clearAllMocks();
@@ -78,7 +78,7 @@ describe('ActionBar Component (QUOT-015 & PROJ-012)', () => {
     await waitFor(() => expect(refetch).toHaveBeenCalled());
   });
 
-  it('handles create project success and 409 duplicate navigation', async () => {
+  it('handles create project success and 409 PROJECT_ALREADY_EXISTS warning toast & redirect', async () => {
     mockCreateProject.mockResolvedValueOnce({ data: { id: 'p1' } });
     const { unmount } = renderBar('ACCEPTED');
     fireEvent.click(screen.getByRole('button', { name: /Create Project/i }));
@@ -86,9 +86,10 @@ describe('ActionBar Component (QUOT-015 & PROJ-012)', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/projects/p1');
     unmount();
 
-    mockCreateProject.mockRejectedValueOnce({ status: 409, message: 'already exists' });
+    mockCreateProject.mockRejectedValueOnce({ status: 409, code: 'PROJECT_ALREADY_EXISTS', message: 'Project already exists for this quotation' });
     renderBar('ACCEPTED');
     fireEvent.click(screen.getByRole('button', { name: /Create Project/i }));
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/projects'));
+    expect(await screen.findByText(/Project already exists for this quotation/i)).toBeInTheDocument();
   });
 });

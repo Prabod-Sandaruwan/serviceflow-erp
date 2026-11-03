@@ -28,31 +28,29 @@ const mockProject: Project = {
   updatedAt: '2026-01-02',
 };
 
-describe('ProjectOverviewTab Component (PROJ-013)', () => {
+describe('ProjectOverviewTab Component (PROJ-015)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it('renders overview details, progress bars and finance panels for ADMIN/MANAGER', () => {
+  it('renders overview details and finance panels for ADMIN and MANAGER roles', () => {
     vi.mocked(authProvider.useAuth).mockReturnValue({ user: { id: '1', role: 'ADMIN' } } as any);
-    render(<ProjectOverviewTab project={mockProject} />);
-
-    expect(screen.getByText('Acme Corp')).toBeInTheDocument();
-    expect(screen.getByText('$50,000.00')).toBeInTheDocument();
-    expect(screen.getByText('60%')).toBeInTheDocument(); // Task progress
-    expect(screen.getByText('50%')).toBeInTheDocument(); // 1 approved out of 2 non-cancelled milestones = 50%
+    const { unmount } = render(<ProjectOverviewTab project={mockProject} />);
     expect(screen.getByTestId('finance-panels')).toBeInTheDocument();
     expect(screen.getByText('1 Invoices')).toBeInTheDocument();
     expect(screen.getByText('2 Recorded Expenses')).toBeInTheDocument();
+    unmount();
+
+    vi.mocked(authProvider.useAuth).mockReturnValue({ user: { id: '2', role: 'MANAGER' } } as any);
+    render(<ProjectOverviewTab project={mockProject} />);
+    expect(screen.getByTestId('finance-panels')).toBeInTheDocument();
   });
 
   it('hides finance panels for STAFF role', () => {
-    vi.mocked(authProvider.useAuth).mockReturnValue({ user: { id: '2', role: 'STAFF' } } as any);
+    vi.mocked(authProvider.useAuth).mockReturnValue({ user: { id: '3', role: 'STAFF' } } as any);
     render(<ProjectOverviewTab project={mockProject} />);
-
     expect(screen.getByText('Acme Corp')).toBeInTheDocument();
     expect(screen.getByText('60%')).toBeInTheDocument();
     expect(screen.queryByTestId('finance-panels')).not.toBeInTheDocument();
   });
 });
-

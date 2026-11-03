@@ -29,7 +29,7 @@ const mockMilestones = [
   },
 ];
 
-describe('MilestonesTab Component (PROJ-014)', () => {
+describe('MilestonesTab Component (PROJ-015)', () => {
   const mockApprove = vi.fn();
 
   beforeEach(() => {
