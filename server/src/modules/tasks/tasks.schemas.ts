@@ -30,11 +30,10 @@ export const listTasksQuerySchema = z.object({
   assigneeId: z.union([z.string(), z.number(), z.bigint()]).optional(),
   priority: taskPriorityEnum.optional(),
   status: taskStatusEnum.optional(),
-  overdue: z
-    .union([z.boolean(), z.enum(['true', 'false'])])
-    .transform((val) => val === true || val === 'true')
-    .optional(),
+  overdue: z.union([z.boolean(), z.enum(['true', 'false'])]).transform((v) => v === true || v === 'true').optional(),
   search: z.string().trim().optional(),
+  sortBy: z.enum(['createdAt', 'dueDate', 'priority', 'title', 'status']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });

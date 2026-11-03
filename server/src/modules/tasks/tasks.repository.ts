@@ -17,6 +17,11 @@ export interface PaginationParams {
   take?: number;
 }
 
+export interface TaskSortParams {
+  by?: string;
+  order?: 'asc' | 'desc';
+}
+
 export async function findTaskById(id: bigint) {
   return prisma.task.findUnique({
     where: { id },
@@ -24,37 +29,23 @@ export async function findTaskById(id: bigint) {
   });
 }
 
-export async function findMany(filters: TaskFilters, pagination?: PaginationParams) {
+export async function findMany(filters: TaskFilters, pagination?: PaginationParams, sort?: TaskSortParams) {
   const where: Prisma.TaskWhereInput = {};
   const and: Prisma.TaskWhereInput[] = [];
 
   if (filters.projectId !== undefined) {
-    try {
-      and.push({ projectId: BigInt(filters.projectId) });
-    } catch {
-      // ignore invalid bigint
-    }
+    try { and.push({ projectId: BigInt(filters.projectId) }); } catch {}
   }
   if (filters.milestoneId !== undefined) {
-    try {
-      and.push({ milestoneId: BigInt(filters.milestoneId) });
-    } catch {
-      // ignore invalid bigint
-    }
+    try { and.push({ milestoneId: BigInt(filters.milestoneId) }); } catch {}
   }
   if (filters.assigneeId !== undefined) {
-    try {
-      and.push({ assigneeId: BigInt(filters.assigneeId) });
-    } catch {
-      // ignore invalid bigint
-    }
+    try { and.push({ assigneeId: BigInt(filters.assigneeId) }); } catch {}
   }
   if (filters.priority) and.push({ priority: filters.priority });
   if (filters.status && filters.overdue !== true) and.push({ status: filters.status });
   if (filters.search) {
-    and.push({
-      OR: [{ title: { contains: filters.search } }, { description: { contains: filters.search } }],
-    });
+    and.push({ OR: [{ title: { contains: filters.search } }, { description: { contains: filters.search } }] });
   }
   if (filters.overdue === true) {
     and.push({
@@ -68,12 +59,17 @@ export async function findMany(filters: TaskFilters, pagination?: PaginationPara
   }
   if (and.length > 0) where.AND = and;
 
+  const orderDir = sort?.order === 'asc' ? 'asc' : 'desc';
+  const orderBy: any = sort?.by && ['createdAt', 'dueDate', 'priority', 'title', 'status'].includes(sort.by)
+    ? { [sort.by]: orderDir }
+    : { createdAt: 'desc' };
+
   return Promise.all([
     prisma.task.findMany({
       where,
       skip: pagination?.skip,
       take: pagination?.take,
-      orderBy: { createdAt: 'desc' },
+      orderBy,
       include: { assignee: true, milestone: true },
     }),
     prisma.task.count({ where }),

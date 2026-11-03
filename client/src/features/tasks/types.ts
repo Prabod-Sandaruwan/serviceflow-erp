@@ -47,6 +47,8 @@ export interface TaskQueryParams {
   status?: string;
   overdue?: boolean | string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: string;
   page?: number | string;
   pageSize?: number | string;
 }

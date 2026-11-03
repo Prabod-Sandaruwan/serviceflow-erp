@@ -65,4 +65,11 @@ describe('TasksPage Component (PROJ-014)', () => {
     fireEvent.click(checkbox);
     expect(checkbox).toBeChecked();
   });
+
+  it('renders sort dropdown with default value', () => {
+    const { container } = renderPage('MANAGER');
+    const sortSelect = container.querySelector('#task-filter-sort') as HTMLSelectElement;
+    expect(sortSelect).toBeInTheDocument();
+    expect(sortSelect.value).toBe('createdAt:desc');
+  });
 });

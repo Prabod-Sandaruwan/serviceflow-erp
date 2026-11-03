@@ -19,6 +19,11 @@ const STATUSES = [
   { value: '', label: 'All Statuses' }, { value: 'TODO', label: 'To Do' },
   { value: 'IN_PROGRESS', label: 'In Progress' }, { value: 'DONE', label: 'Done' }, { value: 'CANCELLED', label: 'Cancelled' },
 ];
+const SORTS = [
+  { value: 'createdAt:desc', label: 'Newest First' }, { value: 'createdAt:asc', label: 'Oldest First' },
+  { value: 'dueDate:asc', label: 'Due Date (Earliest)' }, { value: 'dueDate:desc', label: 'Due Date (Latest)' },
+  { value: 'title:asc', label: 'Title (A-Z)' }, { value: 'title:desc', label: 'Title (Z-A)' },
+];
 
 export function TasksPage() {
   const { user } = useAuth();
@@ -27,12 +32,14 @@ export function TasksPage() {
   const page = searchParams.get('page') || '1';
   const priority = searchParams.get('priority') || '';
   const status = searchParams.get('status') || '';
+  const sort = searchParams.get('sort') || 'createdAt:desc';
   const overdue = searchParams.get('overdue') === 'true';
   const [editingTask, setEditingTask] = useState<Task | null>(null);
 
+  const [sortBy, sortOrder] = sort.split(':');
   const empId = user?.employee?.id || user?.employeeId;
   const assigneeId = isStaff ? (empId ? String(empId) : undefined) : (searchParams.get('assigneeId') || undefined);
-  const query = useTasks({ page, priority: priority || undefined, status: status || undefined, overdue: overdue ? true : undefined, assigneeId });
+  const query = useTasks({ page, priority: priority || undefined, status: status || undefined, overdue: overdue ? true : undefined, assigneeId, sortBy, sortOrder });
 
   const setFilter = (k: string, v: string) => {
     setSearchParams((prev) => {
@@ -70,8 +77,9 @@ export function TasksPage() {
         <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Manage assignments, priorities, and deadlines across projects</p>
       </div>
       <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ width: '160px' }}><Select id="task-filter-priority" value={priority} options={PRIORITIES} onChange={(e) => setFilter('priority', e.target.value)} /></div>
-        <div style={{ width: '160px' }}><Select id="task-filter-status" value={status} options={STATUSES} onChange={(e) => setFilter('status', e.target.value)} /></div>
+        <div style={{ width: '150px' }}><Select id="task-filter-priority" value={priority} options={PRIORITIES} onChange={(e) => setFilter('priority', e.target.value)} /></div>
+        <div style={{ width: '150px' }}><Select id="task-filter-status" value={status} options={STATUSES} onChange={(e) => setFilter('status', e.target.value)} /></div>
+        <div style={{ width: '180px' }}><Select id="task-filter-sort" value={sort} options={SORTS} onChange={(e) => setFilter('sort', e.target.value)} /></div>
         <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
           <input type="checkbox" id="overdue-filter" checked={overdue} onChange={(e) => setFilter('overdue', e.target.checked ? 'true' : '')} /> Overdue Only
         </label>

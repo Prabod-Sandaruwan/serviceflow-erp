@@ -23,14 +23,14 @@ export async function getTasks(query: ListTasksQuery, actor?: Actor) {
   const page = query.page ?? 1;
   const pageSize = query.pageSize ?? 20;
 
-  const [items, total] = await findMany(filters, {
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-  });
+  const [items, total] = await findMany(
+    filters,
+    { skip: (page - 1) * pageSize, take: pageSize },
+    { by: query.sortBy, order: query.sortOrder }
+  );
 
   return {
     data: items.map(formatTask),
     meta: { page, pageSize, total },
   };
 }
-

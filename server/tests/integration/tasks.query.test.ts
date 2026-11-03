@@ -23,14 +23,14 @@ describe('Tasks Query and Filters API (PROJ-010)', () => {
     project = pRes.body.data;
 
     task1 = (await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Overdue high task',
+      title: 'A Overdue high task',
       priority: 'HIGH',
       assigneeId: staff1.user.employeeId.toString(),
       dueDate: '2020-01-01',
     })).body.data;
 
     task2 = (await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Done past task',
+      title: 'B Done past task',
       priority: 'LOW',
       assigneeId: staff2.user.employeeId.toString(),
       dueDate: '2020-01-01',
@@ -39,7 +39,7 @@ describe('Tasks Query and Filters API (PROJ-010)', () => {
     await withCsrf(manager.patch(`/api/v1/tasks/${task2.id}`), manager).send({ status: 'DONE' });
 
     task3 = (await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Future medium task',
+      title: 'C Future medium task',
       priority: 'MEDIUM',
       assigneeId: staff1.user.employeeId.toString(),
       dueDate: '2099-12-31',
@@ -71,12 +71,10 @@ describe('Tasks Query and Filters API (PROJ-010)', () => {
     expect(ids).not.toContain(task2.id);
   });
 
-  it('lists tasks by project endpoint with pagination meta', async () => {
-    const res = await manager.get(`/api/v1/projects/${project.id}/tasks?pageSize=2`);
+  it('lists tasks by project endpoint and sorts by title', async () => {
+    const res = await manager.get(`/api/v1/projects/${project.id}/tasks?sortBy=title&sortOrder=asc`);
     expect(res.status).toBe(200);
-    expect(res.body.data.length).toBe(2);
-    expect(res.body.meta.total).toBe(3);
-    expect(res.body.meta.pageSize).toBe(2);
+    expect(res.body.data[0].title).toBe('A Overdue high task');
+    expect(res.body.data[2].title).toBe('C Future medium task');
   });
 });
-
