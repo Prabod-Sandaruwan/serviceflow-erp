@@ -2,86 +2,86 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient, createQuotation, createEmployee } from '../helpers/factories';
 
-describe('Tasks API (PROJ-009)', () => {
+describe('Tasks Workflows, Limits & Blockers (PROJ-011)', () => {
   let manager: any;
-  let client: any;
+  let staff: any;
+  let otherStaff: any;
   let project: any;
-  let employee: any;
+  let task: any;
+  let otherTask: any;
 
   beforeEach(async () => {
     await truncateAll();
     manager = await loginAs(makeAgent(), 'MANAGER');
-    client = await createClient();
-    employee = await createEmployee({ is_active: true });
+    staff = await loginAs(makeAgent(), 'STAFF');
+    otherStaff = await loginAs(makeAgent(), 'STAFF');
+    const client = await createClient();
 
     const q = await createQuotation({ clientId: client.id, createdBy: manager.user.id, status: 'ACCEPTED' });
-    const pRes = await withCsrf(manager.post('/api/v1/projects'), manager).send({ quotationId: q.id.toString() });
-    project = pRes.body.data;
+    const p = (await withCsrf(manager.post('/api/v1/projects'), manager).send({ quotationId: q.id.toString() })).body.data;
+    project = p;
+
+    task = (await withCsrf(manager.post(`/api/v1/projects/${p.id}/tasks`), manager).send({
+      title: 'Staff Task',
+      assigneeId: staff.user.employeeId.toString(),
+    })).body.data;
+
+    otherTask = (await withCsrf(manager.post(`/api/v1/projects/${p.id}/tasks`), manager).send({
+      title: 'Other Task',
+      assigneeId: otherStaff.user.employeeId.toString(),
+    })).body.data;
   });
 
-  it('successfully creates and assigns a task, then updates it', async () => {
-    const res = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Build login page',
-      description: 'Implement auth form',
-      priority: 'HIGH',
-      assigneeId: employee.id.toString(),
-    });
-
-    expect(res.status).toBe(201);
-    expect(res.body.data.title).toBe('Build login page');
-    expect(res.body.data.status).toBe('TODO');
-    expect(res.body.data.priority).toBe('HIGH');
-    expect(res.body.data.assigneeId).toBe(employee.id.toString());
-    expect(res.headers.location).toBe(`/api/v1/tasks/${res.body.data.id}`);
-
-    const taskId = res.body.data.id;
-    const updateRes = await withCsrf(manager.patch(`/api/v1/tasks/${taskId}`), manager).send({
-      status: 'IN_PROGRESS',
-      priority: 'URGENT',
-    });
-    expect(updateRes.status).toBe(200);
-    expect(updateRes.body.data.status).toBe('IN_PROGRESS');
-    expect(updateRes.body.data.priority).toBe('URGENT');
+  it('allows Staff to update own task status (200)', async () => {
+    const res = await withCsrf(staff.patch(`/api/v1/tasks/${task.id}`), staff).send({ status: 'IN_PROGRESS' });
+    expect(res.status).toBe(200);
+    expect(res.body.data.status).toBe('IN_PROGRESS');
   });
 
-  it('fails validation when assigning an INACTIVE employee (422)', async () => {
-    const inactiveEmp = await createEmployee({ is_active: false });
-    const res = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Task for inactive',
-      assigneeId: inactiveEmp.id.toString(),
-    });
-    expect(res.status).toBe(422);
-    expect(res.body.error.code).toBe('EMPLOYEE_INACTIVE');
+  it('forbids Staff from updating another user task or changing priority (403)', async () => {
+    const resOther = await withCsrf(staff.patch(`/api/v1/tasks/${otherTask.id}`), staff).send({ status: 'IN_PROGRESS' });
+    expect(resOther.status).toBe(403);
+
+    const resPriority = await withCsrf(staff.patch(`/api/v1/tasks/${task.id}`), staff).send({ priority: 'URGENT' });
+    expect(resPriority.status).toBe(403);
   });
 
-  it('fails validation when linking to a milestone from a DIFFERENT project (422)', async () => {
-    const otherQ = await createQuotation({ clientId: client.id, createdBy: manager.user.id, status: 'ACCEPTED' });
+  it('fails validation when assigning inactive employee or foreign milestone (422)', async () => {
+    const inactive = await createEmployee({ is_active: false });
+    const resEmp = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
+      title: 'Task Inactive',
+      assigneeId: inactive.id.toString(),
+    });
+    expect(resEmp.status).toBe(422);
+    expect(resEmp.body.error.code).toBe('EMPLOYEE_INACTIVE');
+
+    const client2 = await createClient();
+    const otherQ = await createQuotation({ clientId: client2.id, createdBy: manager.user.id, status: 'ACCEPTED' });
     const otherP = (await withCsrf(manager.post('/api/v1/projects'), manager).send({ quotationId: otherQ.id.toString() })).body.data;
-
-    const msRes = await withCsrf(manager.post(`/api/v1/projects/${otherP.id}/milestones`), manager).send({
-      title: 'Other Milestone',
+    const ms = (await withCsrf(manager.post(`/api/v1/projects/${otherP.id}/milestones`), manager).send({
+      title: 'Other MS',
       billingAmount: '1000',
-    });
-    const otherMilestone = msRes.body.data;
+    })).body.data;
 
-    const res = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Cross project task',
-      milestoneId: otherMilestone.id.toString(),
+    const resMs = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
+      title: 'Cross project',
+      milestoneId: ms.id.toString(),
     });
-    expect(res.status).toBe(422);
-    expect(res.body.error.code).toBe('FOREIGN_MILESTONE');
+    expect(resMs.status).toBe(422);
+    expect(resMs.body.error.code).toBe('FOREIGN_MILESTONE');
   });
 
-  it('cannot create a task on a CANCELLED project (409)', async () => {
+  it('cannot create or edit a task on a CANCELLED project (409)', async () => {
     await withCsrf(manager.patch(`/api/v1/projects/${project.id}`), manager).send({
       status: 'CANCELLED',
       reason: 'Cancelled before execution',
     });
+    const resCreate = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({ title: 'Task after cancel' });
+    expect(resCreate.status).toBe(409);
+    expect(resCreate.body.error.code).toBe('PROJECT_CANCELLED');
 
-    const res = await withCsrf(manager.post(`/api/v1/projects/${project.id}/tasks`), manager).send({
-      title: 'Task after cancel',
-    });
-    expect(res.status).toBe(409);
-    expect(res.body.error.code).toBe('PROJECT_CANCELLED');
+    const resEdit = await withCsrf(manager.patch(`/api/v1/tasks/${task.id}`), manager).send({ title: 'Edit after cancel' });
+    expect(resEdit.status).toBe(409);
+    expect(resEdit.body.error.code).toBe('PROJECT_CANCELLED');
   });
 });

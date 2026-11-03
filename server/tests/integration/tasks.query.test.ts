@@ -79,3 +79,4 @@ describe('Tasks Query and Filters API (PROJ-010)', () => {
     expect(res.body.meta.pageSize).toBe(2);
   });
 });
+
