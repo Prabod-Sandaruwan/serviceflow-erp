@@ -17,6 +17,7 @@ import { followUpRoutes } from './modules/followups/followups.routes';
 import { quotationRoutes } from './modules/quotations/quotations.routes';
 import { projectRoutes } from './modules/projects/projects.routes';
 import { milestoneRoutes } from './modules/milestones/milestones.routes';
+import { taskRoutes } from './modules/tasks/tasks.routes';
 import { healthCheckHandler } from './modules/health/health.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -51,6 +52,7 @@ app.use('/api/v1/follow-ups', followUpRoutes);
 app.use('/api/v1/quotations', quotationRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1', milestoneRoutes);
+app.use('/api/v1', taskRoutes);
 
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
