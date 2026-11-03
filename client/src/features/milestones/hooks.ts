@@ -21,6 +21,18 @@ export function useCreateMilestone(projectId?: string) {
   });
 }
 
+export function useUpdateMilestone(projectId?: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      api.patch<{ data: Milestone }>(`/milestones/${id}`, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['milestones', projectId] });
+      queryClient.invalidateQueries({ queryKey: ['projects', projectId] });
+    },
+  });
+}
+
 export function useApproveMilestone(projectId?: string) {
   const queryClient = useQueryClient();
   return useMutation({

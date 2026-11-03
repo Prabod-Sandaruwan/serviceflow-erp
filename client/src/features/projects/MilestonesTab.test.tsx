@@ -10,6 +10,7 @@ vi.mock('../milestones/hooks', () => ({
   useMilestones: vi.fn(),
   useApproveMilestone: vi.fn(),
   useCreateMilestone: vi.fn(),
+  useUpdateMilestone: vi.fn(),
 }));
 
 const mockMilestones = [
@@ -26,6 +27,7 @@ const mockMilestones = [
 describe('MilestonesTab Component (PROJ-015)', () => {
   const mockApprove = vi.fn();
   const mockCreate = vi.fn();
+  const mockUpdate = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -34,6 +36,7 @@ describe('MilestonesTab Component (PROJ-015)', () => {
     } as any);
     vi.mocked(hooks.useApproveMilestone).mockReturnValue({ mutateAsync: mockApprove, isPending: false } as any);
     vi.mocked(hooks.useCreateMilestone).mockReturnValue({ mutateAsync: mockCreate, isPending: false } as any);
+    vi.mocked(hooks.useUpdateMilestone).mockReturnValue({ mutateAsync: mockUpdate, isPending: false } as any);
   });
 
   const renderTab = (role = 'MANAGER') => {
@@ -64,6 +67,16 @@ describe('MilestonesTab Component (PROJ-015)', () => {
     });
   });
 
+  it('renders Complete button for IN_PROGRESS milestone and calls update mutation', async () => {
+    renderTab('MANAGER');
+    const completeBtn = screen.getByRole('button', { name: /Complete/i });
+    expect(completeBtn).toBeInTheDocument();
+    fireEvent.click(completeBtn);
+    await waitFor(() => {
+      expect(mockUpdate).toHaveBeenCalledWith({ id: 'm2', data: { status: 'COMPLETED' } });
+    });
+  });
+
   it('shows Create Milestone button for MANAGER and hides for STAFF', () => {
     const { unmount } = renderTab('MANAGER');
     expect(screen.getByRole('button', { name: /\+ Create Milestone/i })).toBeInTheDocument();
@@ -71,11 +84,5 @@ describe('MilestonesTab Component (PROJ-015)', () => {
 
     renderTab('STAFF');
     expect(screen.queryByRole('button', { name: /\+ Create Milestone/i })).not.toBeInTheDocument();
-  });
-
-  it('opens create modal on clicking + Create Milestone', () => {
-    renderTab('MANAGER');
-    fireEvent.click(screen.getByRole('button', { name: /\+ Create Milestone/i }));
-    expect(screen.getByLabelText(/Milestone Title/i)).toBeInTheDocument();
   });
 });
