@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed  
-**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT)
+**Current Task:** INV-001: Confirm invoice contracts, transitions and numbering  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
 - [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
@@ -12,6 +12,7 @@
 - [x] Phase 5 - Shared Frontend Foundation (UI-001..014)
 - [x] Phase 6 - CRM and Client Management (CRM-001..014)
 - [x] Phase 7 - Quotations (QUOT-001..016)
+- [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -47,4 +48,4 @@
 - [x] PROJ-013: Build the project overview page
 - [x] PROJ-014: Build milestone and task views and the tasks page
 - [x] PROJ-015: Add project frontend tests
-- [ ] PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed
+- [x] PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed
