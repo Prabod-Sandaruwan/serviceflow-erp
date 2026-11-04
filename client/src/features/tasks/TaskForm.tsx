@@ -6,19 +6,13 @@ import { Input, Select, Button } from '../../components/ui/Forms';
 import { useCreateTask, useUpdateTask } from './hooks';
 import type { Task } from './types';
 
-const PRIORITIES = [
-  { value: 'LOW', label: 'Low' }, { value: 'MEDIUM', label: 'Medium' },
-  { value: 'HIGH', label: 'High' }, { value: 'URGENT', label: 'Urgent' },
-];
-const STATUSES = [
-  { value: 'TODO', label: 'To Do' }, { value: 'IN_PROGRESS', label: 'In Progress' },
-  { value: 'DONE', label: 'Done' }, { value: 'CANCELLED', label: 'Cancelled' },
-];
+const PRIORITIES = [{ value: 'LOW', label: 'Low' }, { value: 'MEDIUM', label: 'Medium' }, { value: 'HIGH', label: 'High' }, { value: 'URGENT', label: 'Urgent' }];
+const STATUSES = [{ value: 'TODO', label: 'To Do' }, { value: 'IN_PROGRESS', label: 'In Progress' }, { value: 'DONE', label: 'Done' }, { value: 'CANCELLED', label: 'Cancelled' }];
 
 export interface TaskFormProps {
   task?: Task | null;
   projectId: string;
-  milestones?: Array<{ id: string; title?: string; name?: string }>;
+  milestones?: Array<{ id: string; title?: string; name?: string; status?: string }>;
   employees?: Array<{ id: string; fullName: string }>;
   onClose: () => void;
 }
@@ -33,32 +27,23 @@ export function TaskForm({ task, projectId, milestones = [], employees = [], onC
   const isPending = createM.isPending || updateM.isPending;
 
   const defaultValues = {
-    title: task?.title || '',
-    description: task?.description || '',
-    priority: task?.priority || 'MEDIUM',
-    status: task?.status || 'TODO',
-    assigneeId: task?.assigneeId || '',
-    milestoneId: task?.milestoneId || '',
-    dueDate: task?.dueDate || '',
+    title: task?.title || '', description: task?.description || '',
+    priority: task?.priority || 'MEDIUM', status: task?.status || 'TODO',
+    assigneeId: task?.assigneeId || '', milestoneId: task?.milestoneId || '', dueDate: task?.dueDate || '',
   };
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({ defaultValues });
-
   useEffect(() => { reset(defaultValues); }, [task?.id]);
 
-  const onSubmit = async (values: any) => {
+  const onSubmit = async (v: any) => {
     try {
       const sanitized = {
-        title: values.title,
-        description: values.description?.trim() || null,
-        priority: values.priority || 'MEDIUM',
-        status: values.status || 'TODO',
-        assigneeId: values.assigneeId || null,
-        milestoneId: values.milestoneId || null,
-        dueDate: values.dueDate || null,
+        title: v.title, description: v.description?.trim() || null,
+        priority: v.priority || 'MEDIUM', status: v.status || 'TODO',
+        assigneeId: v.assigneeId || null, milestoneId: v.milestoneId || null, dueDate: v.dueDate || null,
       };
       if (isEdit && task) {
-        await updateM.mutateAsync({ id: task.id, data: isStaff ? { status: values.status } : sanitized });
+        await updateM.mutateAsync({ id: task.id, data: isStaff ? { status: v.status } : sanitized });
         addToast('Task updated successfully', 'success');
       } else {
         await createM.mutateAsync(sanitized);
@@ -70,9 +55,11 @@ export function TaskForm({ task, projectId, milestones = [], employees = [], onC
     }
   };
 
-  const msList = task?.milestone && !milestones.some((m: any) => String(m.id) === String(task.milestone?.id))
+  const curMsId = task?.milestoneId || task?.milestone?.id;
+  const rawMs = task?.milestone && !milestones.some((m: any) => String(m.id) === String(task.milestone?.id))
     ? [task.milestone as any, ...milestones]
     : milestones;
+  const msList = rawMs.filter((m: any) => (m.status !== 'APPROVED' && m.status !== 'CANCELLED') || (curMsId && String(m.id) === String(curMsId)));
   const msOptions = [{ value: '', label: 'None' }, ...msList.map((m: any) => ({ value: String(m.id), label: m.title || m.name || `Milestone ${m.id}` }))];
 
   const empList = task?.assignee && !employees.some((e: any) => String(e.id) === String(task.assignee?.id))

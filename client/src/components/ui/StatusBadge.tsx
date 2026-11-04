@@ -1,30 +1,9 @@
 export type StatusType =
-  | 'ACTIVE'
-  | 'INACTIVE'
-  | 'DRAFT'
-  | 'PENDING'
-  | 'APPROVED'
-  | 'IN_PROGRESS'
-  | 'COMPLETED'
-  | 'PAID'
-  | 'VOID'
-  | 'NEW'
-  | 'CONTACTED'
-  | 'QUALIFIED'
-  | 'PROPOSAL_SENT'
-  | 'CONVERTED'
-  | 'WON'
-  | 'LOST'
-  | 'PLANNED'
-  | 'ON_HOLD'
-  | 'CANCELLED'
-  | string;
+  | 'ACTIVE' | 'INACTIVE' | 'DRAFT' | 'PENDING' | 'APPROVED' | 'IN_PROGRESS'
+  | 'COMPLETED' | 'PAID' | 'VOID' | 'NEW' | 'CONTACTED' | 'QUALIFIED'
+  | 'PROPOSAL_SENT' | 'CONVERTED' | 'WON' | 'LOST' | 'PLANNED' | 'ON_HOLD' | 'CANCELLED' | string;
 
-interface StatusConfig {
-  label: string;
-  bg: string;
-  color: string;
-}
+interface StatusConfig { label: string; bg: string; color: string; }
 
 const STATUS_MAP: Record<string, StatusConfig> = {
   ACTIVE: { label: 'Active', bg: '#dcfce7', color: '#166534' },
@@ -60,25 +39,27 @@ export interface StatusBadgeProps {
 
 export function StatusBadge({ status }: StatusBadgeProps) {
   const normalized = (status || '').toUpperCase();
-  const config = STATUS_MAP[normalized] || {
-    label: status || 'Unknown',
-    bg: '#f1f5f9',
-    color: '#334155',
-  };
+  const config = STATUS_MAP[normalized] || { label: status || 'Unknown', bg: '#f1f5f9', color: '#334155' };
+  const isPulsing = normalized === 'IN_PROGRESS' || normalized === 'PENDING';
 
   return (
     <span
       style={{
-        display: 'inline-block',
-        padding: '0.2rem 0.5rem',
-        borderRadius: '9999px',
-        fontSize: '0.75rem',
-        fontWeight: 600,
-        backgroundColor: config.bg,
-        color: config.color,
+        display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
+        padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.75rem',
+        fontWeight: 600, backgroundColor: config.bg, color: config.color,
+        transition: 'all 0.15s ease',
       }}
     >
+      {isPulsing && (
+        <span
+          className="animate-pulse-dot"
+          style={{ width: '6px', height: '6px', borderRadius: '9999px', backgroundColor: config.color, display: 'inline-block' }}
+        />
+      )}
       {config.label}
     </span>
   );
 }
+
+export default StatusBadge;

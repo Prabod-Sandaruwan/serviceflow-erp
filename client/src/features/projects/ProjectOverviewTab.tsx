@@ -1,21 +1,7 @@
 import { useAuth } from '../auth/AuthProvider';
 import { StatusBadge } from '../../components/ui/StatusBadge';
+import { ProgressRing } from '../../components/ui/ProgressRing';
 import type { Project } from './types';
-
-function ProgressBar({ label, percent }: { label: string; percent: number }) {
-  const p = Math.min(100, Math.max(0, percent));
-  return (
-    <div style={{ flex: 1, minWidth: '200px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '0.35rem' }}>
-        <span>{label}</span>
-        <span>{p}%</span>
-      </div>
-      <div style={{ width: '100%', height: '8px', background: '#e2e8f0', borderRadius: '9999px', overflow: 'hidden' }}>
-        <div style={{ width: `${p}%`, height: '100%', background: p === 100 ? '#16a34a' : '#4f46e5' }} />
-      </div>
-    </div>
-  );
-}
 
 export function ProjectOverviewTab({ project }: { project: Project }) {
   const { user } = useAuth();
@@ -49,9 +35,9 @@ export function ProjectOverviewTab({ project }: { project: Project }) {
 
       <div style={{ background: '#fff', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
         <h3 style={{ margin: '0 0 1rem', fontSize: '0.95rem', fontWeight: 700, color: '#1e293b' }}>Project Progress</h3>
-        <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-          <ProgressBar label="Task Progress" percent={taskProgress} />
-          <ProgressBar label="Milestone Progress" percent={milestoneProgress} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+          <ProgressRing label="Task Progress" percent={taskProgress} subtitle="Completion rate based on finished tasks" color="#4f46e5" delayMs={0} />
+          <ProgressRing label="Milestone Progress" percent={milestoneProgress} subtitle={`${approvedMs.length} of ${validMs.length} milestones approved`} color="#0284c7" delayMs={120} />
         </div>
       </div>
 
@@ -74,4 +60,3 @@ export function ProjectOverviewTab({ project }: { project: Project }) {
 }
 
 export default ProjectOverviewTab;
-
