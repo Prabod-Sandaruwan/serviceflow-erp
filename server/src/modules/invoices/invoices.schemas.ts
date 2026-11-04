@@ -40,7 +40,12 @@ export const issueInvoiceSchema = z.object({
   dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'),
 });
 
+export const cancelInvoiceSchema = z.object({
+  reason: z.string().trim().min(5, 'Reason must be at least 5 characters').max(500, 'Reason cannot exceed 500 characters'),
+});
+
 export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
 export type UpdateInvoiceInput = z.infer<typeof updateInvoiceSchema>;
 export type CreateInvoiceItemInput = z.infer<typeof createInvoiceItemSchema>;
 export type IssueInvoiceInput = z.infer<typeof issueInvoiceSchema>;
+export type CancelInvoiceInput = z.infer<typeof cancelInvoiceSchema>;

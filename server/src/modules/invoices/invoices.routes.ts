@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { create, update, issue } from './invoices.controller';
+import { create, update, issue, cancel } from './invoices.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -20,6 +20,11 @@ route(router, 'patch', '/:id', {
 route(router, 'post', '/:id/issue', {
   roles: managerRoles,
   handler: [requireAuth, requireRole(managerRoles), issue],
+});
+
+route(router, 'post', '/:id/cancel', {
+  roles: managerRoles,
+  handler: [requireAuth, requireRole(managerRoles), cancel],
 });
 
 registry.registerPath({
@@ -59,6 +64,20 @@ registry.registerPath({
     404: { description: 'Invoice not found' },
     409: { description: 'Conflict: Invoice is immutable or milestone not approved' },
     422: { description: 'Unprocessable Entity: Invalid due date' },
+  },
+});
+
+registry.registerPath({
+  method: 'post',
+  path: '/api/v1/invoices/{id}/cancel',
+  summary: 'Cancel an invoice',
+  responses: {
+    200: { description: 'Invoice cancelled' },
+    401: { description: 'Unauthenticated' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Invoice not found' },
+    409: { description: 'Conflict: Invoice has active payments or already cancelled' },
+    422: { description: 'Unprocessable Entity: Invalid cancellation reason' },
   },
 });
 
