@@ -5,6 +5,7 @@ import { ApiError } from '../../shared/errors';
 import { AuditService } from '../audit/audit.service';
 import { CreateInvoiceInput } from './invoices.schemas';
 import { formatInvoice } from './invoices.formatter';
+import { calculateSubtotal, calculateTotal } from './totals';
 
 export interface InvoiceServiceContext { ip?: string; requestId?: string; }
 type Actor = { userId?: bigint | string; role?: string };
@@ -27,27 +28,42 @@ export async function createInvoice(data: CreateInvoiceInput, actor?: Actor, ctx
     const existingActive = await tx.invoice.findFirst({ where: { milestoneId: rawMilestoneId, status: { not: 'CANCELLED' } } });
     if (existingActive) throw new ApiError(409, 'INVOICE_ALREADY_EXISTS', 'An active invoice already exists for this milestone');
 
-    const itemsRaw = (data.items && data.items.length > 0) ? data.items : [{ description: m.title || m.name, amount: m.billing_amount.toString() }];
-    let subtotalDec = new Decimal(0);
+    const itemsRaw = (data.items && data.items.length > 0)
+      ? data.items
+      : [{ description: m.title || m.name, amount: m.billing_amount.toString() }];
+
+    const subtotalStr = calculateSubtotal(itemsRaw);
+    const taxAmountStr = data.taxAmount ? String(data.taxAmount) : '0';
+    const totalStr = calculateTotal(subtotalStr, taxAmountStr);
+
+    const subtotal = new Prisma.Decimal(subtotalStr);
+    const taxAmount = new Prisma.Decimal(taxAmountStr);
+    const total = new Prisma.Decimal(totalStr);
+    const taxRate = data.taxRate !== undefined && data.taxRate !== null ? new Prisma.Decimal(data.taxRate.toString()) : null;
+
     const itemsToCreate = itemsRaw.map((it: any, idx: number) => {
       const qty = new Decimal(it.quantity ?? 1);
       const unitPrice = new Decimal(it.amount);
       const lineAmount = unitPrice.times(qty);
-      subtotalDec = subtotalDec.plus(lineAmount);
       return {
-        lineNo: idx + 1, description: it.description,
-        quantity: new Prisma.Decimal(qty.toFixed(2)), unitPrice: new Prisma.Decimal(unitPrice.toFixed(2)), lineAmount: new Prisma.Decimal(lineAmount.toFixed(2)),
+        lineNo: idx + 1,
+        description: it.description,
+        quantity: new Prisma.Decimal(qty.toFixed(2)),
+        unitPrice: new Prisma.Decimal(unitPrice.toFixed(2)),
+        lineAmount: new Prisma.Decimal(lineAmount.toFixed(2)),
       };
     });
 
-    const subtotal = new Prisma.Decimal(subtotalDec.toFixed(2));
     let invoice: any;
     try {
       invoice = await tx.invoice.create({
         data: {
           invoiceNumber: `TMP-${Math.random().toString(36).slice(2, 10)}`,
           projectId: m.project_id, milestoneId: m.id, activeMilestoneKey: m.id,
-          subtotal, total: subtotal, status: 'DRAFT', createdBy: creatorId,
+          subtotal, taxType: data.taxType ?? null, taxRate, taxAmount,
+          taxReference: data.taxReference ?? null, total,
+          notes: data.notes ?? null, dueDate: data.dueDate ? new Date(data.dueDate) : null,
+          status: 'DRAFT', createdBy: creatorId,
           items: { create: itemsToCreate },
         },
       });

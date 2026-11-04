@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-003: Implement invoice items, totals and manual tax  
+**Current Task:** INV-004: Implement draft invoice editing  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
@@ -53,7 +53,7 @@
 ## Phase 9 — Invoices
 - [x] INV-001: Confirm invoice contracts and rules
 - [x] INV-002: Implement invoice creation from an eligible milestone
-- [ ] INV-003: Implement invoice items, totals and manual tax
+- [x] INV-003: Implement invoice items, totals and manual tax
 - [ ] INV-004: Implement draft invoice editing
 - [ ] INV-005: Implement invoice issue and the immutability guard
 - [ ] INV-006: Implement invoice cancellation rules
