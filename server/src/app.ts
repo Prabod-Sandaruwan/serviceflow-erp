@@ -1,6 +1,5 @@
 import express, { Application, Request, Response } from 'express';
 import swaggerUi from 'swagger-ui-express';
-import prisma from './config/prisma';
 import { requestIdMiddleware } from './middleware/requestId';
 import { httpLogger } from './config/logger';
 import { securityHeaders, corsMiddleware } from './middleware/security';
@@ -16,6 +15,10 @@ import { clientRoutes } from './modules/clients/clients.routes';
 import { leadRoutes } from './modules/leads/leads.routes';
 import { followUpRoutes } from './modules/followups/followups.routes';
 import { quotationRoutes } from './modules/quotations/quotations.routes';
+import { projectRoutes } from './modules/projects/projects.routes';
+import { milestoneRoutes } from './modules/milestones/milestones.routes';
+import { taskRoutes } from './modules/tasks/tasks.routes';
+import { healthCheckHandler } from './modules/health/health.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
 import { route, assertAllRoutesRegistered } from './shared/routeRegistry';
@@ -47,6 +50,10 @@ app.use('/api/v1/clients', clientRoutes);
 app.use('/api/v1/leads', leadRoutes);
 app.use('/api/v1/follow-ups', followUpRoutes);
 app.use('/api/v1/quotations', quotationRoutes);
+app.use('/api/v1/projects', projectRoutes);
+app.use('/api/v1', milestoneRoutes);
+app.use('/api/v1', taskRoutes);
+
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
@@ -55,25 +62,6 @@ route(app as any, 'get', '/api/v1/test-protected', {
   roles: ['ADMIN', 'MANAGER', 'STAFF'],
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
 });
-
-const healthCheckHandler = async (_req: Request, res: Response) => {
-  try {
-    await prisma.$queryRawUnsafe('SELECT 1');
-    res.status(200).json({
-      status: 'ok',
-      database: 'connected',
-      timestamp: new Date().toISOString(),
-      uptime: process.uptime(),
-      service: 'ServiceFlow ERP API',
-    });
-  } catch {
-    res.status(503).json({
-      status: 'error',
-      database: 'disconnected',
-      error: 'Database ping failed',
-    });
-  }
-};
 
 app.get('/health', healthCheckHandler);
 route(app as any, 'get', '/api/v1/health', {

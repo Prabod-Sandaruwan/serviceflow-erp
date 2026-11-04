@@ -4,6 +4,7 @@ export interface User {
   role: string;
   fullName?: string;
   mustChangePassword?: boolean;
+  employeeId?: string;
   employee?: {
     id?: string;
     fullName?: string;

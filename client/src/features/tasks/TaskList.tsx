@@ -1,1 +1,4 @@
-export default function TaskList() { return <div style={{ padding: '2rem' }}><h1>TaskList Page</h1></div>; }
+import TasksPage from './TasksPage';
+
+export { TasksPage };
+export default TasksPage;

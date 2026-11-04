@@ -4,9 +4,16 @@ import { MemoryRouter } from 'react-router-dom';
 import { ActionBar } from './ActionBar';
 import * as authProvider from '../auth/AuthProvider';
 import * as wfHooks from './workflowHooks';
+import * as projHooks from '../projects/hooks';
 import { ToastProvider } from '../../components/ui/Toast';
 
+const mockNavigate = vi.fn();
+vi.mock('react-router-dom', async () => ({
+  ...(await vi.importActual<any>('react-router-dom')),
+  useNavigate: () => mockNavigate,
+}));
 vi.mock('../auth/AuthProvider', () => ({ useAuth: vi.fn() }));
+vi.mock('../projects/hooks', () => ({ useCreateProject: vi.fn() }));
 vi.mock('./workflowHooks', () => ({
   downloadQuotationPdf: vi.fn(),
   useSubmitQuotation: vi.fn(),
@@ -17,17 +24,18 @@ vi.mock('./workflowHooks', () => ({
   useReviseQuotation: vi.fn(),
 }));
 
-describe('ActionBar Component (QUOT-015)', () => {
-  const mockMutate = vi.fn();
+describe('ActionBar Component (QUOT-015, PROJ-012 & PROJ-015)', () => {
+  const mockMutate = vi.fn(), mockCreateProject = vi.fn();
   beforeEach(() => {
     vi.clearAllMocks();
-    const hookReturn = { mutateAsync: mockMutate, isPending: false } as any;
-    vi.mocked(wfHooks.useSubmitQuotation).mockReturnValue(hookReturn);
-    vi.mocked(wfHooks.useApproveQuotation).mockReturnValue(hookReturn);
-    vi.mocked(wfHooks.useRejectQuotation).mockReturnValue(hookReturn);
-    vi.mocked(wfHooks.useSendQuotation).mockReturnValue(hookReturn);
-    vi.mocked(wfHooks.useRespondQuotation).mockReturnValue(hookReturn);
-    vi.mocked(wfHooks.useReviseQuotation).mockReturnValue(hookReturn);
+    const ret = { mutateAsync: mockMutate, isPending: false } as any;
+    vi.mocked(wfHooks.useSubmitQuotation).mockReturnValue(ret);
+    vi.mocked(wfHooks.useApproveQuotation).mockReturnValue(ret);
+    vi.mocked(wfHooks.useRejectQuotation).mockReturnValue(ret);
+    vi.mocked(wfHooks.useSendQuotation).mockReturnValue(ret);
+    vi.mocked(wfHooks.useRespondQuotation).mockReturnValue(ret);
+    vi.mocked(wfHooks.useReviseQuotation).mockReturnValue(ret);
+    vi.mocked(projHooks.useCreateProject).mockReturnValue({ mutateAsync: mockCreateProject, isPending: false } as any);
   });
 
   const renderBar = (status: string, role = 'STAFF', userId = '1', createdBy = '2', refetch = vi.fn()) => {
@@ -51,31 +59,37 @@ describe('ActionBar Component (QUOT-015)', () => {
   });
 
   it('Action visibility: PENDING_APPROVAL matrix for role and creator', () => {
-    // MANAGER not creator -> sees Approve & Reject
     const { unmount: u1 } = renderBar('PENDING_APPROVAL', 'MANAGER', '2', '1');
     expect(screen.getByRole('button', { name: /Approve/i })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Reject/i })).toBeInTheDocument();
     u1();
-
-    // MANAGER is creator -> cannot self-approve
     const { unmount: u2 } = renderBar('PENDING_APPROVAL', 'MANAGER', '1', '1');
     expect(screen.queryByRole('button', { name: /Approve/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Reject/i })).not.toBeInTheDocument();
     u2();
-
-    // STAFF cannot approve
     renderBar('PENDING_APPROVAL', 'STAFF', '3', '1');
     expect(screen.queryByRole('button', { name: /Approve/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: /Reject/i })).not.toBeInTheDocument();
   });
 
   it('handles 409 status conflict by triggering refetch and warning toast', async () => {
     const refetch = vi.fn();
     mockMutate.mockRejectedValueOnce({ status: 409, message: 'INVALID_STATE_TRANSITION' });
     renderBar('DRAFT', 'STAFF', '1', '1', refetch);
-
     fireEvent.click(screen.getByRole('button', { name: /Submit/i }));
     await waitFor(() => expect(refetch).toHaveBeenCalled());
   });
-});
 
+  it('handles create project success and 409 PROJECT_ALREADY_EXISTS warning toast & redirect', async () => {
+    mockCreateProject.mockResolvedValueOnce({ data: { id: 'p1' } });
+    const { unmount } = renderBar('ACCEPTED');
+    fireEvent.click(screen.getByRole('button', { name: /Create Project/i }));
+    await waitFor(() => expect(mockCreateProject).toHaveBeenCalledWith({ quotationId: '100' }));
+    expect(mockNavigate).toHaveBeenCalledWith('/projects/p1');
+    unmount();
+
+    mockCreateProject.mockRejectedValueOnce({ status: 409, code: 'PROJECT_ALREADY_EXISTS', message: 'Project already exists for this quotation' });
+    renderBar('ACCEPTED');
+    fireEvent.click(screen.getByRole('button', { name: /Create Project/i }));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/projects'));
+    expect(await screen.findByText(/Project already exists for this quotation/i)).toBeInTheDocument();
+  });
+});

@@ -20,5 +20,5 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
   },
-  ignorePatterns: ['dist', 'node_modules', 'coverage'],
+  ignorePatterns: ['dist', 'node_modules', 'coverage', 'src/generated'],
 };

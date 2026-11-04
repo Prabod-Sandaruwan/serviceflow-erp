@@ -29,7 +29,7 @@ beforeAll(async () => {
 });
 
 describe('Authorization Matrix Sanity Checks', () => {
-  it('includes client, lead, follow-up, and quotation routes in registered matrix', () => {
+  it('includes CRM, quotation, project, milestone and task routes in registered matrix', () => {
     const paths = apiRoutes.map((r) => `${r.method.toUpperCase()} ${r.path}`);
     const expected = [
       'GET /api/v1/clients', 'POST /api/v1/clients', 'GET /api/v1/clients/:id', 'PATCH /api/v1/clients/:id',
@@ -38,6 +38,10 @@ describe('Authorization Matrix Sanity Checks', () => {
       'GET /api/v1/quotations', 'POST /api/v1/quotations', 'GET /api/v1/quotations/:id', 'GET /api/v1/quotations/:id/pdf',
       'PATCH /api/v1/quotations/:id', 'POST /api/v1/quotations/:id/submit', 'POST /api/v1/quotations/:id/approve',
       'POST /api/v1/quotations/:id/reject', 'POST /api/v1/quotations/:id/send', 'POST /api/v1/quotations/:id/respond',
+      'GET /api/v1/projects', 'POST /api/v1/projects', 'GET /api/v1/projects/:id', 'PATCH /api/v1/projects/:id',
+      'GET /api/v1/projects/:id/milestones', 'POST /api/v1/projects/:id/milestones',
+      'GET /api/v1/milestones/:id', 'PATCH /api/v1/milestones/:id', 'POST /api/v1/milestones/:id/approve',
+      'GET /api/v1/tasks', 'GET /api/v1/projects/:id/tasks', 'POST /api/v1/projects/:id/tasks', 'PATCH /api/v1/tasks/:id',
     ];
     for (const p of expected) expect(paths).toContain(p);
   });

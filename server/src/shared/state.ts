@@ -59,7 +59,7 @@ export const quotationMachine = defineMachine('Quotation', {
 export const projectMachine = defineMachine('Project', {
   PLANNED: [{ to: 'ACTIVE' }, { to: 'CANCELLED' }],
   ACTIVE: [{ to: 'ON_HOLD' }, { to: 'COMPLETED' }, { to: 'CANCELLED' }],
-  ON_HOLD: [{ to: 'ACTIVE' }],
+  ON_HOLD: [{ to: 'ACTIVE' }, { to: 'CANCELLED' }],
 });
 
 export const milestoneMachine = defineMachine('Milestone', {
@@ -71,7 +71,7 @@ export const milestoneMachine = defineMachine('Milestone', {
 export const taskMachine = defineMachine('Task', {
   TODO: [{ to: 'IN_PROGRESS' }, { to: 'CANCELLED' }],
   IN_PROGRESS: [{ to: 'DONE' }, { to: 'CANCELLED' }],
-  DONE: [{ to: 'IN_PROGRESS' }],
+  DONE: [{ to: 'IN_PROGRESS' }, { to: 'CANCELLED' }],
 });
 
 export const invoiceMachine = defineMachine('Invoice', {

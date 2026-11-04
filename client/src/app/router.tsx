@@ -19,6 +19,7 @@ const QuotationsPage = lazy(() => import('../features/quotations/QuotationsPage'
 const QuotationFormPage = lazy(() => import('../features/quotations/QuotationFormPage'));
 const QuotationDetailPage = lazy(() => import('../features/quotations/QuotationDetailPage'));
 const ProjectList = lazy(() => import('../features/projects/ProjectList'));
+const ProjectDetailPage = lazy(() => import('../features/projects/ProjectDetailPage'));
 const TaskList = lazy(() => import('../features/tasks/TaskList'));
 const InvoiceList = lazy(() => import('../features/invoices/InvoiceList'));
 const ExpenseList = lazy(() => import('../features/expenses/ExpenseList'));
@@ -72,6 +73,7 @@ export const router = createBrowserRouter([
       protectedChild('/quotations/:id', QuotationDetailPage),
       protectedChild('/quotations/:id/edit', QuotationFormPage),
       protectedChild('/projects', ProjectList),
+      protectedChild('/projects/:id', ProjectDetailPage),
       protectedChild('/tasks', TaskList),
       protectedChild('/invoices', InvoiceList),
       protectedChild('/expenses', ExpenseList),

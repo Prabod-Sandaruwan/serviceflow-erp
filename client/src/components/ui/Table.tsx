@@ -32,7 +32,7 @@ export function Table<T extends Record<string, any>>({
   }
 
   return (
-    <div style={{ overflowX: 'auto', width: '100%', border: '1px solid #e2e8f0', borderRadius: '8px', background: '#ffffff' }}>
+    <div style={{ overflowX: 'auto', width: '100%', border: '1px solid #e2e8f0', borderRadius: '8px', background: '#ffffff', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)' }}>
       <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem', color: '#0f172a' }}>
         <thead style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
           <tr>
@@ -45,7 +45,12 @@ export function Table<T extends Record<string, any>>({
         </thead>
         <tbody>
           {data.map((row, idx) => (
-            <tr key={row.id || idx} style={{ borderBottom: '1px solid #f1f5f9' }}>
+            <tr
+              key={row.id || idx}
+              style={{ borderBottom: '1px solid #f1f5f9', transition: 'background-color 0.15s ease' }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#f8fafc'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
               {columns.map((col) => (
                 <td key={String(col.key)} style={{ padding: '0.75rem 1rem', color: '#1e293b' }}>
                   {col.render ? col.render(row) : String(row[col.key as keyof T] ?? '')}
@@ -58,3 +63,5 @@ export function Table<T extends Record<string, any>>({
     </div>
   );
 }
+
+export default Table;

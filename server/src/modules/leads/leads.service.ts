@@ -6,7 +6,7 @@ import { assertLeadTransition, type LeadStatus } from './leads.machine';
 import { ApiError } from '../../shared/errors';
 import { AuditService } from '../audit/audit.service';
 
-const toBigIntId = (id: string | bigint): bigint => {
+const toBigIntId = (id: string | bigint | number): bigint => {
   try { return BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Lead not found'); }
 };
 
