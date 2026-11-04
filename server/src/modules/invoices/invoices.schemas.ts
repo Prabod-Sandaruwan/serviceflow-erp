@@ -7,6 +7,10 @@ export const numericAmountSchema = z
     message: 'Amount must be a non-negative number',
   });
 
+export const invoiceStatusEnum = z.enum([
+  'DRAFT', 'ISSUED', 'PARTIALLY_PAID', 'PAID', 'CANCELLED'
+]);
+
 export const createInvoiceItemSchema = z.object({
   description: z.string().min(1).max(255),
   amount: numericAmountSchema,
@@ -44,8 +48,21 @@ export const cancelInvoiceSchema = z.object({
   reason: z.string().trim().min(5, 'Reason must be at least 5 characters').max(500, 'Reason cannot exceed 500 characters'),
 });
 
+export const listInvoicesQuerySchema = z.object({
+  status: invoiceStatusEnum.optional(),
+  clientId: z.string().optional(),
+  projectId: z.string().optional(),
+  overdue: z.preprocess((v) => (v === 'true' || v === true ? true : v === 'false' || v === false ? false : undefined), z.boolean().optional()),
+  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  pageSize: z.coerce.number().int().min(1).max(100).optional(),
+});
+
 export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
 export type UpdateInvoiceInput = z.infer<typeof updateInvoiceSchema>;
 export type CreateInvoiceItemInput = z.infer<typeof createInvoiceItemSchema>;
 export type IssueInvoiceInput = z.infer<typeof issueInvoiceSchema>;
 export type CancelInvoiceInput = z.infer<typeof cancelInvoiceSchema>;
+export type ListInvoicesQuery = z.infer<typeof listInvoicesQuerySchema>;

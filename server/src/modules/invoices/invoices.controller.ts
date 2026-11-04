@@ -1,11 +1,41 @@
 import { Request, Response, NextFunction } from 'express';
-import { createInvoice, updateInvoice, issueInvoice, cancelInvoice } from './invoices.service';
-import { createInvoiceSchema, updateInvoiceSchema, issueInvoiceSchema, cancelInvoiceSchema } from './invoices.schemas';
+import {
+  createInvoice,
+  updateInvoice,
+  issueInvoice,
+  cancelInvoice,
+  getInvoices,
+  getInvoiceById,
+} from './invoices.service';
+import {
+  createInvoiceSchema,
+  updateInvoiceSchema,
+  issueInvoiceSchema,
+  cancelInvoiceSchema,
+  listInvoicesQuerySchema,
+} from './invoices.schemas';
+import { ok, paged } from '../../shared/http';
 
-const actorOf = (req: Request) => {
-  const u = req.auth || (req as any).user;
-  return u ? { userId: u.userId ?? u.id, role: u.role } : undefined;
-};
+const actorOf = (req: Request) => req.auth || (req as any).user;
+
+export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const query = listInvoicesQuerySchema.parse(req.query);
+    const result = await getInvoices(query, actorOf(req));
+    paged(res, result.data, result.meta);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function getById(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await getInvoiceById(req.params.id as string, actorOf(req));
+    ok(res, result);
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function create(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

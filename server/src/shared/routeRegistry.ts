@@ -62,6 +62,7 @@ export function assertAllRoutesRegistered(app: any): void {
             '/api/v1/follow-ups',
             '/api/v1/quotations',
             '/api/v1/projects',
+            '/api/v1/invoices',
             '/api/v1',
           ];
           for (const pr of prefixes) {

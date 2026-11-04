@@ -1,11 +1,22 @@
 import { Router } from 'express';
-import { create, update, issue, cancel } from './invoices.controller';
+import { list, getById, create, update, issue, cancel } from './invoices.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
 
 const router = Router();
+const allRoles = ['ADMIN', 'MANAGER', 'STAFF'];
 const managerRoles = ['ADMIN', 'MANAGER'];
+
+route(router, 'get', '/', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), list],
+});
+
+route(router, 'get', '/:id', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), getById],
+});
 
 route(router, 'post', '/', {
   roles: managerRoles,
@@ -28,57 +39,45 @@ route(router, 'post', '/:id/cancel', {
 });
 
 registry.registerPath({
+  method: 'get',
+  path: '/api/v1/invoices',
+  summary: 'List invoices',
+  responses: { 200: { description: 'Invoices list' }, 401: { description: 'Unauthenticated' } },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/invoices/{id}',
+  summary: 'Get invoice details',
+  responses: { 200: { description: 'Invoice details' }, 401: { description: 'Unauthenticated' }, 404: { description: 'Not found' } },
+});
+
+registry.registerPath({
   method: 'post',
   path: '/api/v1/invoices',
-  summary: 'Create invoice from eligible milestone',
-  responses: {
-    201: { description: 'Invoice created' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Milestone not found' },
-    409: { description: 'Conflict' },
-  },
+  summary: 'Create invoice',
+  responses: { 201: { description: 'Invoice created' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' } },
 });
 
 registry.registerPath({
   method: 'patch',
   path: '/api/v1/invoices/{id}',
   summary: 'Update draft invoice',
-  responses: {
-    200: { description: 'Invoice updated' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Invoice not found' },
-    409: { description: 'Conflict: Invoice is immutable' },
-  },
+  responses: { 200: { description: 'Invoice updated' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' } },
 });
 
 registry.registerPath({
   method: 'post',
   path: '/api/v1/invoices/{id}/issue',
-  summary: 'Issue a draft invoice',
-  responses: {
-    200: { description: 'Invoice issued' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Invoice not found' },
-    409: { description: 'Conflict: Invoice is immutable or milestone not approved' },
-    422: { description: 'Unprocessable Entity: Invalid due date' },
-  },
+  summary: 'Issue draft invoice',
+  responses: { 200: { description: 'Invoice issued' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' } },
 });
 
 registry.registerPath({
   method: 'post',
   path: '/api/v1/invoices/{id}/cancel',
-  summary: 'Cancel an invoice',
-  responses: {
-    200: { description: 'Invoice cancelled' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-    404: { description: 'Invoice not found' },
-    409: { description: 'Conflict: Invoice has active payments or already cancelled' },
-    422: { description: 'Unprocessable Entity: Invalid cancellation reason' },
-  },
+  summary: 'Cancel invoice',
+  responses: { 200: { description: 'Invoice cancelled' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' } },
 });
 
 export const invoiceRoutes = router;
