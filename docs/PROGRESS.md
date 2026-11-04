@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-001: Confirm invoice contracts, transitions and numbering  
+**Current Task:** INV-002: Implement invoice creation from an eligible milestone  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
@@ -51,7 +51,7 @@
 - [x] PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed
 
 ## Phase 9 — Invoices
-- [ ] INV-001: Confirm invoice contracts and rules
+- [x] INV-001: Confirm invoice contracts and rules
 - [ ] INV-002: Implement invoice creation from an eligible milestone
 - [ ] INV-003: Implement invoice items, totals and manual tax
 - [ ] INV-004: Implement draft invoice editing
