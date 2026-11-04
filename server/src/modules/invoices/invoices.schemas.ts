@@ -35,6 +35,12 @@ export const updateInvoiceSchema = z.object({
   ...taxFields,
 });
 
+export const issueInvoiceSchema = z.object({
+  issueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'),
+  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'),
+});
+
 export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
 export type UpdateInvoiceInput = z.infer<typeof updateInvoiceSchema>;
 export type CreateInvoiceItemInput = z.infer<typeof createInvoiceItemSchema>;
+export type IssueInvoiceInput = z.infer<typeof issueInvoiceSchema>;

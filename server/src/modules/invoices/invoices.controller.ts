@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { createInvoice, updateInvoice } from './invoices.service';
-import { createInvoiceSchema, updateInvoiceSchema } from './invoices.schemas';
+import { createInvoice, updateInvoice, issueInvoice } from './invoices.service';
+import { createInvoiceSchema, updateInvoiceSchema, issueInvoiceSchema } from './invoices.schemas';
 
 const actorOf = (req: Request) => {
   const u = req.auth || (req as any).user;
@@ -21,6 +21,16 @@ export async function update(req: Request, res: Response, next: NextFunction): P
   try {
     const data = updateInvoiceSchema.parse(req.body);
     const invoice = await updateInvoice(req.params.id as string, data, actorOf(req), { ip: req.ip, requestId: (req as any).id });
+    res.json({ data: invoice });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function issue(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const data = issueInvoiceSchema.parse(req.body);
+    const invoice = await issueInvoice(req.params.id as string, data, actorOf(req), { ip: req.ip, requestId: (req as any).id });
     res.json({ data: invoice });
   } catch (err) {
     next(err);
