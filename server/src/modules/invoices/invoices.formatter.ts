@@ -64,11 +64,19 @@ export const formatInvoice = (inv: any) => {
       name: inv.project.name,
       projectCode: inv.project.projectCode ?? inv.project.project_code,
       clientId: inv.project.clientId?.toString() ?? inv.project.client_id?.toString(),
+      manager: inv.project.creator?.employee?.full_name || inv.project.creator?.email || null,
       client: inv.project.client ? {
         id: inv.project.client.id?.toString(),
         displayName: inv.project.client.displayName ?? inv.project.client.display_name,
+        email: inv.project.client.email ?? null,
+        phone: inv.project.client.phone ?? null,
+        address: inv.project.client.address ?? null,
+        registrationNumber: inv.project.client.registrationNumber ?? inv.project.client.registration_number ?? null,
       } : undefined,
     } : undefined,
+    issuerName: inv.issuer?.employee?.full_name || inv.issuer?.email || null,
+    issuerTitle: inv.issuer?.employee?.job_title || null,
+    creatorName: inv.creator?.employee?.full_name || inv.creator?.email || null,
     milestone: inv.milestone ? { id: inv.milestone.id?.toString(), name: inv.milestone.name } : undefined,
   };
 };

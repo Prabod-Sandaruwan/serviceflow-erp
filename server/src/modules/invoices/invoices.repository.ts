@@ -78,9 +78,11 @@ export async function findById(id: bigint, actorEmployeeId?: bigint) {
     where,
     include: {
       items: true,
-      project: { include: { client: true } },
+      project: { include: { client: true, creator: { include: { employee: true } } } },
       milestone: true,
       payments: true,
+      creator: { include: { employee: true } },
+      issuer: { include: { employee: true } },
     },
   });
 }

@@ -21,8 +21,8 @@ export function generateInvoicePdf(invoice: any): Promise<Buffer> {
     drawHeader(doc, invoice);
     drawCards(doc, invoice, 110);
     const tableEndY = drawItemsTable(doc, invoice, 196);
-    drawSummary(doc, invoice, tableEndY + 10);
-    drawFooter(doc, invoice, 490);
+    const summaryEndY = drawSummary(doc, invoice, tableEndY + 10);
+    drawFooter(doc, invoice, Math.max(summaryEndY + 15, 450));
 
     // Watermark stamps for non-finalized states
     if (invoice.status === 'DRAFT') {
