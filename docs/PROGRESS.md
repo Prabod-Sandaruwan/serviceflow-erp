@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-012: Build the invoice list and detail pages  
+**Current Task:** INV-013: Build the draft invoice form and the issue and cancel actions  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
@@ -62,7 +62,7 @@
 - [x] INV-009: Implement invoice audit coverage review
 - [x] INV-010: Write invoice unit tests
 - [x] INV-011: Write invoice integration tests
-- [ ] INV-012: Build the invoice list and detail pages
+- [x] INV-012: Build the invoice list and detail pages
 - [ ] INV-013: Build the draft invoice form and the issue and cancel actions
 - [ ] INV-014: Add invoice frontend tests
 - [ ] INV-015: Verify invoice acceptance (AS-08) and extend seed
