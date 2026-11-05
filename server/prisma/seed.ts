@@ -32,7 +32,7 @@ const seedClients = [
 ];
 
 async function main() {
-  const passwordHash = await hashPassword('ServiceFlow@2026');
+  const passwordHash = await hashPassword('12345');
 
   for (const u of seedUsers) {
     const existing = await prisma.user.findUnique({ where: { email: u.email } });
@@ -43,8 +43,8 @@ async function main() {
 
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { role: u.role, password_hash: passwordHash, must_change_password: true, employeeId: emp.id },
-      create: { email: u.email, role: u.role, password_hash: passwordHash, must_change_password: true, employeeId: emp.id },
+      update: { role: u.role, password_hash: passwordHash, must_change_password: false, employeeId: emp.id },
+      create: { email: u.email, role: u.role, password_hash: passwordHash, must_change_password: false, employeeId: emp.id },
     });
   }
 
