@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-014: Add invoice frontend tests  
+**Current Task:** INV-015: Verify invoice acceptance (AS-08) and extend seed  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
@@ -64,5 +64,5 @@
 - [x] INV-011: Write invoice integration tests
 - [x] INV-012: Build the invoice list and detail pages
 - [x] INV-013: Build the draft invoice form and the issue and cancel actions
-- [ ] INV-014: Add invoice frontend tests
+- [x] INV-014: Add invoice frontend tests
 - [ ] INV-015: Verify invoice acceptance (AS-08) and extend seed

@@ -21,8 +21,12 @@ export function CancelDialog({ isOpen, onClose, onConfirm, isLoading }: CancelDi
       return;
     }
     setError(null);
-    await onConfirm(trimmed);
-    handleClose();
+    try {
+      await onConfirm(trimmed);
+      handleClose();
+    } catch (err: any) {
+      setError(err?.message || 'Failed to cancel invoice');
+    }
   };
 
   const handleClose = () => {
@@ -66,3 +70,4 @@ export function CancelDialog({ isOpen, onClose, onConfirm, isLoading }: CancelDi
 }
 
 export default CancelDialog;
+

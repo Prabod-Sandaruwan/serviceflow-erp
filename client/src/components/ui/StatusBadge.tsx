@@ -39,13 +39,13 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   CANCELLED: { label: 'Cancelled', bg: '#fee2e2', color: '#991b1b' },
 };
 
-export interface BadgeProps {
+export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   children: ReactNode;
   variant?: 'default' | 'danger' | 'warning' | 'success' | 'info';
   style?: CSSProperties;
 }
 
-export function Badge({ children, variant = 'default', style }: BadgeProps) {
+export function Badge({ children, variant = 'default', style, ...props }: BadgeProps) {
   const styles = {
     default: { bg: '#f1f5f9', color: '#475569' },
     danger: { bg: '#fee2e2', color: '#991b1b' },
@@ -56,6 +56,7 @@ export function Badge({ children, variant = 'default', style }: BadgeProps) {
   const cfg = styles[variant] || styles.default;
   return (
     <span
+      {...props}
       style={{
         display: 'inline-flex', alignItems: 'center', gap: '0.35rem',
         padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.75rem',

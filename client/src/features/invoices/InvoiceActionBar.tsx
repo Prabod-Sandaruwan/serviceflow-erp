@@ -42,7 +42,10 @@ export function InvoiceActionBar({ invoice, refetch }: { invoice: Invoice; refet
       await cancelM.mutateAsync({ id: invoice.id, reason });
       addToast('Invoice cancelled successfully', 'success');
       refetch();
-    } catch (e: any) { addToast(e?.message || 'Failed to cancel invoice', 'error'); }
+    } catch (e: any) {
+      addToast(e?.message || 'Failed to cancel invoice', 'error');
+      throw e;
+    }
   };
 
   return (
@@ -78,3 +81,4 @@ export function InvoiceActionBar({ invoice, refetch }: { invoice: Invoice; refet
 }
 
 export default InvoiceActionBar;
+
