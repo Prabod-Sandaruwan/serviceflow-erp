@@ -86,6 +86,7 @@ export async function findById(id: bigint, actorEmployeeId?: bigint) {
           client: true,
         },
       },
+      milestone: true,
     },
   });
 }

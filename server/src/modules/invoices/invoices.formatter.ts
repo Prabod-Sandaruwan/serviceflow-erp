@@ -61,6 +61,7 @@ export const formatInvoice = (inv: any) => {
         displayName: inv.project.client.displayName ?? inv.project.client.display_name,
       } : undefined,
     } : undefined,
+    milestone: inv.milestone ? { id: inv.milestone.id?.toString(), name: inv.milestone.name } : undefined,
   };
 };
 
