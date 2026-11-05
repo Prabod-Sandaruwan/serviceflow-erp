@@ -25,7 +25,7 @@ export const formatInvoice = (inv: any) => {
   const isOverdue = dueDateStr ? isOverdueInvoice({ status: inv.status, dueDate: dueDateStr, balance }) : false;
 
   return {
-    id: inv.id.toString(),
+    id: inv.id != null ? inv.id.toString() : '',
     invoiceNumber: inv.invoiceNumber ?? inv.invoice_number,
     projectId: inv.projectId?.toString() ?? inv.project_id?.toString(),
     milestoneId: inv.milestoneId?.toString() ?? inv.milestone_id?.toString(),

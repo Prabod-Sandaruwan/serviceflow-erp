@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateSubtotal, calculateTotal } from '../../src/modules/invoices/totals';
+import { calculateSubtotal, calculateTotal, calculateBalance } from '../../src/modules/invoices/totals';
 import { createInvoiceSchema, createInvoiceItemSchema } from '../../src/modules/invoices/invoices.schemas';
 
 describe('Invoice Totals and Manual Tax Calculation', () => {
@@ -51,6 +51,18 @@ describe('Invoice Totals and Manual Tax Calculation', () => {
     expect(() => createInvoiceSchema.parse({ milestoneId: '1', taxAmount: '-1' })).toThrow();
     expect(() => createInvoiceSchema.parse({ milestoneId: '1', taxRate: 105 })).toThrow();
     expect(() => createInvoiceSchema.parse({ milestoneId: '1', taxRate: -5 })).toThrow();
+  });
+
+  it('calculates balance by subtracting active payments and excluding voided/cancelled', () => {
+    const total = '1000.00';
+    const payments = [
+      { amount: '300.00', status: 'ACTIVE' },
+      { amount: '150.00' },
+      { amount: '200.00', status: 'VOIDED' },
+      { amount: '100.00', status: 'CANCELLED' },
+    ];
+    expect(calculateBalance(total, payments)).toBe('550.00');
+    expect(calculateBalance(total, [])).toBe('1000.00');
   });
 });
 

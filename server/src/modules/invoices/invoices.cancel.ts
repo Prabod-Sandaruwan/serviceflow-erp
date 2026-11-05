@@ -3,6 +3,7 @@ import { ApiError } from '../../shared/errors';
 import { AuditService } from '../audit/audit.service';
 import { CancelInvoiceInput } from './invoices.schemas';
 import { formatInvoice } from './invoices.formatter';
+import { assertCancellable } from './invoices.guard';
 import { Actor, InvoiceServiceContext } from './invoices.create';
 
 export async function cancelInvoice(
@@ -21,19 +22,13 @@ export async function cancelInvoice(
     const inv = rows?.[0];
     if (!inv) throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
 
-    if (inv.status === 'PARTIALLY_PAID' || inv.status === 'PAID') {
-      throw new ApiError(409, 'INVOICE_HAS_PAYMENTS', 'Cannot cancel a partially paid or paid invoice');
-    }
+    assertCancellable(inv);
 
     const activePayment = await tx.payment.findFirst({
       where: { invoiceId, status: 'ACTIVE' },
     });
     if (activePayment) {
       throw new ApiError(409, 'INVOICE_HAS_PAYMENTS', 'Cannot cancel an invoice with active payments');
-    }
-
-    if (inv.status === 'CANCELLED') {
-      throw new ApiError(409, 'ALREADY_CANCELLED', 'Invoice is already cancelled');
     }
 
     const cancelledBy = actor?.userId ? BigInt(actor.userId) : null;

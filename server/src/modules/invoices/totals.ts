@@ -5,6 +5,12 @@ export interface InvoiceItemAmountInput {
   [key: string]: any;
 }
 
+export interface PaymentAmountInput {
+  amount: string | number;
+  status?: string;
+  [key: string]: any;
+}
+
 export function calculateSubtotal(items: Array<InvoiceItemAmountInput>): string {
   let subtotal = new Decimal(0);
   for (const item of items) {
@@ -24,3 +30,17 @@ export function calculateTotal(
   return s.plus(t).toFixed(2);
 }
 
+export function calculateBalance(
+  total: string | number,
+  payments: Array<PaymentAmountInput> = []
+): string {
+  let paid = new Decimal(0);
+  for (const p of payments) {
+    if (!p.status || p.status === 'ACTIVE') {
+      paid = paid.plus(new Decimal(String(p.amount ?? 0)));
+    }
+  }
+  const tot = new Decimal(String(total || 0));
+  const bal = tot.minus(paid);
+  return bal.toFixed(2);
+}
