@@ -5,19 +5,18 @@ const fmt = (v: any) => '$' + Number(v || 0).toLocaleString('en-US', { minimumFr
 export function drawSummary(doc: PDFKit.PDFDocument, invoice: any, startY: number): number {
   const y = Math.max(startY, 310);
 
-  // Left Column: AMOUNT IN WORDS & NOTES
+  // Left Column: AMOUNT IN WORDS
   doc.roundedRect(38, y, 252, 42, 5).fillAndStroke('#f8fafc', '#e2e8f0');
   doc.fontSize(6.5).font('Helvetica-Bold').fillColor('#64748b').text('AMOUNT IN WORDS', 46, y + 6);
   const words = numberToWords(invoice.total);
   doc.fontSize(7.5).font('Helvetica-Oblique').fillColor('#0f172a').text(`"${words}"`, 46, y + 17, { width: 236 });
 
-  const noteY = y + 50;
+  let leftBottomY = y + 42;
   if (invoice.notes) {
-    doc.fontSize(7).font('Helvetica-Bold').fillColor('#475569').text('NOTES & INSTRUCTIONS', 38, noteY);
+    const noteY = y + 50;
+    doc.fontSize(7).font('Helvetica-Bold').fillColor('#475569').text('NOTES', 38, noteY);
     doc.fontSize(6.5).font('Helvetica').fillColor('#64748b').text(invoice.notes, 38, noteY + 10, { width: 252 });
-  } else if (invoice.dueDate) {
-    doc.fontSize(7).font('Helvetica-Bold').fillColor('#475569').text('PAYMENT SCHEDULE', 38, noteY);
-    doc.fontSize(6.5).font('Helvetica').fillColor('#64748b').text(`Full settlement expected on or before ${invoice.dueDate}.`, 38, noteY + 10, { width: 252 });
+    leftBottomY = noteY + 25;
   }
 
   // Right Column: FINANCIAL TOTALS
@@ -56,5 +55,5 @@ export function drawSummary(doc: PDFKit.PDFDocument, invoice: any, startY: numbe
   doc.fontSize(7.5).font('Helvetica-Bold').fillColor(boxColor).text('REMAINING BALANCE DUE:', 314, rY + 7);
   doc.fontSize(10).text(`${fmt(balance)} USD`, 415, rY + 5.5, { width: 135, align: 'right' });
 
-  return Math.max(noteY + 30, rY + 30);
+  return Math.max(leftBottomY, rY + 30);
 }
