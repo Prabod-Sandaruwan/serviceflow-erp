@@ -57,11 +57,8 @@ export async function findMany(
       orderBy: { createdAt: 'desc' },
       include: {
         items: true,
-        project: {
-          include: {
-            client: true,
-          },
-        },
+        project: { include: { client: true } },
+        payments: true,
       },
     }),
     prisma.invoice.count({ where }),
@@ -81,12 +78,9 @@ export async function findById(id: bigint, actorEmployeeId?: bigint) {
     where,
     include: {
       items: true,
-      project: {
-        include: {
-          client: true,
-        },
-      },
+      project: { include: { client: true } },
       milestone: true,
+      payments: true,
     },
   });
 }

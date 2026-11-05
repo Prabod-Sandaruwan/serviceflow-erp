@@ -18,7 +18,10 @@ export const formatInvoiceItem = (item: any) => ({
 });
 
 export const formatInvoice = (inv: any) => {
-  const paid = '0.00';
+  const activePayments = Array.isArray(inv.payments)
+    ? inv.payments.filter((p: any) => !p.status || p.status === 'ACTIVE')
+    : [];
+  const paid = activePayments.reduce((acc: number, p: any) => acc + Number(p.amount || 0), 0).toFixed(2);
   const totalStr = toMoney(inv.total);
   const balance = (Number(totalStr) - Number(paid)).toFixed(2);
   const dueDateStr = inv.dueDate ? (inv.dueDate instanceof Date ? inv.dueDate.toISOString().slice(0, 10) : String(inv.dueDate).slice(0, 10)) : null;
@@ -51,6 +54,11 @@ export const formatInvoice = (inv: any) => {
     createdAt: inv.createdAt ?? inv.created_at,
     updatedAt: inv.updatedAt ?? inv.updated_at,
     items: Array.isArray(inv.items) ? inv.items.map(formatInvoiceItem) : undefined,
+    payments: Array.isArray(inv.payments) ? inv.payments.map((p: any) => ({
+      id: p.id.toString(), amount: toMoney(p.amount), method: p.method,
+      paymentDate: p.paymentDate instanceof Date ? p.paymentDate.toISOString().slice(0, 10) : String(p.paymentDate).slice(0, 10),
+      status: p.status, reference: p.reference ?? null,
+    })) : undefined,
     project: inv.project ? {
       id: inv.project.id?.toString(),
       name: inv.project.name,
