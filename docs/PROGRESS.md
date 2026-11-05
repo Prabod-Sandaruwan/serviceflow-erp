@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-001: Confirm invoice contracts, transitions and numbering  
-**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
+**Current Task:** Phase 9 Complete (Ready for Phase 10 — Payments: PAY-001)  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
 - [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
@@ -13,6 +13,7 @@
 - [x] Phase 6 - CRM and Client Management (CRM-001..014)
 - [x] Phase 7 - Quotations (QUOT-001..016)
 - [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
+- [x] Phase 9 - Invoices (INV-001..015)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -49,3 +50,20 @@
 - [x] PROJ-014: Build milestone and task views and the tasks page
 - [x] PROJ-015: Add project frontend tests
 - [x] PROJ-016: Verify project acceptance (AS-06, AS-07) and extend seed
+
+## Phase 9 — Invoices
+- [x] INV-001: Confirm invoice contracts and rules
+- [x] INV-002: Implement invoice creation from an eligible milestone
+- [x] INV-003: Implement invoice items, totals and manual tax
+- [x] INV-004: Implement draft invoice editing
+- [x] INV-005: Implement invoice issue and the immutability guard
+- [x] INV-006: Implement invoice cancellation rules
+- [x] INV-007: Implement invoice list, detail and derived overdue
+- [x] INV-008: Implement the invoice PDF
+- [x] INV-009: Implement invoice audit coverage review
+- [x] INV-010: Write invoice unit tests
+- [x] INV-011: Write invoice integration tests
+- [x] INV-012: Build the invoice list and detail pages
+- [x] INV-013: Build the draft invoice form and the issue and cancel actions
+- [x] INV-014: Add invoice frontend tests
+- [x] INV-015: Verify invoice acceptance (AS-08) and extend seed

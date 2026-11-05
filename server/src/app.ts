@@ -18,6 +18,7 @@ import { quotationRoutes } from './modules/quotations/quotations.routes';
 import { projectRoutes } from './modules/projects/projects.routes';
 import { milestoneRoutes } from './modules/milestones/milestones.routes';
 import { taskRoutes } from './modules/tasks/tasks.routes';
+import { invoiceRoutes } from './modules/invoices/invoices.routes';
 import { healthCheckHandler } from './modules/health/health.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -53,11 +54,13 @@ app.use('/api/v1/quotations', quotationRoutes);
 app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1', milestoneRoutes);
 app.use('/api/v1', taskRoutes);
+app.use('/api/v1/invoices', invoiceRoutes);
 
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
 });
+
 route(app as any, 'get', '/api/v1/test-protected', {
   roles: ['ADMIN', 'MANAGER', 'STAFF'],
   handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),

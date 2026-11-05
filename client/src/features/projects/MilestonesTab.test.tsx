@@ -1,5 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { MilestonesTab } from './MilestonesTab';
 import * as authProvider from '../auth/AuthProvider';
 import * as hooks from '../milestones/hooks';
@@ -42,9 +43,11 @@ describe('MilestonesTab Component (PROJ-015)', () => {
   const renderTab = (role = 'MANAGER') => {
     vi.mocked(authProvider.useAuth).mockReturnValue({ user: { id: 'u1', role } } as any);
     return render(
-      <ToastProvider>
+      <MemoryRouter>
+        <ToastProvider>
         <MilestonesTab projectId="p1" />
-      </ToastProvider>,
+        </ToastProvider>
+      </MemoryRouter>,
     );
   };
 

@@ -42,7 +42,7 @@ export default function ChangePassword() {
   return (
     <div style={{ display: 'flex', minHeight: '80vh', alignItems: 'center', justifyContent: 'center', padding: '1.5rem' }}>
       <div style={{ width: '100%', maxWidth: '420px', background: '#fff', borderRadius: '14px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px -5px rgba(15, 23, 42, 0.08)' }}>
-        <h1 style={{ margin: '0 0 0.5rem', fontSize: '1.5rem', fontWeight: 800, background: 'linear-gradient(135deg, #0f172a 0%, #4f46e5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center' }}>
+        <h1 style={{ margin: '0 0 0.5rem', fontSize: '1.5rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', textAlign: 'center' }}>
           Change Password
         </h1>
         <p style={{ margin: '0 0 1.5rem', fontSize: '0.85rem', color: '#64748b', textAlign: 'center' }}>

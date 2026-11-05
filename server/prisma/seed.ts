@@ -7,6 +7,7 @@ import { hashPassword } from '../src/modules/auth/password';
 import { getColomboToday } from '../src/lib/date';
 import { seedQuotations } from './seed.quotations';
 import { seedProjects } from './seed.projects';
+import { seedInvoices } from './seed.invoices';
 
 if (process.env.NODE_ENV === 'production') {
   console.error('Database seeding is not permitted in production.');
@@ -31,7 +32,7 @@ const seedClients = [
 ];
 
 async function main() {
-  const passwordHash = await hashPassword('ServiceFlow@2026');
+  const passwordHash = await hashPassword('12345');
 
   for (const u of seedUsers) {
     const existing = await prisma.user.findUnique({ where: { email: u.email } });
@@ -42,8 +43,8 @@ async function main() {
 
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { role: u.role, password_hash: passwordHash, must_change_password: true, employeeId: emp.id },
-      create: { email: u.email, role: u.role, password_hash: passwordHash, must_change_password: true, employeeId: emp.id },
+      update: { role: u.role, password_hash: passwordHash, must_change_password: false, employeeId: emp.id },
+      create: { email: u.email, role: u.role, password_hash: passwordHash, must_change_password: false, employeeId: emp.id },
     });
   }
 
@@ -83,7 +84,8 @@ async function main() {
 
   await seedQuotations(prisma, clients, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedProjects(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
-  console.log('Database seeded with users, clients, leads, follow-ups, quotations, and projects.');
+  await seedInvoices(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
+  console.log('Database seeded with users, clients, leads, follow-ups, quotations, projects, and invoices.');
 }
 
 main()

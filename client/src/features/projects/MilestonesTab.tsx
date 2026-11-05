@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import { useToast } from '../../components/ui/Toast';
 import { Table, type Column } from '../../components/ui/Table';
@@ -13,6 +14,7 @@ import type { Milestone } from '../milestones/types';
 export function MilestonesTab({ projectId }: { projectId: string }) {
   const { user } = useAuth();
   const { addToast } = useToast();
+  const navigate = useNavigate();
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const query = useMilestones(projectId);
   const approveM = useApproveMilestone(projectId);
@@ -23,18 +25,14 @@ export function MilestonesTab({ projectId }: { projectId: string }) {
     try {
       await updateM.mutateAsync({ id, data: { status } });
       addToast(`Milestone status updated to ${status}`, 'success');
-    } catch (e: any) {
-      addToast(e?.message || 'Failed to update milestone status', 'error');
-    }
+    } catch (e: any) { addToast(e?.message || 'Failed to update milestone status', 'error'); }
   };
 
   const handleApprove = async (id: string) => {
     try {
       await approveM.mutateAsync(id);
       addToast('Milestone approved', 'success');
-    } catch (e: any) {
-      addToast(e?.message || 'Failed to approve milestone', 'error');
-    }
+    } catch (e: any) { addToast(e?.message || 'Failed to approve milestone', 'error'); }
   };
 
   const columns: Column<Milestone>[] = [
@@ -59,21 +57,18 @@ export function MilestonesTab({ projectId }: { projectId: string }) {
     columns.push({
       key: 'actions', label: 'Actions',
       render: (m) => (
-        <div style={{ display: 'flex', gap: '0.4rem' }}>
+        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
           {m.status === 'PENDING' && (
-            <Button type="button" disabled={updateM.isPending} onClick={() => handleStatus(m.id, 'IN_PROGRESS')} style={{ background: '#2563eb', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>
-              Start
-            </Button>
+            <Button type="button" disabled={updateM.isPending} onClick={() => handleStatus(m.id, 'IN_PROGRESS')} style={{ background: '#2563eb', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>Start</Button>
           )}
           {m.status === 'IN_PROGRESS' && (
-            <Button type="button" disabled={updateM.isPending} onClick={() => handleStatus(m.id, 'COMPLETED')} style={{ background: '#0284c7', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>
-              Complete
-            </Button>
+            <Button type="button" disabled={updateM.isPending} onClick={() => handleStatus(m.id, 'COMPLETED')} style={{ background: '#0284c7', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>Complete</Button>
           )}
           {m.status === 'COMPLETED' && (
-            <Button type="button" disabled={approveM.isPending} onClick={() => handleApprove(m.id)} style={{ background: '#16a34a', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>
-              Approve
-            </Button>
+            <Button type="button" disabled={approveM.isPending} onClick={() => handleApprove(m.id)} style={{ background: '#16a34a', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>Approve</Button>
+          )}
+          {m.status === 'APPROVED' && (
+            <Button type="button" onClick={() => navigate(`/invoices/new?milestoneId=${m.id}`)} style={{ background: '#4f46e5', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}>Create Invoice</Button>
           )}
         </div>
       ),
