@@ -23,6 +23,7 @@ const ProjectDetailPage = lazy(() => import('../features/projects/ProjectDetailP
 const TaskList = lazy(() => import('../features/tasks/TaskList'));
 const InvoicesPage = lazy(() => import('../features/invoices/InvoicesPage'));
 const InvoiceDetailPage = lazy(() => import('../features/invoices/InvoiceDetailPage'));
+const InvoiceFormPage = lazy(() => import('../features/invoices/InvoiceFormPage'));
 const ExpenseList = lazy(() => import('../features/expenses/ExpenseList'));
 const FinanceReport = lazy(() => import('../features/reports/FinanceReport'));
 const ProjectReport = lazy(() => import('../features/reports/ProjectReport'));
@@ -77,7 +78,9 @@ export const router = createBrowserRouter([
       protectedChild('/projects/:id', ProjectDetailPage),
       protectedChild('/tasks', TaskList),
       protectedChild('/invoices', InvoicesPage),
+      protectedChild('/invoices/new', InvoiceFormPage),
       protectedChild('/invoices/:id', InvoiceDetailPage),
+      protectedChild('/invoices/:id/edit', InvoiceFormPage),
       protectedChild('/expenses', ExpenseList),
       protectedChild('/reports/finance', FinanceReport),
       protectedChild('/reports/projects', ProjectReport),

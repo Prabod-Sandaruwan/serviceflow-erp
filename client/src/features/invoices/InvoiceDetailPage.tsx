@@ -1,31 +1,14 @@
-import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { useInvoice, downloadInvoicePdf } from './hooks';
+import { useInvoice } from './hooks';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { StatusBadge, Badge } from '../../components/ui/StatusBadge';
-import { Button } from '../../components/ui/Forms';
-import { useToast } from '../../components/ui/Toast';
 import { InvoiceSections } from './InvoiceSections';
+import { InvoiceActionBar } from './InvoiceActionBar';
 
 export default function InvoiceDetailPage() {
   const { id } = useParams<{ id: string }>();
   const query = useInvoice(id);
-  const { addToast } = useToast();
-  const [downloading, setDownloading] = useState(false);
   const inv = query.data?.data;
-
-  const handleDownload = async () => {
-    if (!inv) return;
-    try {
-      setDownloading(true);
-      await downloadInvoicePdf(inv.id, `${inv.invoiceNumber || 'invoice'}.pdf`);
-      addToast('Invoice PDF downloaded', 'success');
-    } catch (e: any) {
-      addToast(e?.message || 'Failed to download PDF', 'error');
-    } finally {
-      setDownloading(false);
-    }
-  };
 
   return (
     <div style={{ padding: '2rem', maxWidth: '900px', margin: '0 auto' }}>
@@ -56,14 +39,7 @@ export default function InvoiceDetailPage() {
                 </div>
               </div>
 
-              <Button
-                type="button"
-                onClick={handleDownload}
-                disabled={downloading}
-                style={{ background: '#4f46e5', fontWeight: 600 }}
-              >
-                {downloading ? 'Downloading...' : 'Download PDF'}
-              </Button>
+              <InvoiceActionBar invoice={inv} refetch={query.refetch} />
             </div>
 
             <InvoiceSections invoice={inv} />

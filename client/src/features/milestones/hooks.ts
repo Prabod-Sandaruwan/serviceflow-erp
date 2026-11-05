@@ -10,6 +10,14 @@ export function useMilestones(projectId?: string) {
   });
 }
 
+export function useMilestone(id?: string) {
+  return useQuery<{ data: Milestone }>({
+    queryKey: ['milestones', 'detail', id],
+    queryFn: () => api.get<{ data: Milestone }>(`/milestones/${id}`),
+    enabled: Boolean(id),
+  });
+}
+
 export function useCreateMilestone(projectId?: string) {
   const queryClient = useQueryClient();
   return useMutation({

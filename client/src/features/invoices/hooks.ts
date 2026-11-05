@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../lib/api';
 import type { Invoice, InvoicesResponse } from './types';
 
@@ -50,9 +50,46 @@ export const downloadInvoicePdf = async (id: string, filename = 'invoice.pdf') =
   window.URL.revokeObjectURL(url);
 };
 
-export function useDownloadInvoicePdf() {
+export function useCreateInvoice() {
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, filename }: { id: string; filename?: string }) =>
-      downloadInvoicePdf(id, filename),
+    mutationFn: (data: any) => api.post<{ data: Invoice }>('/invoices', data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['invoices'] }),
+  });
+}
+
+export function useUpdateInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }: { id: string; [key: string]: any }) =>
+      api.patch<{ data: Invoice }>(`/invoices/${id}`, data),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ['invoices'] });
+      qc.invalidateQueries({ queryKey: ['invoices', vars.id] });
+    },
+  });
+}
+
+export function useIssueInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, ...data }: { id: string; issueDate: string; dueDate: string }) =>
+      api.post<{ data: Invoice }>(`/invoices/${id}/issue`, data),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ['invoices'] });
+      qc.invalidateQueries({ queryKey: ['invoices', vars.id] });
+    },
+  });
+}
+
+export function useCancelInvoice() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, reason }: { id: string; reason: string }) =>
+      api.post<{ data: Invoice }>(`/invoices/${id}/cancel`, { reason }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: ['invoices'] });
+      qc.invalidateQueries({ queryKey: ['invoices', vars.id] });
+    },
   });
 }
