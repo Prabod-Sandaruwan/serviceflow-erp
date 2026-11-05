@@ -17,7 +17,7 @@ export default function Dashboard() {
             fontSize: '1.75rem',
             fontWeight: 800,
             display: 'inline-block',
-            background: 'linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%)',
+            background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             letterSpacing: '-0.025em',

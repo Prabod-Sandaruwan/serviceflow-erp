@@ -79,7 +79,7 @@ export default function LeadFormPage() {
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>{isEdit ? 'Edit Lead' : 'New Lead'}</h1>
+        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>{isEdit ? 'Edit Lead' : 'New Lead'}</h1>
         <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>{isEdit ? 'Update lead progression and pipeline status' : 'Record a new prospective sales deal'}</p>
       </div>
       <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)', padding: '1.75rem' }}>
