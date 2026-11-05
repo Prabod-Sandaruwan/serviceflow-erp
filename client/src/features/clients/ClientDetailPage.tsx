@@ -18,7 +18,7 @@ export default function ClientDetailPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, background: 'linear-gradient(135deg, #0f172a 0%, #4f46e5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em', margin: 0 }}>{c.displayName}</h1>
+                    <h1 style={{ fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em', margin: 0 }}>{c.displayName}</h1>
                     <StatusBadge status={c.isActive ? 'ACTIVE' : 'INACTIVE'} />
                   </div>
                   <div style={{ fontSize: '0.85rem', color: '#64748b' }}>Type: {c.clientType} {c.registrationNumber ? `| Reg: ${c.registrationNumber}` : ''}</div>

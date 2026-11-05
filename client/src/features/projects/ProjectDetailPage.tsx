@@ -29,7 +29,7 @@ export function ProjectDetailPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', paddingBottom: '1.5rem', borderBottom: '1px solid #e2e8f0' }}>
               <div>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#4f46e5', textTransform: 'uppercase' }}>{project.projectCode}</div>
-                <h1 style={{ margin: '0.25rem 0 0', fontSize: '1.75rem', fontWeight: 800, color: '#0f172a' }}>{project.name}</h1>
+                <h1 style={{ margin: '0.25rem 0 0', fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>{project.name}</h1>
                 {project.description && <p style={{ margin: '0.35rem 0 0', fontSize: '0.875rem', color: '#64748b' }}>{project.description}</p>}
               </div>
               <ProjectStatusControl project={project} />

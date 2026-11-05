@@ -57,3 +57,11 @@ dialog::backdrop {
 dialog[open] {
   animation: sf-zoom-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+.page-title-gradient {
+  display: inline-block;
+  background: linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.025em;
+}

@@ -86,7 +86,7 @@ export default function QuotationFormPage() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto' }}>
-      <h1 style={{ margin: '0 0 1.25rem', fontSize: '1.75rem', fontWeight: 800 }}>{isEdit ? 'Edit Quotation' : 'New Quotation'}</h1>
+      <h1 style={{ margin: '0 0 1.25rem', fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #2563eb 50%, #3b82f6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>{isEdit ? 'Edit Quotation' : 'New Quotation'}</h1>
       <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', padding: '1.5rem' }}>
         {isEdit ? <QueryBoundary query={quotationQuery}>{formContent}</QueryBoundary> : formContent}
       </div>
