@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** INV-008: Implement the invoice PDF  
+**Current Task:** INV-009: Implement invoice audit coverage review  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ)
 
 ## Completed Phases
@@ -58,7 +58,7 @@
 - [x] INV-005: Implement invoice issue and the immutability guard
 - [x] INV-006: Implement invoice cancellation rules
 - [x] INV-007: Implement invoice list, detail and derived overdue
-- [ ] INV-008: Implement the invoice PDF
+- [x] INV-008: Implement the invoice PDF
 - [ ] INV-009: Implement invoice audit coverage review
 - [ ] INV-010: Write invoice unit tests
 - [ ] INV-011: Write invoice integration tests
