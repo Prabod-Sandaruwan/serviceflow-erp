@@ -41,7 +41,7 @@ export default function InvoiceDetailPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
-                  <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', fontFamily: 'monospace' }}>
+                  <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, background: 'linear-gradient(135deg, #0f172a 0%, #4f46e5 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em', fontFamily: 'monospace' }}>
                     {inv.invoiceNumber}
                   </h1>
                   <StatusBadge status={inv.status} />
