@@ -11,7 +11,7 @@ export const toDecimal = (val: string | number | Decimal): Decimal => {
   }
 };
 
-export async function paidAmount(tx: any, invoiceId: string | number): Promise<string> {
+export async function paidAmount(tx: any, invoiceId: string | number | bigint): Promise<string> {
   let sum: any = null;
 
   if (typeof tx?.query === 'function') {
