@@ -72,7 +72,7 @@ export function PaymentDialog({ isOpen, onClose, invoiceId, balance, issueDate, 
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Record Payment">
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+      <form noValidate onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <p style={{ margin: 0, fontSize: '0.875rem', color: '#64748b' }}>
           Remaining Balance: <strong>${balance}</strong>
         </p>

@@ -13,6 +13,11 @@ vi.mock('./hooks', () => ({
   useIssueInvoice: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCancelInvoice: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }));
+vi.mock('./paymentHooks', () => ({
+  useInvoicePayments: () => ({ data: { data: [] }, isLoading: false }),
+  useRecordPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useVoidPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+}));
 
 describe('InvoiceDetailPage Component (INV-014)', () => {
   beforeEach(() => { vi.clearAllMocks(); });
