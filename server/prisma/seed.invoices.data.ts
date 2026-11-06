@@ -32,7 +32,17 @@ export function buildInvoiceSeedList(
       sub: '50000.00', taxT: 'NONE', taxA: '0.00', tot: '50000.00', due: dAhead(10), issue: dAgo(20),
       issuedBy: users.manager1.id, issuedAt: dAgo(20), canBy: null, canAt: null, reason: null,
       items: [{ description: 'Phase 3 - Deployment Deliverables', amount: '50000.00', qty: 1, rate: '50000.00' }],
-      payments: [{ amount: 20000, method: 'BANK_TRANSFER' as const, ref: 'TRX-PARTIAL-881', date: dAgo(15) }],
+      payments: [
+        {
+          amount: 20000, method: 'BANK_TRANSFER' as const, ref: 'TRX-PARTIAL-881', date: dAgo(15),
+          status: 'ACTIVE' as const, idempotencyKey: 'a1b2c3d4-e5f6-4a1b-8c2d-000000000001',
+        },
+        {
+          amount: 5000, method: 'CASH' as const, ref: 'CASH-VOIDED-001', date: dAgo(18),
+          status: 'VOIDED' as const, voidReason: 'Cheque returned unpaid', voidedBy: users.manager1.id,
+          voidedAt: dAgo(17), idempotencyKey: 'a1b2c3d4-e5f6-4a1b-8c2d-000000000002',
+        },
+      ],
     },
     {
       num: 'INV-2026-0042', pid: project.id, mid: m[3].id, key: m[3].id, status: 'PAID' as const,
@@ -44,7 +54,12 @@ export function buildInvoiceSeedList(
         { description: 'API Integration & Webhook Setup', amount: '3360.00', qty: 24, rate: '140.00' },
         { description: 'Maintenance & SLA Support (Q4 Baseline)', amount: '1500.00', qty: 1, rate: '1500.00' },
       ],
-      payments: [{ amount: 18450, method: 'CARD' as const, ref: 'STRIPE-PAY-88219', date: dAgo(24) }],
+      payments: [
+        {
+          amount: 18450, method: 'CARD' as const, ref: 'STRIPE-PAY-88219', date: dAgo(24),
+          status: 'ACTIVE' as const, idempotencyKey: 'a1b2c3d4-e5f6-4a1b-8c2d-000000000003',
+        },
+      ],
     },
   ];
 }

@@ -4,6 +4,7 @@ import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { StatusBadge, Badge } from '../../components/ui/StatusBadge';
 import { InvoiceSections } from './InvoiceSections';
 import { InvoiceActionBar } from './InvoiceActionBar';
+import { PaymentHistory } from '../payments/PaymentHistory';
 
 export default function InvoiceDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -43,6 +44,11 @@ export default function InvoiceDetailPage() {
             </div>
 
             <InvoiceSections invoice={inv} />
+
+            <div>
+              <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700 }}>Payments</h3>
+              <PaymentHistory invoiceId={inv.id} onPaymentVoided={query.refetch} />
+            </div>
           </div>
         )}
       </QueryBoundary>

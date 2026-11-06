@@ -19,6 +19,7 @@ import { projectRoutes } from './modules/projects/projects.routes';
 import { milestoneRoutes } from './modules/milestones/milestones.routes';
 import { taskRoutes } from './modules/tasks/tasks.routes';
 import { invoiceRoutes } from './modules/invoices/invoices.routes';
+import { paymentRoutes } from './modules/payments/payments.routes';
 import { healthCheckHandler } from './modules/health/health.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -55,6 +56,7 @@ app.use('/api/v1/projects', projectRoutes);
 app.use('/api/v1', milestoneRoutes);
 app.use('/api/v1', taskRoutes);
 app.use('/api/v1/invoices', invoiceRoutes);
+app.use('/api/v1', paymentRoutes);
 
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',

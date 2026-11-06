@@ -32,7 +32,7 @@ export const errorHandler = (
       error: {
         code: err.code,
         message: err.message,
-        ...(err.details && err.details.length > 0 ? { details: err.details } : {}),
+        ...(err.details && (Array.isArray(err.details) ? err.details.length > 0 : true) ? { details: err.details } : {}),
         ...(requestId ? { requestId } : {}),
       },
     });

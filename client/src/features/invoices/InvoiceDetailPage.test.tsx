@@ -13,6 +13,16 @@ vi.mock('./hooks', () => ({
   useIssueInvoice: () => ({ mutateAsync: vi.fn(), isPending: false }),
   useCancelInvoice: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }));
+vi.mock('./paymentHooks', () => ({
+  useInvoicePayments: () => ({ data: { data: [] }, isLoading: false }),
+  useRecordPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useVoidPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+}));
+vi.mock('../payments/hooks', () => ({
+  useInvoicePayments: () => ({ data: { data: [] }, isLoading: false }),
+  useRecordPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+  useVoidPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
+}));
 
 describe('InvoiceDetailPage Component (INV-014)', () => {
   beforeEach(() => { vi.clearAllMocks(); });
@@ -47,9 +57,10 @@ describe('InvoiceDetailPage Component (INV-014)', () => {
     expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
   });
 
-  it('Test 2 (Role/Status Matrix - ISSUED): MANAGER sees only Cancel (Edit & Issue hidden)', () => {
+  it('Test 2 (Role/Status Matrix - ISSUED): MANAGER sees Cancel & Record Payment', () => {
     renderPage({ ...baseInv, status: 'ISSUED' }, 'MANAGER');
     expect(screen.getByRole('button', { name: /Cancel/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /Record Payment/i })).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Edit/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Issue$/i })).not.toBeInTheDocument();
   });
@@ -60,12 +71,14 @@ describe('InvoiceDetailPage Component (INV-014)', () => {
     expect(screen.queryByRole('button', { name: /Edit/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Issue$/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Cancel/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Record Payment/i })).not.toBeInTheDocument();
     unmount();
 
     renderPage({ ...baseInv, status: 'ISSUED' }, 'STAFF');
     expect(screen.queryByRole('button', { name: /Edit/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /^Issue$/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Cancel/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Record Payment/i })).not.toBeInTheDocument();
   });
 
   it('Test 4 (Overdue Badge): renders Overdue badge when isOverdue is true', () => {
