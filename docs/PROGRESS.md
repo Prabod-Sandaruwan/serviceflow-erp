@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 — Payments (PAY-009: Write payment unit tests)  
+**Current Task:** Phase 10 — Payments (PAY-010: Write payment integration tests)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
@@ -78,7 +78,7 @@
 - [x] PAY-006: Implement voiding payments and status rollback
 - [x] PAY-007: Verify invoice cancellation interacts correctly with payments
 - [x] PAY-008: Review payment audit coverage
-- [ ] PAY-009: Write payment unit tests
+- [x] PAY-009: Write payment unit tests
 - [ ] PAY-010: Write payment integration tests
 - [ ] PAY-011: Write concurrency and idempotency tests
 - [ ] PAY-012: Build the payment dialog
