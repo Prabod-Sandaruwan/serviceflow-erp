@@ -29,3 +29,4 @@ registry.registerPath({
 
 export const paymentRoutes = router;
 export default router;
+

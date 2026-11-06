@@ -7,6 +7,11 @@ const actorOf = (req: Request) => req.auth || (req as any).user;
 export async function createPayment(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const data = recordPaymentSchema.parse(req.body);
+    const rawIdem = req.headers['idempotency-key'] || req.headers['Idempotency-Key'];
+    const idempotencyKey = typeof rawIdem === 'string' && rawIdem.trim()
+      ? rawIdem.trim().slice(0, 64)
+      : undefined;
+
     const actor = actorOf(req);
     const actorParam = actor
       ? {
@@ -16,12 +21,15 @@ export async function createPayment(req: Request, res: Response, next: NextFunct
         }
       : undefined;
 
-    const result = await recordPayment(req.params.id as string, data, actorParam, {
-      ip: req.ip,
-      requestId: (req as any).id,
-    });
+    const result = await recordPayment(
+      req.params.id as string,
+      data,
+      actorParam,
+      { ip: req.ip, requestId: (req as any).id },
+      idempotencyKey
+    );
 
-    res.status(201).json({
+    res.status(result.httpStatus || 201).json({
       data: {
         ...result.payment,
         balance: result.newBalance,

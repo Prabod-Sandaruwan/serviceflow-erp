@@ -26,3 +26,4 @@ export function formatPayment(payment: any) {
     createdAt: payment.createdAt ?? payment.created_at,
   };
 }
+

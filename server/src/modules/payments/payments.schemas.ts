@@ -6,10 +6,12 @@ export const recordPaymentSchema = z
       .union([z.string(), z.number()])
       .refine(
         (v) => {
-          const n = Number(v);
+          const str = String(v).trim();
+          if (!/^\d+(\.\d{1,2})?$/.test(str)) return false;
+          const n = Number(str);
           return !isNaN(n) && n > 0;
         },
-        { message: 'Amount must be strictly greater than 0' }
+        { message: 'Amount must be a positive numeric string with up to 2 decimal places' }
       )
       .transform((v) => Number(v).toFixed(2)),
     method: z.enum(['CASH', 'BANK_TRANSFER', 'CARD']),
