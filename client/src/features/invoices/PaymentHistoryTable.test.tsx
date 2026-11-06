@@ -1,12 +1,12 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PaymentHistoryTable } from './PaymentHistoryTable';
-import * as paymentHooks from './paymentHooks';
+import * as paymentHooks from '../payments/hooks';
 import * as authProvider from '../auth/AuthProvider';
 import { ToastProvider } from '../../components/ui/Toast';
 
 vi.mock('../auth/AuthProvider', () => ({ useAuth: vi.fn() }));
-vi.mock('./paymentHooks', () => ({
+vi.mock('../payments/hooks', () => ({
   useInvoicePayments: vi.fn(),
   useVoidPayment: () => ({ mutateAsync: vi.fn(), isPending: false }),
 }));

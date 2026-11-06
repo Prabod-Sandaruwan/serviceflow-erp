@@ -1,10 +1,9 @@
 import type { Invoice } from './types';
-import { PaymentHistoryTable } from './PaymentHistoryTable';
 
 const fmt = (v?: string | number) =>
   `$${Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-export function InvoiceSections({ invoice, onPaymentVoided }: { invoice: Invoice; onPaymentVoided?: () => void }) {
+export function InvoiceSections({ invoice }: { invoice: Invoice }) {
   const { items = [], project } = invoice;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -50,11 +49,6 @@ export function InvoiceSections({ invoice, onPaymentVoided }: { invoice: Invoice
         </div>
       </div>
 
-      <div>
-        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700 }}>Payments</h3>
-        <PaymentHistoryTable invoiceId={invoice.id} onPaymentVoided={onPaymentVoided} />
-      </div>
-
       {(invoice.issuedAt || invoice.cancelledAt || invoice.cancelReason) && (
         <div style={{ background: '#f8fafc', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.85rem' }}>
           <strong style={{ display: 'block', marginBottom: '0.35rem' }}>Status Timeline</strong>
@@ -66,3 +60,4 @@ export function InvoiceSections({ invoice, onPaymentVoided }: { invoice: Invoice
     </div>
   );
 }
+export default InvoiceSections;

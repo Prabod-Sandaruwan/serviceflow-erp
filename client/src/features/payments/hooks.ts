@@ -68,6 +68,7 @@ export function useVoidPayment() {
       api.post<{ data: PaymentRecord }>(`/payments/${paymentId}/void`, { reason }),
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: ['invoices'] });
+      qc.invalidateQueries({ queryKey: ['payments'] });
       if (vars.invoiceId) {
         qc.invalidateQueries({ queryKey: ['invoices', vars.invoiceId] });
         qc.invalidateQueries({ queryKey: ['payments', vars.invoiceId] });
@@ -75,3 +76,4 @@ export function useVoidPayment() {
     },
   });
 }
+
