@@ -21,7 +21,7 @@ export function InvoiceActionBar({ invoice, refetch }: { invoice: Invoice; refet
   const issueM = useIssueInvoice();
   const cancelM = useCancelInvoice();
   const isManager = user?.role === 'ADMIN' || user?.role === 'MANAGER';
-  const canPay = invoice.status === 'ISSUED' || invoice.status === 'PARTIALLY_PAID';
+  const canPay = isManager && (invoice.status === 'ISSUED' || invoice.status === 'PARTIALLY_PAID');
 
   const handleDownload = async () => {
     try {

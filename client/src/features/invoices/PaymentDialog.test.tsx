@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { PaymentDialog } from './PaymentDialog';
-import * as paymentHooks from './paymentHooks';
+import * as paymentHooks from '../payments/hooks';
 import { ToastProvider } from '../../components/ui/Toast';
 
-vi.mock('./paymentHooks', () => ({
+vi.mock('../payments/hooks', () => ({
   useRecordPayment: vi.fn(),
 }));
 
@@ -45,10 +45,12 @@ describe('PaymentDialog Component (PAY-014)', () => {
     fireEvent.click(screen.getByRole('button', { name: /Record Payment/i }));
 
     await waitFor(() => {
-      expect(mutateAsync).toHaveBeenCalledWith({
-        invoiceId: 'inv-123',
-        data: expect.objectContaining({ amount: '500.00', method: 'CASH' }),
-      });
+      expect(mutateAsync).toHaveBeenCalledWith(
+        expect.objectContaining({
+          invoiceId: 'inv-123',
+          data: expect.objectContaining({ amount: '500.00', method: 'CASH' }),
+        })
+      );
     });
     expect(onSuccess).toHaveBeenCalled();
     expect(onClose).toHaveBeenCalled();
