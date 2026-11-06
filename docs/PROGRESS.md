@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 — Payments (PAY-001)  
+**Current Task:** Phase 10 — Payments (PAY-002: Implement the balance calculation function)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
@@ -70,7 +70,7 @@
 - [x] INV-015: Verify invoice acceptance (AS-08) and extend seed
 
 ## Phase 10 — Payments
-- [ ] PAY-001: Confirm payment contracts and financial rules
+- [x] PAY-001: Confirm payment contracts and financial rules
 - [ ] PAY-002: Implement the balance calculation function
 - [ ] PAY-003: Implement payment recording in a locked transaction
 - [ ] PAY-004: Add payment validation, overpayment prevention and idempotency
