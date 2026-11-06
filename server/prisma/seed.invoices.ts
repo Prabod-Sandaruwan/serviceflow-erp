@@ -12,13 +12,11 @@ export async function seedInvoices(
   });
   if (!project) return;
 
-  // Ensure milestone 3 is approved
   let m3 = project.milestones.find((m) => m.sortOrder === 3);
   if (m3 && m3.status !== 'APPROVED') {
     m3 = await prisma.milestone.update({ where: { id: m3.id }, data: { status: 'APPROVED', approvedBy: users.manager1.id, approvedAt: today } });
   }
 
-  // Ensure milestone 4 exists and is approved
   let m4 = project.milestones.find((m) => m.sortOrder === 4);
   if (!m4) {
     m4 = await prisma.milestone.create({
@@ -54,15 +52,15 @@ export async function seedInvoices(
       });
     }
 
-    // Seed payments if defined
     for (const p of inv.payments) {
       const existingPay = await prisma.payment.findFirst({ where: { invoiceId: invRecord.id, reference: p.ref } });
       if (!existingPay) {
         await prisma.payment.create({
           data: {
             invoiceId: invRecord.id, amount: p.amount, method: p.method,
-            paymentDate: p.date, reference: p.ref, status: 'ACTIVE',
-            idempotencyKey: p.ref, recordedBy: users.manager1.id,
+            paymentDate: p.date, reference: p.ref, status: (p as any).status || 'ACTIVE',
+            voidReason: (p as any).voidReason || null, voidedBy: (p as any).voidedBy || null,
+            voidedAt: (p as any).voidedAt || null, idempotencyKey: p.ref, recordedBy: users.manager1.id,
           },
         });
       }

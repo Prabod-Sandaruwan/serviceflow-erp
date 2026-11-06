@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 — Payments (PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed)  
-**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
+**Current Task:** Phase 10 Complete (Ready for Phase 11 — Expenses: EXP-001)  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
 
 ## Completed Phases
 - [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
@@ -14,7 +14,7 @@
 - [x] Phase 7 - Quotations (QUOT-001..016)
 - [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
 - [x] Phase 9 - Invoices (INV-001..015)
-- [ ] Phase 10 - Payments (PAY-001..015)
+- [x] Phase 10 - Payments (PAY-001..015)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -84,4 +84,4 @@
 - [x] PAY-012: Build the payment dialog
 - [x] PAY-013: Build payment history and the void action
 - [x] PAY-014: Add payment frontend tests
-- [ ] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
+- [x] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
