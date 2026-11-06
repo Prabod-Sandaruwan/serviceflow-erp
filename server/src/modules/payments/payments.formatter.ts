@@ -9,6 +9,10 @@ export function formatPayment(payment: any) {
     ? payment.paymentDate.toISOString().slice(0, 10)
     : (payment.paymentDate ? String(payment.paymentDate).slice(0, 10) : null);
 
+  const recordedByStr = (payment.recordedBy ?? payment.recorded_by)?.toString() ?? null;
+  const voidReasonStr = payment.voidReason ?? payment.void_reason ?? null;
+  const voidedAtVal = payment.voidedAt ?? payment.voided_at ?? null;
+
   return {
     id: payment.id.toString(),
     invoiceId: (payment.invoiceId ?? payment.invoice_id).toString(),
@@ -19,11 +23,13 @@ export function formatPayment(payment: any) {
     note: payment.note ?? null,
     status: payment.status,
     idempotencyKey: payment.idempotencyKey ?? payment.idempotency_key ?? null,
-    recordedBy: (payment.recordedBy ?? payment.recorded_by)?.toString() ?? null,
+    recordedBy: recordedByStr,
+    recorded_by: recordedByStr,
     voidedBy: (payment.voidedBy ?? payment.voided_by)?.toString() ?? null,
-    voidedAt: payment.voidedAt ?? payment.voided_at ?? null,
-    voidReason: payment.voidReason ?? payment.void_reason ?? null,
+    voidedAt: voidedAtVal,
+    voided_at: voidedAtVal,
+    voidReason: voidReasonStr,
+    void_reason: voidReasonStr,
     createdAt: payment.createdAt ?? payment.created_at,
   };
 }
-
