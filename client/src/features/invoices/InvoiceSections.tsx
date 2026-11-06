@@ -1,10 +1,11 @@
 import type { Invoice } from './types';
+import { PaymentHistoryTable } from './PaymentHistoryTable';
 
 const fmt = (v?: string | number) =>
   `$${Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-export function InvoiceSections({ invoice }: { invoice: Invoice }) {
-  const { items = [], payments = [], project } = invoice;
+export function InvoiceSections({ invoice, onPaymentVoided }: { invoice: Invoice; onPaymentVoided?: () => void }) {
+  const { items = [], project } = invoice;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', background: '#f8fafc', padding: '1rem', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '0.875rem' }}>
@@ -51,9 +52,7 @@ export function InvoiceSections({ invoice }: { invoice: Invoice }) {
 
       <div>
         <h3 style={{ margin: '0 0 0.5rem', fontSize: '1rem', fontWeight: 700 }}>Payments</h3>
-        <div style={{ border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1rem', background: '#f8fafc', textAlign: 'center', color: '#64748b', fontSize: '0.875rem' }}>
-          {payments.length === 0 ? 'No payments recorded yet.' : `${payments.length} payment(s) recorded.`}
-        </div>
+        <PaymentHistoryTable invoiceId={invoice.id} onPaymentVoided={onPaymentVoided} />
       </div>
 
       {(invoice.issuedAt || invoice.cancelledAt || invoice.cancelReason) && (

@@ -42,7 +42,7 @@ export default function InvoiceDetailPage() {
               <InvoiceActionBar invoice={inv} refetch={query.refetch} />
             </div>
 
-            <InvoiceSections invoice={inv} />
+            <InvoiceSections invoice={inv} onPaymentVoided={query.refetch} />
           </div>
         )}
       </QueryBoundary>

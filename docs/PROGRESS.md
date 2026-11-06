@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 — Payments (PAY-013: Build payment history and the void action)  
+**Current Task:** Phase 10 — Payments (PAY-014: Add payment frontend tests)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
@@ -82,6 +82,6 @@
 - [x] PAY-010: Write payment integration tests
 - [x] PAY-011: Write concurrency and idempotency tests
 - [x] PAY-012: Build the payment dialog
-- [ ] PAY-013: Build payment history and the void action
+- [x] PAY-013: Build payment history and the void action
 - [ ] PAY-014: Add payment frontend tests
 - [ ] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
