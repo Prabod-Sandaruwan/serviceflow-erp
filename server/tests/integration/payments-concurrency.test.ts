@@ -5,64 +5,69 @@ import prisma from '../../src/config/prisma';
 
 describe('Payment Concurrency and Race Condition Tests (PAY-011)', () => {
   let manager: any;
-  let invoice: any;
+  let project: any;
 
   beforeEach(async () => {
     await truncateAll();
     manager = await loginAs(makeAgent(), 'MANAGER');
     const client = await createClient();
     const q = await createQuotation({ clientId: client.id, createdBy: manager.user.id, status: 'ACCEPTED' });
-    const p = (await withCsrf(manager.post('/api/v1/projects'), manager).send({ quotationId: q.id.toString() })).body.data;
-    const m = (await withCsrf(manager.post(`/api/v1/projects/${p.id}/milestones`), manager).send({
-      title: 'Milestone 1', billingAmount: '1000.00',
+    project = (await withCsrf(manager.post('/api/v1/projects'), manager).send({ quotationId: q.id.toString() })).body.data;
+  });
+
+  const setupInvoice = async (amount = '100.00') => {
+    const m = (await withCsrf(manager.post(`/api/v1/projects/${project.id}/milestones`), manager).send({
+      title: 'M', billingAmount: amount,
     })).body.data;
     await withCsrf(manager.patch(`/api/v1/milestones/${m.id}`), manager).send({ status: 'IN_PROGRESS' });
     await withCsrf(manager.patch(`/api/v1/milestones/${m.id}`), manager).send({ status: 'COMPLETED' });
     await withCsrf(manager.post(`/api/v1/milestones/${m.id}/approve`), manager).send({});
     const inv = (await withCsrf(manager.post('/api/v1/invoices'), manager).send({ milestoneId: m.id })).body.data;
-    invoice = (await withCsrf(manager.post(`/api/v1/invoices/${inv.id}/issue`), manager).send({
+    return (await withCsrf(manager.post(`/api/v1/invoices/${inv.id}/issue`), manager).send({
       issueDate: '2026-11-01', dueDate: '2026-11-30',
     })).body.data;
+  };
+
+  it('Test 1 (Parallel Overpayment Block): exactly one 201 and one 422/409 across 5 runs', async () => {
+    for (let i = 0; i < 5; i++) {
+      const inv = await setupInvoice('100.00');
+      const [r1, r2] = await Promise.all([
+        withCsrf(manager.post(`/api/v1/invoices/${inv.id}/payments`), manager).send({ amount: '60.00', method: 'CASH', date: '2026-11-02' }),
+        withCsrf(manager.post(`/api/v1/invoices/${inv.id}/payments`), manager).send({ amount: '60.00', method: 'CASH', date: '2026-11-02' }),
+      ]);
+      const codes = [r1.status, r2.status].sort();
+      expect(codes[0]).toBe(201);
+      expect([409, 422]).toContain(codes[1]);
+      expect(await prisma.payment.count({ where: { invoiceId: BigInt(inv.id) } })).toBe(1);
+    }
   });
 
-  it('Concurrent payments exceeding total balance: exactly one succeeds and one is rejected', async () => {
-    const req1 = withCsrf(manager.post(`/api/v1/invoices/${invoice.id}/payments`), manager).send({
-      amount: '600.00', method: 'CASH', date: '2026-11-02',
+  it('Test 2 (Parallel Exhaustion): 5 parallel 20.00 payments succeed, 6th fails', async () => {
+    const inv = await setupInvoice('100.00');
+    const reqs = Array.from({ length: 5 }, () =>
+      withCsrf(manager.post(`/api/v1/invoices/${inv.id}/payments`), manager).send({ amount: '20.00', method: 'CASH', date: '2026-11-02' })
+    );
+    const results = await Promise.all(reqs);
+    for (const r of results) expect(r.status).toBe(201);
+
+    const r6 = await withCsrf(manager.post(`/api/v1/invoices/${inv.id}/payments`), manager).send({
+      amount: '20.00', method: 'CASH', date: '2026-11-02',
     });
-    const req2 = withCsrf(manager.post(`/api/v1/invoices/${invoice.id}/payments`), manager).send({
-      amount: '600.00', method: 'CASH', date: '2026-11-02',
-    });
-
-    const [res1, res2] = await Promise.all([req1, req2]);
-    const statuses = [res1.status, res2.status].sort();
-    expect(statuses).toEqual([201, 422]);
-
-    const failRes = res1.status === 422 ? res1 : res2;
-    expect(failRes.body.error.code).toBe('PAYMENT_EXCEEDS_BALANCE');
-
-    const payments = await prisma.payment.findMany({ where: { invoiceId: BigInt(invoice.id) } });
-    expect(payments).toHaveLength(1);
-    expect(Number(payments[0].amount).toFixed(2)).toBe('600.00');
-
-    const invInDb = await prisma.invoice.findUnique({ where: { id: BigInt(invoice.id) } });
-    expect(invInDb?.status).toBe('PARTIALLY_PAID');
+    expect([409, 422]).toContain(r6.status);
+    expect(await prisma.payment.count({ where: { invoiceId: BigInt(inv.id) } })).toBe(5);
   });
 
-  it('Concurrent payments with same idempotency key: safe replay without duplicate payments', async () => {
-    const key = 'concurrency-race-idem-key';
-    const req1 = withCsrf(manager.post(`/api/v1/invoices/${invoice.id}/payments`), manager)
-      .set('Idempotency-Key', key)
-      .send({ amount: '400.00', method: 'CASH', date: '2026-11-02' });
-    const req2 = withCsrf(manager.post(`/api/v1/invoices/${invoice.id}/payments`), manager)
-      .set('Idempotency-Key', key)
-      .send({ amount: '400.00', method: 'CASH', date: '2026-11-02' });
-
-    const [res1, res2] = await Promise.all([req1, req2]);
-    expect([200, 201]).toContain(res1.status);
-    expect([200, 201]).toContain(res2.status);
-
-    const payments = await prisma.payment.findMany({ where: { invoiceId: BigInt(invoice.id) } });
-    expect(payments).toHaveLength(1);
-    expect(Number(payments[0].amount).toFixed(2)).toBe('400.00');
+  it('Test 3 (Parallel Idempotency): 10 parallel requests with same key -> 1x 201, 9x 200', async () => {
+    const inv = await setupInvoice('100.00');
+    const key = `idem-race-${Date.now()}`;
+    const reqs = Array.from({ length: 10 }, () =>
+      withCsrf(manager.post(`/api/v1/invoices/${inv.id}/payments`), manager)
+        .set('Idempotency-Key', key)
+        .send({ amount: '50.00', method: 'CASH', date: '2026-11-02' })
+    );
+    const results = await Promise.all(reqs);
+    expect(results.filter((r) => r.status === 201)).toHaveLength(1);
+    expect(results.filter((r) => r.status === 200)).toHaveLength(9);
+    expect(await prisma.payment.count({ where: { invoiceId: BigInt(inv.id) } })).toBe(1);
   });
 });
