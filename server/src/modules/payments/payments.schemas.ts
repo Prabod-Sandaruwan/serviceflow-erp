@@ -43,3 +43,9 @@ export const recordPaymentSchema = z
   });
 
 export type RecordPaymentInput = z.infer<typeof recordPaymentSchema>;
+
+export const voidPaymentSchema = z.object({
+  reason: z.string().trim().min(5, 'Reason must be at least 5 characters').max(500, 'Reason cannot exceed 500 characters'),
+});
+
+export type VoidPaymentInput = z.infer<typeof voidPaymentSchema>;

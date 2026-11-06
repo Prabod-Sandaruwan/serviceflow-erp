@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 — Payments (PAY-006: Implement voiding payments and status rollback)  
+**Current Task:** Phase 10 — Payments (PAY-007: Verify invoice cancellation interacts correctly with payments)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
@@ -75,7 +75,7 @@
 - [x] PAY-003: Implement payment recording in a locked transaction
 - [x] PAY-004: Add payment validation, overpayment prevention and idempotency
 - [x] PAY-005: Implement the payment history endpoint
-- [ ] PAY-006: Implement voiding payments and status rollback
+- [x] PAY-006: Implement voiding payments and status rollback
 - [ ] PAY-007: Verify invoice cancellation interacts correctly with payments
 - [ ] PAY-008: Review payment audit coverage
 - [ ] PAY-009: Write payment unit tests

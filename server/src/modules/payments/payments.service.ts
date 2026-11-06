@@ -8,6 +8,7 @@ import { formatPayment } from './payments.formatter';
 
 export interface PaymentActor { userId: string; role: string; employeeId?: string; }
 export { getInvoicePayments } from './payments.query';
+export { voidPayment } from './payments.void';
 
 export async function recordPayment(
   id: string | bigint | number, data: RecordPaymentInput, actor?: PaymentActor,
