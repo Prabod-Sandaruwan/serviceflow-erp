@@ -85,3 +85,6 @@
 - [x] PAY-013: Build payment history and the void action
 - [x] PAY-014: Add payment frontend tests
 - [x] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
+
+### Acceptance Criteria
+- AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
