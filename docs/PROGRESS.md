@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 9 Complete (Ready for Phase 10 — Payments: PAY-001)  
+**Current Task:** Phase 10 — Payments (PAY-001)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV)
 
 ## Completed Phases
@@ -14,6 +14,7 @@
 - [x] Phase 7 - Quotations (QUOT-001..016)
 - [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
 - [x] Phase 9 - Invoices (INV-001..015)
+- [ ] Phase 10 - Payments (PAY-001..015)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -67,3 +68,20 @@
 - [x] INV-013: Build the draft invoice form and the issue and cancel actions
 - [x] INV-014: Add invoice frontend tests
 - [x] INV-015: Verify invoice acceptance (AS-08) and extend seed
+
+## Phase 10 — Payments
+- [ ] PAY-001: Confirm payment contracts and financial rules
+- [ ] PAY-002: Implement the balance calculation function
+- [ ] PAY-003: Implement payment recording in a locked transaction
+- [ ] PAY-004: Add payment validation, overpayment prevention and idempotency
+- [ ] PAY-005: Implement the payment history endpoint
+- [ ] PAY-006: Implement voiding payments and status rollback
+- [ ] PAY-007: Verify invoice cancellation interacts correctly with payments
+- [ ] PAY-008: Review payment audit coverage
+- [ ] PAY-009: Write payment unit tests
+- [ ] PAY-010: Write payment integration tests
+- [ ] PAY-011: Write concurrency and idempotency tests
+- [ ] PAY-012: Build the payment dialog
+- [ ] PAY-013: Build payment history and the void action
+- [ ] PAY-014: Add payment frontend tests
+- [ ] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
