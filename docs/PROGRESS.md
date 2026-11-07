@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** FIN-014 Complete (Ready for FIN-015)  
-**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
+**Current Task:** FIN-015 Complete (Phase 11 Complete)  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN)
 
 ## Completed Phases
 - [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
@@ -15,6 +15,7 @@
 - [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
 - [x] Phase 9 - Invoices (INV-001..015)
 - [x] Phase 10 - Payments (PAY-001..015)
+- [x] Phase 11 - Expenses and Financial Reports (FIN-001..015)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -101,7 +102,8 @@
 - [x] FIN-012: Build the dashboard page
 - [x] FIN-013: Build the finance and project report pages with CSV download
 - [x] FIN-014: Add finance frontend tests (dashboard widgets, date filters, expense form)
-- [ ] FIN-015: Extend seed data, final phase verification, and merge into main
+- [x] FIN-015: Verify finance acceptance (AS-11, AS-12, AS-14 CSV) and extend seed
 
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
+- AS-11 (Expense Profit Impact), AS-12 (Invoice Cancel Revenue Impact), and AS-14 (CSV export totals) verified manually. Automated via integration tests in FIN-010.

@@ -66,3 +66,4 @@ describe('ReportDateFilter Component (FIN-014)', () => {
     expect(handleDownload).toHaveBeenCalled();
   });
 });
+
