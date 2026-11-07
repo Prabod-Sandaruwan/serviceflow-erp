@@ -97,7 +97,7 @@
 - [x] FIN-008: Implement the dashboard summary endpoint
 - [x] FIN-009: Implement CSV export with injection protection
 - [x] FIN-010: Write report integration tests (exclusions & workflow)
-- [ ] FIN-011: Build expense list & create/edit dialog frontend
+- [x] FIN-011: Build expense list & create/edit dialog frontend
 - [ ] FIN-012: Build project profitability view on frontend
 - [ ] FIN-013: Build financial reports page with date filters
 - [ ] FIN-014: Build CSV export button and download flow on frontend

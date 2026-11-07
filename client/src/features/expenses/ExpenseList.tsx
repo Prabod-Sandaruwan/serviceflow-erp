@@ -1,1 +1,2 @@
-export default function ExpenseList() { return <div style={{ padding: '2rem' }}><h1>ExpenseList Page</h1></div>; }
+import ExpensesPage from '../../pages/ExpensesPage';
+export default ExpensesPage;
