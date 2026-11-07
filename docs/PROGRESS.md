@@ -98,9 +98,9 @@
 - [x] FIN-009: Implement CSV export with injection protection
 - [x] FIN-010: Write report integration tests (exclusions & workflow)
 - [x] FIN-011: Build expense list & create/edit dialog frontend
-- [ ] FIN-012: Build project profitability view on frontend
-- [ ] FIN-013: Build financial reports page with date filters
-- [ ] FIN-014: Build CSV export button and download flow on frontend
+- [x] FIN-012: Build the dashboard page
+- [ ] FIN-013: Build project profitability view on frontend
+- [ ] FIN-014: Build financial reports page with date filters and CSV export
 - [ ] FIN-015: Add finance frontend tests, extend seed data, final phase verification, and merge into main
 
 ### Acceptance Criteria
