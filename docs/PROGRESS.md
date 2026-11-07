@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 Complete (Ready for Phase 11 — Expenses: EXP-001)  
+**Current Task:** FIN-003 Complete (Ready for FIN-004: Implement financial aggregation formulas service)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
 
 ## Completed Phases
@@ -85,6 +85,23 @@
 - [x] PAY-013: Build payment history and the void action
 - [x] PAY-014: Add payment frontend tests
 - [x] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
+
+## Phase 11 — Expenses and Financial Reports
+- [x] FIN-001: Confirm financial formulas and date bases
+- [x] FIN-002: Implement expense create and edit
+- [x] FIN-003: Implement expense list, filtering, and void
+- [ ] FIN-004: Implement financial aggregation formulas service (revenue, expenses, net profit, margin)
+- [ ] FIN-005: Implement financial report endpoints (P&L / project profitability)
+- [ ] FIN-006: Implement CSV export for financial reports
+- [ ] FIN-007: Write financial calculation unit tests
+- [ ] FIN-008: Write financial reporting integration tests
+- [ ] FIN-009: Build expense list & create/edit dialog frontend
+- [ ] FIN-010: Build project profitability view on frontend
+- [ ] FIN-011: Build financial reports page with date filters
+- [ ] FIN-012: Build CSV export button and download flow on frontend
+- [ ] FIN-013: Add finance frontend tests
+- [ ] FIN-014: Review financial audit logging coverage
+- [ ] FIN-015: Extend seed data for expenses and financial reports, update docs/PROGRESS.md
 
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
