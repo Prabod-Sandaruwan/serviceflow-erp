@@ -62,3 +62,4 @@ describe('Login Info Modals (Help, Security, Privacy, Terms)', () => {
     expect(screen.getByRole('heading', { name: 'Privacy Policy' })).toBeInTheDocument();
   });
 });
+

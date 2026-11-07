@@ -87,3 +87,4 @@ export function AuthInfoModal({ type, onClose }: AuthInfoModalProps) {
 }
 
 export default AuthInfoModal;
+
