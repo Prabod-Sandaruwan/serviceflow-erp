@@ -7,6 +7,7 @@ import { useZodForm, applyApiErrors } from '../../lib/forms';
 import { ApiError } from '../../lib/ApiError';
 import { LoginShowcase } from './LoginShowcase';
 import { LoginForm } from './LoginForm';
+import { AuthInfoModal, type AuthInfoModalType } from './AuthInfoModal';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email'),
@@ -18,10 +19,15 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const [globalError, setGlobalError] = useState<string | null>(null);
+  const [modal, setModal] = useState<AuthInfoModalType>(null);
   const emailRef = useRef<HTMLInputElement | null>(null);
   const form = useZodForm(loginSchema);
 
   useEffect(() => { emailRef.current?.focus(); }, []);
+  useEffect(() => {
+    const h = location.hash.replace('#', '');
+    if (['help', 'security', 'privacy', 'terms'].includes(h)) setModal(h as AuthInfoModalType);
+  }, [location.hash]);
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     setGlobalError(null);
@@ -59,15 +65,13 @@ export default function Login() {
             <span>System Status</span>
           </div>
           <span className="text-slate-300 select-none">|</span>
-          <div className="flex items-center gap-1 hover:text-slate-900 transition-colors cursor-default">
-            <HelpCircle className="w-3.5 h-3.5" />
-            <span>Help & Support</span>
-          </div>
+          <button type="button" onClick={() => setModal('help')} className="flex items-center gap-1 hover:text-slate-900 transition-colors">
+            <HelpCircle className="w-3.5 h-3.5" /><span>Help & Support</span>
+          </button>
           <span className="text-slate-300 select-none">|</span>
-          <div className="flex items-center gap-1 hover:text-slate-900 transition-colors cursor-default">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Security & Trust</span>
-          </div>
+          <button type="button" onClick={() => setModal('security')} className="flex items-center gap-1 hover:text-slate-900 transition-colors">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /><span>Security & Trust</span>
+          </button>
         </div>
 
         <LoginForm
@@ -79,11 +83,12 @@ export default function Login() {
 
         <div className="pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-slate-500 text-xs">
           <div className="flex items-center gap-4">
-            <a href="#privacy" className="hover:text-slate-900 transition-colors">Privacy Policy</a>
-            <a href="#terms" className="hover:text-slate-900 transition-colors">Terms of Service</a>
+            <button type="button" onClick={() => setModal('privacy')} className="hover:text-slate-900 transition-colors">Privacy Policy</button>
+            <button type="button" onClick={() => setModal('terms')} className="hover:text-slate-900 transition-colors">Terms of Service</button>
           </div>
           <p className="font-mono text-xs">© 2026 ServiceFlow Project</p>
         </div>
+        <AuthInfoModal type={modal} onClose={() => setModal(null)} />
       </section>
     </main>
   );
