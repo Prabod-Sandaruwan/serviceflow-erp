@@ -1,6 +1,8 @@
 import Decimal from 'decimal.js';
 import prisma from '../../config/prisma';
 
+export { getProjectFinancials, getOverdueInvoices } from './reports.project.repo';
+
 function toDecimalString(val: any): string {
   if (val == null) return '0.00';
   if (typeof val === 'object' && typeof val.toFixed === 'function') {
