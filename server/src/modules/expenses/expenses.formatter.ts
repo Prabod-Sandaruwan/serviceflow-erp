@@ -11,6 +11,7 @@ export function formatExpense(e: any) {
 
   const recBy = (e.recordedBy ?? e.recorded_by)?.toString() ?? null;
   const pId = (e.projectId ?? e.project_id)?.toString() ?? null;
+  const vReason = e.voidReason ?? e.void_reason ?? null;
 
   return {
     id: e.id.toString(),
@@ -27,7 +28,8 @@ export function formatExpense(e: any) {
     recorded_by: recBy,
     voidedBy: (e.voidedBy ?? e.voided_by)?.toString() ?? null,
     voidedAt: e.voidedAt ?? e.voided_at ?? null,
-    void_reason: e.voidReason ?? e.void_reason ?? null,
+    voidReason: vReason,
+    void_reason: vReason,
     createdAt: e.createdAt ?? e.created_at,
     updatedAt: e.updatedAt ?? e.updated_at,
   };
