@@ -50,9 +50,12 @@ export default function Login() {
     <main className="min-h-screen w-full flex flex-col lg:flex-row bg-[#f8f9ff]">
       <LoginShowcase />
       <section className="lg:w-5/12 xl:w-2/5 bg-white flex flex-col justify-between p-6 sm:p-10 lg:p-12 min-h-screen shadow-sm">
-        <div className="flex justify-end items-center gap-3 sm:gap-4 text-xs font-medium text-slate-500">
+        <div className="flex justify-end items-center gap-3 sm:gap-4 text-xs font-medium text-slate-500 animate-fade-in">
           <div className="flex items-center gap-1.5 hover:text-slate-900 transition-colors cursor-default">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+            </span>
             <span>System Status</span>
           </div>
           <span className="text-slate-300 select-none">|</span>

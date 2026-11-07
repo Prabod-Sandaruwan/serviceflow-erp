@@ -16,17 +16,17 @@ export function LoginForm({ form, emailRef, globalError, onSubmit }: LoginFormPr
   const { isSubmitting, errors } = form.formState;
 
   return (
-    <div className="w-full max-w-md mx-auto my-auto py-8">
+    <div className="w-full max-w-md mx-auto my-auto py-8 animate-slide-up">
       <div className="mb-8">
         <div className="lg:hidden flex items-center gap-2 mb-6">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm">S</div>
+          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-sm">S</div>
           <span className="text-xl font-bold text-slate-900">ServiceFlow ERP</span>
         </div>
         <h2 className="text-2xl font-bold tracking-tight text-slate-900">Sign in to your account</h2>
         <p className="mt-1.5 text-sm text-slate-500">Enter your credentials to access the application workspace.</p>
       </div>
 
-      {globalError && <div role="alert" className="mb-5 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700">{globalError}</div>}
+      {globalError && <div role="alert" className="mb-5 rounded-lg border border-red-200 bg-red-50 p-3.5 text-sm text-red-700 animate-fade-in">{globalError}</div>}
 
       <form onSubmit={onSubmit} noValidate className="space-y-4">
         <div>
@@ -36,10 +36,10 @@ export function LoginForm({ form, emailRef, globalError, onSubmit }: LoginFormPr
             <input
               id="email" aria-label="Email" type="email" placeholder="name@example.com"
               {...emailReg} ref={(el) => { emailReg.ref(el); if (emailRef) (emailRef as any).current = el; }}
-              className="block w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-colors"
+              className="block w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:shadow-sm focus:shadow-indigo-500/10 transition-all duration-200"
             />
           </div>
-          {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+          {errors.email && <p className="mt-1 text-xs text-red-600 animate-fade-in">{errors.email.message}</p>}
         </div>
 
         <div>
@@ -49,18 +49,18 @@ export function LoginForm({ form, emailRef, globalError, onSubmit }: LoginFormPr
             <input
               id="password" aria-label="Password" type={showPwd ? 'text' : 'password'} placeholder="Enter account password" autoComplete="off"
               {...pwdReg}
-              className="block w-full pl-9 pr-10 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-colors"
+              className="block w-full pl-9 pr-10 py-2.5 rounded-lg border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:shadow-sm focus:shadow-indigo-500/10 transition-all duration-200"
             />
-            <button type="button" aria-label="Toggle password visibility" onClick={() => setShowPwd((p) => !p)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+            <button type="button" aria-label="Toggle password visibility" onClick={() => setShowPwd((p) => !p)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-transform active:scale-90">
               {showPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          {errors.password && <p className="mt-1 text-xs text-red-600">{errors.password.message}</p>}
+          {errors.password && <p className="mt-1 text-xs text-red-600 animate-fade-in">{errors.password.message}</p>}
         </div>
 
         <div className="pt-2">
-          <button type="submit" disabled={isSubmitting} className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 active:scale-[0.99] transition-all disabled:opacity-60">
-            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /><span>Signing in...</span></> : <><span className="font-semibold">Sign In to ServiceFlow</span><ArrowRight className="w-4 h-4" /></>}
+          <button type="submit" disabled={isSubmitting} className="group w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-semibold shadow-sm hover:bg-indigo-700 hover:shadow-md hover:shadow-indigo-500/20 active:scale-[0.98] transition-all duration-200 disabled:opacity-60">
+            {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /><span>Signing in...</span></> : <><span className="font-semibold">Sign In to ServiceFlow</span><ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" /></>}
           </button>
         </div>
       </form>
