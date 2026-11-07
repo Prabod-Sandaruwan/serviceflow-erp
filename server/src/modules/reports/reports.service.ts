@@ -30,3 +30,4 @@ export async function getProjectProfitabilityReport(projectId: string) {
 export async function getOverdueInvoicesReport(asOfDate: Date) {
   return getOverdueInvoices(asOfDate);
 }
+

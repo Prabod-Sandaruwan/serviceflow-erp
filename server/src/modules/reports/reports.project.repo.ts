@@ -67,3 +67,4 @@ export async function getOverdueInvoices(asOfDate: Date) {
     balance: toDecimalString(row.balance),
   }));
 }
+
