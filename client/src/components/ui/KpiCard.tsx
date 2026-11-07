@@ -28,7 +28,12 @@ export function KpiCard({
 
       <div className="mt-2">
         {isLoading ? (
-          <div className="h-8 w-28 animate-pulse rounded bg-slate-200" />
+          <div
+            className="h-8 w-28 animate-pulse rounded bg-slate-200"
+            data-testid="kpi-loading-skeleton"
+            role="status"
+            aria-label="Loading metric"
+          />
         ) : isError ? (
           <span className="text-sm font-medium text-red-600">Error loading metric</span>
         ) : (

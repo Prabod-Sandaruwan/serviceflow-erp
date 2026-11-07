@@ -44,6 +44,15 @@ export function ExpenseForm({ isOpen, onClose, initialData }: ExpenseFormProps) 
     e.preventDefault();
     if (isInactive) return;
     setError('');
+    const num = Number(amount);
+    if (!amount || isNaN(num) || num <= 0) {
+      setError('Amount must be greater than 0');
+      return;
+    }
+    if (!isEdit && !projectId) {
+      setError('Please select a project');
+      return;
+    }
     try {
       if (isEdit && initialData) {
         await updateMut.mutateAsync({ id: initialData.id, data: { category, amount, expense_date: expenseDate, description } });

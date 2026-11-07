@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** FIN-013 Complete (Ready for FIN-014)  
+**Current Task:** FIN-014 Complete (Ready for FIN-015)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
 
 ## Completed Phases
@@ -100,8 +100,8 @@
 - [x] FIN-011: Build expense list & create/edit dialog frontend
 - [x] FIN-012: Build the dashboard page
 - [x] FIN-013: Build the finance and project report pages with CSV download
-- [ ] FIN-014: Build financial reports page with date filters and CSV export
-- [ ] FIN-015: Add finance frontend tests, extend seed data, final phase verification, and merge into main
+- [x] FIN-014: Add finance frontend tests (dashboard widgets, date filters, expense form)
+- [ ] FIN-015: Extend seed data, final phase verification, and merge into main
 
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.

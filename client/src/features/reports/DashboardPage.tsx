@@ -18,6 +18,10 @@ export function DashboardPage() {
   const { data: res, isLoading, isError, error, refetch } = useDashboardSummary(dates.from, dates.to);
 
   const isStaff = user?.role === 'STAFF';
+  const hasData = isStaff
+    ? Boolean(res?.data && (res.data.tasks || res.data.leadsCount !== undefined))
+    : Boolean(res?.data && (res.data.financials || res.data.counts));
+  const isEmpty = !isLoading && !isError && !hasData;
 
   return (
     <div className="space-y-6 p-6">
@@ -63,7 +67,11 @@ export function DashboardPage() {
         </div>
       )}
 
-      {isStaff ? (
+      {isEmpty ? (
+        <div className="rounded-lg border border-slate-200 bg-white p-8 text-center text-slate-500">
+          <p className="text-sm font-medium">No data available</p>
+        </div>
+      ) : isStaff ? (
         <StaffDashboard data={res?.data} isLoading={isLoading} isError={isError} />
       ) : (
         <AdminDashboard data={res?.data} isLoading={isLoading} isError={isError} />

@@ -24,31 +24,31 @@ export function ExpenseFormFields({
   return (
     <>
       <div>
-        <label className="block text-xs font-semibold text-slate-700">Project</label>
-        <select value={projectId} onChange={(e) => setProjectId(e.target.value)} disabled={isEdit || disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900">
+        <label htmlFor="expense-project" className="block text-xs font-semibold text-slate-700">Project</label>
+        <select id="expense-project" value={projectId} onChange={(e) => setProjectId(e.target.value)} disabled={isEdit || disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900">
           <option value="">Select project...</option>
           {projects.map((p) => <option key={String(p.id)} value={String(p.id)}>{p.name || p.projectCode || String(p.id)}</option>)}
         </select>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <label className="block text-xs font-semibold text-slate-700">Category</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value as any)} disabled={disabled} className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900">
+          <label htmlFor="expense-category" className="block text-xs font-semibold text-slate-700">Category</label>
+          <select id="expense-category" value={category} onChange={(e) => setCategory(e.target.value as any)} disabled={disabled} className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900">
             {EXPENSE_CATEGORIES.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
           </select>
         </div>
         <div>
-          <label className="block text-xs font-semibold text-slate-700">Amount</label>
-          <input type="number" step="0.01" min="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
+          <label htmlFor="expense-amount" className="block text-xs font-semibold text-slate-700">Amount</label>
+          <input id="expense-amount" type="number" step="0.01" min="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
         </div>
       </div>
       <div>
-        <label className="block text-xs font-semibold text-slate-700">Date</label>
-        <input type="date" value={expenseDate} onChange={(e) => setExpenseDate(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
+        <label htmlFor="expense-date" className="block text-xs font-semibold text-slate-700">Date</label>
+        <input id="expense-date" type="date" value={expenseDate} onChange={(e) => setExpenseDate(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
       </div>
       <div>
-        <label className="block text-xs font-semibold text-slate-700">Description</label>
-        <input type="text" minLength={3} maxLength={255} value={description} onChange={(e) => setDescription(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
+        <label htmlFor="expense-description" className="block text-xs font-semibold text-slate-700">Description</label>
+        <input id="expense-description" type="text" minLength={3} maxLength={255} value={description} onChange={(e) => setDescription(e.target.value)} disabled={disabled} required className="mt-1 w-full rounded border border-slate-300 bg-white p-2 text-sm text-slate-900" />
       </div>
     </>
   );
