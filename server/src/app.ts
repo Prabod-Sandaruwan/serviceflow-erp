@@ -22,6 +22,7 @@ import { invoiceRoutes } from './modules/invoices/invoices.routes';
 import { paymentRoutes } from './modules/payments/payments.routes';
 import { expenseRoutes } from './modules/expenses/expenses.routes';
 import { reportRoutes } from './modules/reports/reports.routes';
+import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
 import { healthCheckHandler } from './modules/health/health.routes';
 import { getOpenApiSpec } from './config/openapi';
 import { notFoundHandler, errorHandler } from './middleware/error';
@@ -61,6 +62,7 @@ app.use('/api/v1/invoices', invoiceRoutes);
 app.use('/api/v1', paymentRoutes);
 app.use('/api/v1', expenseRoutes);
 app.use('/api/v1', reportRoutes);
+app.use('/api/v1', dashboardRoutes);
 
 route(app as any, 'post', '/api/v1/test-mutation', {
   roles: 'PUBLIC',
