@@ -56,10 +56,10 @@ export function ExpenseForm({ isOpen, onClose, initialData }: ExpenseFormProps) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl dark:bg-slate-800">
-        <h3 className="text-lg font-semibold text-slate-900 dark:text-white">{isEdit ? 'Edit Expense' : 'Add Expense'}</h3>
-        {isInactive && <p className="mt-2 text-sm text-red-500">Only ACTIVE expenses can be edited.</p>}
-        {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
+      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-bold text-slate-900">{isEdit ? 'Edit Expense' : 'Add Expense'}</h3>
+        {isInactive && <p className="mt-2 text-sm text-red-600 font-medium">Only ACTIVE expenses can be edited.</p>}
+        {error && <p className="mt-2 text-sm text-red-600 font-medium">{error}</p>}
         <form onSubmit={handleSubmit} className="mt-4 space-y-3">
           <ExpenseFormFields
             projectId={projectId} setProjectId={setProjectId}
@@ -70,8 +70,8 @@ export function ExpenseForm({ isOpen, onClose, initialData }: ExpenseFormProps) 
             projects={nonCancelledProjects} isEdit={isEdit} disabled={isInactive}
           />
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" onClick={onClose} className="rounded border px-3 py-1.5 text-sm text-slate-700">Cancel</button>
-            <button type="submit" disabled={isInactive || createMut.isPending || updateMut.isPending} className="rounded bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50">
+            <button type="button" onClick={onClose} className="rounded border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Cancel</button>
+            <button type="submit" disabled={isInactive || createMut.isPending || updateMut.isPending} className="rounded bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50">
               {isEdit ? 'Save Changes' : 'Create Expense'}
             </button>
           </div>

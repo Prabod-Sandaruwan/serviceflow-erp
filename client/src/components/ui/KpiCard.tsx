@@ -19,27 +19,27 @@ export function KpiCard({
 }: KpiCardProps) {
   return (
     <div
-      className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+      className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:shadow-md"
       data-testid={testId || `kpi-card-${title.toLowerCase().replace(/\s+/g, '-')}`}
     >
-      <p className="text-xs font-medium uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
         {title}
       </p>
 
       <div className="mt-2">
         {isLoading ? (
-          <div className="h-8 w-28 animate-pulse rounded bg-slate-200 dark:bg-slate-700" />
+          <div className="h-8 w-28 animate-pulse rounded bg-slate-200" />
         ) : isError ? (
-          <span className="text-sm font-medium text-red-500">Error loading metric</span>
+          <span className="text-sm font-medium text-red-600">Error loading metric</span>
         ) : (
-          <p className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+          <p className="text-2xl font-bold tracking-tight text-slate-900">
             {value !== undefined && value !== null && value !== '' ? value : '—'}
           </p>
         )}
       </div>
 
       {subtitle && !isLoading && !isError && (
-        <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+        <p className="mt-1 text-xs text-slate-500">{subtitle}</p>
       )}
     </div>
   );

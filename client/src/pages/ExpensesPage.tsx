@@ -6,15 +6,15 @@ export function ExpensesPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">Expenses</h1>
-          <p className="text-sm text-slate-500">Track and manage project-related operational expenses.</p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Expenses</h1>
+          <p className="mt-1 text-sm text-slate-600">Track and manage project-related operational expenses.</p>
         </div>
         <button
           onClick={() => setIsAddOpen(true)}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700"
           data-testid="add-expense-btn"
         >
           Add Expense

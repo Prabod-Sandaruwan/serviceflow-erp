@@ -19,7 +19,7 @@ export function AdminDashboard({ data, isLoading, isError }: AdminDashboardProps
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Financial Metrics</h2>
+        <h2 className="text-base font-bold text-slate-900">Financial Metrics</h2>
         <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <KpiCard title="Revenue" value={fmt(f?.revenue)} subtitle="Issued invoice subtotals" isLoading={isLoading} isError={isError} />
           <KpiCard title="Payments Received" value={fmt(f?.paymentsReceived)} subtitle="Total cash collections" isLoading={isLoading} isError={isError} />
@@ -31,7 +31,7 @@ export function AdminDashboard({ data, isLoading, isError }: AdminDashboardProps
       </div>
 
       <div>
-        <h2 className="text-base font-semibold text-slate-900 dark:text-white">Operational Counts</h2>
+        <h2 className="text-base font-bold text-slate-900">Operational Counts</h2>
         <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <KpiCard title="Active Clients" value={c?.activeClients ?? 0} isLoading={isLoading} isError={isError} />
           <KpiCard title="Active Projects" value={c?.activeProjects ?? 0} isLoading={isLoading} isError={isError} />

@@ -16,11 +16,11 @@ export function ExpenseFilters({ filters, onChange }: ExpenseFiltersProps) {
   const projects = projectsRes?.data || [];
 
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-lg border bg-white p-3 dark:border-slate-700 dark:bg-slate-800">
+    <div className="flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-sm">
       <select
         value={filters.projectId || ''}
         onChange={(e) => onChange({ ...filters, projectId: e.target.value || undefined })}
-        className="rounded border p-1.5 text-xs text-slate-700"
+        className="rounded border border-slate-300 bg-white p-1.5 text-xs text-slate-800"
         aria-label="Filter by project"
       >
         <option value="">All Projects</option>
@@ -32,7 +32,7 @@ export function ExpenseFilters({ filters, onChange }: ExpenseFiltersProps) {
       <select
         value={filters.category || ''}
         onChange={(e) => onChange({ ...filters, category: e.target.value || undefined })}
-        className="rounded border p-1.5 text-xs text-slate-700"
+        className="rounded border border-slate-300 bg-white p-1.5 text-xs text-slate-800"
         aria-label="Filter by category"
       >
         <option value="">All Categories</option>
@@ -45,7 +45,7 @@ export function ExpenseFilters({ filters, onChange }: ExpenseFiltersProps) {
         type="date"
         value={filters.from || ''}
         onChange={(e) => onChange({ ...filters, from: e.target.value || undefined })}
-        className="rounded border p-1.5 text-xs text-slate-700"
+        className="rounded border border-slate-300 bg-white p-1.5 text-xs text-slate-800"
         aria-label="Filter from date"
       />
 
@@ -53,7 +53,7 @@ export function ExpenseFilters({ filters, onChange }: ExpenseFiltersProps) {
         type="date"
         value={filters.to || ''}
         onChange={(e) => onChange({ ...filters, to: e.target.value || undefined })}
-        className="rounded border p-1.5 text-xs text-slate-700"
+        className="rounded border border-slate-300 bg-white p-1.5 text-xs text-slate-800"
         aria-label="Filter to date"
       />
     </div>

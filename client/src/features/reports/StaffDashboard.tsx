@@ -16,8 +16,8 @@ export function StaffDashboard({ data, isLoading, isError }: StaffDashboardProps
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">My Work Summary</h2>
-        <p className="text-xs text-slate-500">Overview of operational items assigned to or managed by you.</p>
+        <h2 className="text-lg font-bold text-slate-900">My Work Summary</h2>
+        <p className="text-xs text-slate-600">Overview of operational items assigned to or managed by you.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

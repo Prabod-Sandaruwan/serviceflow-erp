@@ -20,43 +20,43 @@ export function ExpensesList() {
       {isLoading ? (
         <div className="p-4 text-sm text-slate-500">Loading expenses...</div>
       ) : expenses.length === 0 ? (
-        <div className="rounded-lg border bg-white p-6 text-center text-sm text-slate-500">No expenses found.</div>
+        <div className="rounded-lg border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">No expenses found.</div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border bg-white shadow-sm">
+        <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
           <table className="min-w-full divide-y divide-slate-200 text-left text-xs">
-            <thead className="bg-slate-50 text-slate-600">
+            <thead className="bg-slate-50 text-slate-700 font-semibold">
               <tr>
-                <th className="px-3 py-2">Date</th>
-                <th className="px-3 py-2">Category</th>
-                <th className="px-3 py-2">Description</th>
-                <th className="px-3 py-2">Amount</th>
-                <th className="px-3 py-2">Status</th>
-                <th className="px-3 py-2 text-right">Actions</th>
+                <th className="px-3 py-2.5">Date</th>
+                <th className="px-3 py-2.5">Category</th>
+                <th className="px-3 py-2.5">Description</th>
+                <th className="px-3 py-2.5">Amount</th>
+                <th className="px-3 py-2.5">Status</th>
+                <th className="px-3 py-2.5 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-200">
+            <tbody className="divide-y divide-slate-200 bg-white">
               {expenses.map((e) => {
                 const isVoided = e.status === 'VOIDED';
                 return (
-                  <tr key={e.id} className={isVoided ? 'bg-slate-50/50 text-gray-500' : 'text-slate-800'} data-testid={`expense-row-${e.id}`}>
-                    <td className="whitespace-nowrap px-3 py-2.5">{(e.expenseDate || e.expense_date || '').slice(0, 10)}</td>
-                    <td className="px-3 py-2.5 font-medium">{e.category}</td>
-                    <td className="px-3 py-2.5">{e.description}</td>
-                    <td className={`px-3 py-2.5 font-mono ${isVoided ? 'line-through text-gray-500' : ''}`} data-testid={`expense-amount-${e.id}`}>
+                  <tr key={e.id} className={isVoided ? 'bg-slate-50 text-gray-500' : 'text-slate-900'} data-testid={`expense-row-${e.id}`}>
+                    <td className="whitespace-nowrap px-3 py-2.5 text-slate-700">{(e.expenseDate || e.expense_date || '').slice(0, 10)}</td>
+                    <td className="px-3 py-2.5 font-semibold text-slate-800">{e.category}</td>
+                    <td className="px-3 py-2.5 text-slate-700">{e.description}</td>
+                    <td className={`px-3 py-2.5 font-mono font-medium ${isVoided ? 'line-through text-gray-500' : 'text-slate-900'}`} data-testid={`expense-amount-${e.id}`}>
                       ${Number(e.amount).toFixed(2)}
                     </td>
                     <td className="px-3 py-2.5">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold ${isVoided ? 'bg-gray-100 text-gray-600' : 'bg-green-100 text-green-700'}`}>
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${isVoided ? 'bg-slate-100 text-slate-500 border border-slate-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                         {e.status}
                       </span>
                     </td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right">
                       {!isVoided && (
                         <div className="flex justify-end gap-2">
-                          <button onClick={() => setEditingExpense(e)} className="text-indigo-600 hover:underline" data-testid={`edit-btn-${e.id}`}>
+                          <button onClick={() => setEditingExpense(e)} className="font-semibold text-indigo-600 hover:text-indigo-800 hover:underline" data-testid={`edit-btn-${e.id}`}>
                             Edit
                           </button>
-                          <button onClick={() => setVoidingExpenseId(e.id)} className="text-red-600 hover:underline" data-testid={`void-btn-${e.id}`}>
+                          <button onClick={() => setVoidingExpenseId(e.id)} className="font-semibold text-red-600 hover:text-red-800 hover:underline" data-testid={`void-btn-${e.id}`}>
                             Void
                           </button>
                         </div>
