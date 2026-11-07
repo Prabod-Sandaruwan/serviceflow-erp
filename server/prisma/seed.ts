@@ -8,6 +8,7 @@ import { getColomboToday } from '../src/lib/date';
 import { seedQuotations } from './seed.quotations';
 import { seedProjects } from './seed.projects';
 import { seedInvoices } from './seed.invoices';
+import { seedExpenses } from './seed.expenses';
 
 if (process.env.NODE_ENV === 'production') {
   console.error('Database seeding is not permitted in production.');
@@ -85,7 +86,8 @@ async function main() {
   await seedQuotations(prisma, clients, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedProjects(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedInvoices(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
-  console.log('Database seeded with users, clients, leads, follow-ups, quotations, projects, and invoices.');
+  await seedExpenses(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
+  console.log('Database seeded with users, clients, leads, quotations, projects, invoices, and expenses.');
 }
 
 main()

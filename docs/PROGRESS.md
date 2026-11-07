@@ -1,7 +1,7 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 10 Complete (Ready for Phase 11 — Expenses: EXP-001)  
-**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
+**Current Task:** FIN-015 Complete (Phase 11 Complete)  
+**Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN)
 
 ## Completed Phases
 - [x] Phase 0 - Pre-requisites and Planning (PREP-001..005)
@@ -15,6 +15,7 @@
 - [x] Phase 8 - Projects, Tasks and Milestones (PROJ-001..016)
 - [x] Phase 9 - Invoices (INV-001..015)
 - [x] Phase 10 - Payments (PAY-001..015)
+- [x] Phase 11 - Expenses and Financial Reports (FIN-001..015)
 
 ## Phase 7 — Quotations
 - [x] QUOT-001: Confirm quotation contracts and transitions
@@ -86,5 +87,23 @@
 - [x] PAY-014: Add payment frontend tests
 - [x] PAY-015: Verify payment acceptance (AS-09, AS-10) and extend seed
 
+## Phase 11 — Expenses and Financial Reports
+- [x] FIN-001: Confirm financial formulas and date bases
+- [x] FIN-002: Implement expense create and edit
+- [x] FIN-003: Implement expense list, filtering, and void
+- [x] FIN-004: Implement financial aggregation formulas service (revenue, expenses, net profit, margin)
+- [x] FIN-005: Implement revenue, payments and outstanding queries
+- [x] FIN-006: Implement project profitability and overdue reporting
+- [x] FIN-007: Implement date filters and the report endpoints
+- [x] FIN-008: Implement the dashboard summary endpoint
+- [x] FIN-009: Implement CSV export with injection protection
+- [x] FIN-010: Write report integration tests (exclusions & workflow)
+- [x] FIN-011: Build expense list & create/edit dialog frontend
+- [x] FIN-012: Build the dashboard page
+- [x] FIN-013: Build the finance and project report pages with CSV download
+- [x] FIN-014: Add finance frontend tests (dashboard widgets, date filters, expense form)
+- [x] FIN-015: Verify finance acceptance (AS-11, AS-12, AS-14 CSV) and extend seed
+
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
+- AS-11 (Expense Profit Impact), AS-12 (Invoice Cancel Revenue Impact), and AS-14 (CSV export totals) verified manually. Automated via integration tests in FIN-010.
