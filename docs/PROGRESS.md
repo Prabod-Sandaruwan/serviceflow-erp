@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** FIN-004 Complete (Ready for FIN-005: Implement financial report endpoints)  
+**Current Task:** FIN-005 Complete (Ready for FIN-006: Implement financial report endpoints)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
 
 ## Completed Phases
@@ -91,7 +91,7 @@
 - [x] FIN-002: Implement expense create and edit
 - [x] FIN-003: Implement expense list, filtering, and void
 - [x] FIN-004: Implement financial aggregation formulas service (revenue, expenses, net profit, margin)
-- [ ] FIN-005: Implement financial report endpoints (P&L / project profitability)
+- [x] FIN-005: Implement revenue, payments and outstanding queries
 - [ ] FIN-006: Implement CSV export for financial reports
 - [ ] FIN-007: Write financial calculation unit tests
 - [ ] FIN-008: Write financial reporting integration tests
