@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** FIN-008 Complete (Ready for FIN-009)  
+**Current Task:** FIN-013 Complete (Ready for FIN-014)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY)
 
 ## Completed Phases
@@ -99,7 +99,7 @@
 - [x] FIN-010: Write report integration tests (exclusions & workflow)
 - [x] FIN-011: Build expense list & create/edit dialog frontend
 - [x] FIN-012: Build the dashboard page
-- [ ] FIN-013: Build project profitability view on frontend
+- [x] FIN-013: Build the finance and project report pages with CSV download
 - [ ] FIN-014: Build financial reports page with date filters and CSV export
 - [ ] FIN-015: Add finance frontend tests, extend seed data, final phase verification, and merge into main
 
