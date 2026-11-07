@@ -14,38 +14,52 @@ export function getCurrentMonthRange() {
 
 const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
 
-export const reportDateRangeSchema = z
-  .object({
-    from: z.string().regex(dateRegex, 'From date must be in YYYY-MM-DD format').optional(),
-    to: z.string().regex(dateRegex, 'To date must be in YYYY-MM-DD format').optional(),
-    projectId: z.string().optional(),
-  })
-  .transform((data) => {
-    const def = getCurrentMonthRange();
-    const from = data.from || def.from;
-    const to = data.to || def.to;
-    return {
-      from,
-      to,
-      projectId: data.projectId,
-      startDate: new Date(`${from}T00:00:00.000Z`),
-      endDate: new Date(`${to}T23:59:59.999Z`),
-    };
-  })
-  .refine((data) => data.startDate.getTime() <= data.endDate.getTime(), {
-    message: 'From date must be on or before To date',
-    path: ['from'],
-  })
-  .refine(
-    (data) => {
-      const diffMs = data.endDate.getTime() - data.startDate.getTime();
-      const fiveYearsMs = 5 * 365.25 * 24 * 60 * 60 * 1000;
-      return diffMs <= fiveYearsMs;
-    },
-    {
-      message: 'Date range span must not exceed 5 years',
-      path: ['to'],
-    }
-  );
+function applyDateTransformAndRefine<T extends z.ZodRawShape>(shape: T) {
+  return z
+    .object(shape)
+    .transform((data: any) => {
+      const def = getCurrentMonthRange();
+      const from = data.from || def.from;
+      const to = data.to || def.to;
+      return {
+        ...data,
+        from,
+        to,
+        startDate: new Date(`${from}T00:00:00.000Z`),
+        endDate: new Date(`${to}T23:59:59.999Z`),
+      };
+    })
+    .refine((data) => data.startDate.getTime() <= data.endDate.getTime(), {
+      message: 'From date must be on or before To date',
+      path: ['from'],
+    })
+    .refine(
+      (data) => {
+        const diffMs = data.endDate.getTime() - data.startDate.getTime();
+        const fiveYearsMs = 5 * 365.25 * 24 * 60 * 60 * 1000;
+        return diffMs <= fiveYearsMs;
+      },
+      {
+        message: 'Date range span must not exceed 5 years',
+        path: ['to'],
+      }
+    );
+}
+
+export const reportDateRangeSchema = applyDateTransformAndRefine({
+  from: z.string().regex(dateRegex, 'From date must be in YYYY-MM-DD format').optional(),
+  to: z.string().regex(dateRegex, 'To date must be in YYYY-MM-DD format').optional(),
+  projectId: z.string().optional(),
+});
+
+export const reportExportQuerySchema = applyDateTransformAndRefine({
+  from: z.string().regex(dateRegex, 'From date must be in YYYY-MM-DD format').optional(),
+  to: z.string().regex(dateRegex, 'To date must be in YYYY-MM-DD format').optional(),
+  projectId: z.string().optional(),
+  type: z.enum(['finance', 'projects'], {
+    message: "type must be 'finance' or 'projects'",
+  }),
+});
 
 export type ReportDateRangeQuery = z.infer<typeof reportDateRangeSchema>;
+export type ReportExportQuery = z.infer<typeof reportExportQuerySchema>;

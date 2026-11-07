@@ -1,39 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import { reportDateRangeSchema } from './reports.schemas';
-import {
-  getRevenue,
-  getPaymentsReceived,
-  getExpenses,
-  getOutstanding,
-} from './reports.repository';
-import { calculateProfit, calculateMargin } from './formulas';
-import { getProjectProfitabilityReport } from './reports.service';
-import prisma from '../../config/prisma';
+import { reportDateRangeSchema, reportExportQuerySchema } from './reports.schemas';
+import { getFinanceReport, getProjectsReport } from './reports.service';
+import { toCsv } from '../../shared/csv';
 
 export async function getFinanceReportHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const query = reportDateRangeSchema.parse(req.query);
-    const [revenue, paymentsReceived, expenses, outstanding] = await Promise.all([
-      getRevenue(query.startDate, query.endDate),
-      getPaymentsReceived(query.startDate, query.endDate),
-      getExpenses(query.startDate, query.endDate),
-      getOutstanding(query.endDate),
-    ]);
-
-    const estimatedProfitability = calculateProfit(revenue, expenses);
-    const margin = calculateMargin(revenue, estimatedProfitability);
-
+    const data = await getFinanceReport(query.startDate, query.endDate);
     res.status(200).json({
-      data: {
-        from: query.from,
-        to: query.to,
-        revenue,
-        paymentsReceived,
-        expenses,
-        outstanding,
-        estimatedProfitability,
-        margin,
-      },
+      data: { from: query.from, to: query.to, ...data },
     });
   } catch (err) {
     next(err);
@@ -43,28 +18,52 @@ export async function getFinanceReportHandler(req: Request, res: Response, next:
 export async function getProjectsReportHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const query = reportDateRangeSchema.parse(req.query);
-    const where: any = { status: { not: 'CANCELLED' } };
-    if (query.projectId) {
-      where.id = BigInt(query.projectId);
+    const list = await getProjectsReport(query.projectId);
+    res.status(200).json({ data: list });
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function exportCsvReportHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const query = reportExportQuerySchema.parse(req.query);
+    let csv = '';
+
+    if (query.type === 'finance') {
+      const fin = await getFinanceReport(query.startDate, query.endDate);
+      const row = {
+        'Revenue': fin.revenue,
+        'Payments Received': fin.paymentsReceived,
+        'Outstanding': fin.outstanding,
+        'Expenses': fin.expenses,
+        'Estimated Profitability': fin.estimatedProfitability,
+      };
+      csv = toCsv([row], Object.keys(row));
+    } else {
+      const projects = await getProjectsReport(query.projectId);
+      const rows = projects.map((p) => ({
+        'Project ID': p.projectId,
+        'Revenue': p.revenue,
+        'Billed': p.billed,
+        'Collected': p.collected,
+        'Expenses': p.expenses,
+        'Estimated Profitability': p.estimatedProfitability,
+      }));
+      const cols = [
+        'Project ID',
+        'Revenue',
+        'Billed',
+        'Collected',
+        'Expenses',
+        'Estimated Profitability',
+      ];
+      csv = toCsv(rows, cols);
     }
 
-    const projects = await prisma.project.findMany({
-      where,
-      select: { id: true, name: true, projectCode: true },
-    });
-
-    const list = await Promise.all(
-      projects.map(async (p) => {
-        const report = await getProjectProfitabilityReport(p.id.toString());
-        return {
-          ...report,
-          name: p.name,
-          projectCode: p.projectCode,
-        };
-      })
-    );
-
-    res.status(200).json({ data: list });
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="export.csv"');
+    res.status(200).send(csv);
   } catch (err) {
     next(err);
   }

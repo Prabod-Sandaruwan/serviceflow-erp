@@ -95,13 +95,13 @@
 - [x] FIN-006: Implement project profitability and overdue reporting
 - [x] FIN-007: Implement date filters and the report endpoints
 - [x] FIN-008: Implement the dashboard summary endpoint
-- [ ] FIN-009: Build expense list & create/edit dialog frontend
-- [ ] FIN-010: Build project profitability view on frontend
-- [ ] FIN-011: Build financial reports page with date filters
-- [ ] FIN-012: Build CSV export button and download flow on frontend
-- [ ] FIN-013: Add finance frontend tests
-- [ ] FIN-014: Review financial audit logging coverage
-- [ ] FIN-015: Extend seed data for expenses and financial reports, update docs/PROGRESS.md
+- [x] FIN-009: Implement CSV export with injection protection
+- [ ] FIN-010: Build expense list & create/edit dialog frontend
+- [ ] FIN-011: Build project profitability view on frontend
+- [ ] FIN-012: Build financial reports page with date filters
+- [ ] FIN-013: Build CSV export button and download flow on frontend
+- [ ] FIN-014: Add finance frontend tests and audit logging coverage review
+- [ ] FIN-015: Extend seed data for expenses and financial reports, final phase verification, and merge into main
 
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.

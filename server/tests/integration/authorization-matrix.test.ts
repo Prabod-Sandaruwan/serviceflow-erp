@@ -46,7 +46,7 @@ describe('Authorization Matrix Sanity Checks', () => {
       'POST /api/v1/invoices/:id/issue', 'POST /api/v1/invoices/:id/cancel', 'POST /api/v1/invoices/:id/payments',
       'GET /api/v1/invoices/:id/payments', 'POST /api/v1/payments/:id/void',
       'GET /api/v1/expenses', 'POST /api/v1/expenses', 'PATCH /api/v1/expenses/:id', 'POST /api/v1/expenses/:id/void',
-      'GET /api/v1/reports/finance', 'GET /api/v1/reports/projects', 'GET /api/v1/dashboard/summary',
+      'GET /api/v1/reports/finance', 'GET /api/v1/reports/projects', 'GET /api/v1/reports/export.csv', 'GET /api/v1/dashboard/summary',
     ];
     for (const p of expected) expect(paths).toContain(p);
   });
