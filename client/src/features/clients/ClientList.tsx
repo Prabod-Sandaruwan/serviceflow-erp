@@ -1,27 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { Upload, Plus } from 'lucide-react';
 import { useClients } from './hooks';
-import { Table, type Column } from '../../components/ui/Table';
+import { Table } from '../../components/ui/Table';
 import { Pagination } from '../../components/ui/Pagination';
-import { StatusBadge } from '../../components/ui/StatusBadge';
-import { Input, Button } from '../../components/ui/Forms';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
-import type { Client } from './types';
-
-const typeBadge = (t: string) => {
-  const isBiz = t === 'BUSINESS' || t === 'COMPANY';
-  return (
-    <span style={{ padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.75rem', fontWeight: 600, background: isBiz ? '#ede9fe' : '#e0f2fe', color: isBiz ? '#6d28d9' : '#0369a1' }}>
-      {t}
-    </span>
-  );
-};
+import { ClientStats } from './ClientStats';
+import { ClientFilterBar } from './ClientFilterBar';
+import { getClientColumns } from './clientColumns';
 
 export default function ClientList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = searchParams.get('page') || '1';
   const search = searchParams.get('search') || '';
-  const sort = searchParams.get('sort') || '-createdAt';
+  const typeFilter = searchParams.get('type') || '';
+  const statusFilter = searchParams.get('status') || '';
   const [searchInput, setSearchInput] = useState(search);
 
   useEffect(() => {
@@ -38,49 +31,48 @@ export default function ClientList() {
     return () => clearTimeout(timer);
   }, [searchInput, search, setSearchParams]);
 
-  const query = useClients({ page, search, sort });
+  const query = useClients({
+    page, search, type: typeFilter || undefined,
+    isActive: statusFilter || undefined, sort: '-createdAt',
+  });
 
-  const columns: Column<Client>[] = [
-    { key: 'displayName', label: 'Name' },
-    { key: 'clientType', label: 'Type', render: (c) => typeBadge(c.clientType) },
-    { key: 'email', label: 'Email', render: (c) => c.email || '-' },
-    { key: 'phone', label: 'Phone', render: (c) => c.phone || '-' },
-    { key: 'isActive', label: 'Status', render: (c) => <StatusBadge status={c.isActive ? 'ACTIVE' : 'INACTIVE'} /> },
-    {
-      key: 'actions', label: 'Actions',
-      render: (c) => (
-        <Link to={`/clients/${c.id}`} style={{ color: '#4f46e5', textDecoration: 'none', fontWeight: 600, padding: '0.25rem 0.65rem', background: 'rgba(99, 102, 241, 0.08)', borderRadius: '6px', border: '1px solid rgba(99, 102, 241, 0.25)', fontSize: '0.8rem' }}>
-          View
-        </Link>
-      ),
-    },
-  ];
+  const columns = getClientColumns();
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="space-y-5 p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>Clients</h1>
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Client accounts, directory, and contact management</p>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900">Clients</h1>
+          <p className="mt-1 text-xs text-slate-500">Client accounts, directory, and contact management</p>
         </div>
-        <Link to="/clients/new" style={{ textDecoration: 'none' }}>
-          <Button type="button" style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)', borderRadius: '8px', fontWeight: 600 }}>New client</Button>
-        </Link>
+        <div className="flex items-center gap-2.5">
+          <button type="button" className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition">
+            <Upload className="h-3.5 w-3.5 text-slate-400" /><span>Export</span>
+          </button>
+          <Link to="/clients/new">
+            <button type="button" className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-xs shadow-blue-200 transition">
+              <Plus className="h-4 w-4" /><span>New client</span>
+            </button>
+          </Link>
+        </div>
       </div>
-      <div style={{ maxWidth: '320px', marginBottom: '1.25rem' }}>
-        <Input id="client-search" placeholder="Search clients..." value={searchInput} onChange={(e) => setSearchInput(e.target.value)} />
-      </div>
-      <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)', padding: '1.25rem' }}>
+
+      <ClientStats clients={query.data?.data} total={query.data?.meta?.total} />
+
+      <ClientFilterBar
+        search={searchInput} onSearchChange={setSearchInput} typeFilter={typeFilter}
+        onTypeChange={(t) => setSearchParams((p) => { const n = new URLSearchParams(p); if (t) n.set('type', t); else n.delete('type'); n.set('page', '1'); return n; })}
+        statusFilter={statusFilter}
+        onStatusChange={(s) => setSearchParams((p) => { const n = new URLSearchParams(p); if (s) n.set('status', s); else n.delete('status'); n.set('page', '1'); return n; })}
+        onRefresh={() => query.refetch()} activeCount={query.data?.data?.filter((c) => c.isActive).length}
+      />
+
+      <div className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs">
         <QueryBoundary query={query} isEmpty={(d) => !d?.data || d.data.length === 0} emptyMessage="No clients found">
           <Table columns={columns} data={query.data?.data} />
           <Pagination
-            page={Number(page)}
-            totalPages={query.data?.meta?.totalPages || 1}
-            onPageChange={(p) => setSearchParams((prev) => {
-              const next = new URLSearchParams(prev);
-              next.set('page', String(p));
-              return next;
-            })}
+            page={Number(page)} totalPages={query.data?.meta?.totalPages || 1}
+            onPageChange={(p) => setSearchParams((prev) => { const next = new URLSearchParams(prev); next.set('page', String(p)); return next; })}
           />
         </QueryBoundary>
       </div>
