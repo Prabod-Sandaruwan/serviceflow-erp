@@ -1,13 +1,17 @@
 import { Users, Building2, User } from 'lucide-react';
+import { useClientStats } from './clientStatsHook';
 import type { Client } from './types';
 
 export function ClientStats({ clients, total }: { clients?: Client[]; total?: number }) {
+  const { data: statsRes } = useClientStats();
+  const dbStats = statsRes?.data;
+
   const list = clients || [];
-  const totalCount = total ?? list.length;
-  const activeCount = list.filter((c) => c.isActive).length;
-  const activePct = list.length > 0 ? Math.round((activeCount / list.length) * 100) : 100;
-  const corporateCount = list.filter((c) => c.clientType === 'COMPANY' || c.clientType === 'BUSINESS').length;
-  const individualCount = list.filter((c) => c.clientType === 'INDIVIDUAL').length;
+  const totalCount = dbStats?.total ?? total ?? list.length;
+  const activeCount = dbStats?.active ?? list.filter((c) => c.isActive).length;
+  const activePct = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 100;
+  const corporateCount = dbStats?.corporate ?? list.filter((c) => c.clientType === 'COMPANY' || c.clientType === 'BUSINESS').length;
+  const individualCount = dbStats?.individuals ?? list.filter((c) => c.clientType === 'INDIVIDUAL').length;
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">

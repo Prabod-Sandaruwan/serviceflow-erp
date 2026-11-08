@@ -26,18 +26,12 @@ export function useCreateClient() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => api.post<{ data: Client; duplicateWarning?: boolean }>('/clients', data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['clients'] }),
-  });
-}
-
-export function useUpdateClient() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: ({ id, ...data }: { id: string; [key: string]: any }) =>
-      api.patch<{ data: Client; duplicateWarning?: boolean }>(`/clients/${id}`, data),
-    onSuccess: (_, vars) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clients'] });
-      queryClient.invalidateQueries({ queryKey: ['client', vars.id] });
+      queryClient.invalidateQueries({ queryKey: ['clients-stats'] });
     },
   });
 }
+
+export * from './clientStatsHook';
+export * from './clientMutations';

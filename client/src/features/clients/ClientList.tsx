@@ -8,6 +8,7 @@ import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { ClientStats } from './ClientStats';
 import { ClientFilterBar } from './ClientFilterBar';
 import { getClientColumns } from './clientColumns';
+import { downloadAllClientsCsv } from './exportClients';
 
 export default function ClientList() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -46,7 +47,11 @@ export default function ClientList() {
           <p className="mt-1 text-xs text-slate-500">Client accounts, directory, and contact management</p>
         </div>
         <div className="flex items-center gap-2.5">
-          <button type="button" className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition">
+          <button
+            type="button"
+            onClick={() => downloadAllClientsCsv(query.data?.data)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-200 bg-white text-xs font-semibold text-slate-700 hover:bg-slate-50 shadow-xs transition"
+          >
             <Upload className="h-3.5 w-3.5 text-slate-400" /><span>Export</span>
           </button>
           <Link to="/clients/new">

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { Mail, MoreVertical } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import { ClientActionMenu } from './ClientActionMenu';
 import type { Column } from '../../components/ui/Table';
 import type { Client } from './types';
 
@@ -49,7 +50,7 @@ export const getClientColumns = (): Column<Client>[] => [
     render: (c) => (
       <div className="flex items-center gap-2">
         <Link to={`/clients/${c.id}`} className="inline-flex items-center px-3 py-1 rounded-lg text-xs font-bold text-blue-600 bg-blue-50/70 hover:bg-blue-100 border border-blue-200/50 transition">View</Link>
-        <button type="button" className="p-1 rounded-md text-slate-400 hover:text-slate-600"><MoreVertical className="h-3.5 w-3.5" /></button>
+        <ClientActionMenu client={c} />
       </div>
     ),
   },
