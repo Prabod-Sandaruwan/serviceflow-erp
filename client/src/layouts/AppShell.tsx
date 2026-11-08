@@ -10,7 +10,7 @@ export function AppShell() {
   const handleLogout = () => navigate('/logout');
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#080c16]">
+    <div className="flex h-screen overflow-hidden bg-slate-50">
       {isMobileOpen && (
         <div
           role="presentation"
