@@ -36,3 +36,4 @@ export async function downloadAllClientsCsv(fallbackClients: Client[] = []) {
 }
 
 export default downloadAllClientsCsv;
+
