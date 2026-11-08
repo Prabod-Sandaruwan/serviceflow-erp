@@ -21,8 +21,8 @@ export function SidebarNav({ onCloseMobile }: { onCloseMobile?: () => void }) {
 
   return (
     <aside className={`${isCollapsed ? 'w-18' : 'w-64'} flex-shrink-0 flex flex-col h-full bg-white border-r border-slate-200 select-none z-30 transition-all duration-200`}>
-      <div className={`h-16 flex items-center ${isCollapsed ? 'justify-center px-2' : 'justify-between px-4'} border-b border-slate-100`}>
-        <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => isCollapsed && setIsCollapsed(false)}>
+      <div className={`flex items-center ${isCollapsed ? 'flex-col justify-center py-2.5 gap-1.5' : 'h-16 justify-between px-4'} border-b border-slate-100`}>
+        <div className="flex items-center gap-3 overflow-hidden cursor-pointer" onClick={() => isCollapsed && setIsCollapsed(false)} title={isCollapsed ? 'Click to expand' : undefined}>
           <div className="h-9 w-9 shrink-0 rounded-xl bg-blue-600 flex items-center justify-center shadow-xs">
             <span className="font-extrabold text-white text-base">SF</span>
           </div>
@@ -33,7 +33,10 @@ export function SidebarNav({ onCloseMobile }: { onCloseMobile?: () => void }) {
             </div>
           )}
         </div>
-        <button type="button" onClick={() => setIsCollapsed(!isCollapsed)} className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
+        <button
+          type="button" onClick={() => setIsCollapsed(!isCollapsed)} title={isCollapsed ? 'Expand sidebar' : 'Minimize sidebar'}
+          className="hidden md:flex p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+        >
           {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
         <button type="button" onClick={onCloseMobile} className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition">
@@ -76,15 +79,6 @@ export function SidebarNav({ onCloseMobile }: { onCloseMobile?: () => void }) {
           );
         })}
       </nav>
-
-      <div className="p-2 border-t border-slate-100 flex items-center justify-center">
-        <button
-          type="button" onClick={() => setIsCollapsed(!isCollapsed)} title={isCollapsed ? 'Expand sidebar' : 'Minimize sidebar'}
-          className={`flex items-center ${isCollapsed ? 'justify-center p-2' : 'gap-2 px-3 py-2 w-full'} rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 text-xs font-medium transition`}
-        >
-          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <><ChevronLeft className="w-4 h-4" /><span>Collapse</span></>}
-        </button>
-      </div>
     </aside>
   );
 }
