@@ -64,7 +64,7 @@ export const router = createBrowserRouter([
       protectedChild('/clients', ClientList),
       protectedChild('/clients/new', ClientFormPage),
       protectedChild('/clients/:id', ClientDetailPage),
-      protectedChild('/clients/:id/edit', ClientFormPage),
+      protectedChild('/clients/:id/edit', ClientDetailPage),
       protectedChild('/leads', LeadList),
       protectedChild('/leads/new', LeadFormPage),
       protectedChild('/leads/:id', LeadDetailPage),

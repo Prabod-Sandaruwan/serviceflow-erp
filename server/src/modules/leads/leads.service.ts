@@ -14,6 +14,7 @@ export async function listLeads(query: LeadQuery, user?: any) {
   const skip = (query.page - 1) * query.limit;
   const isStaff = user?.role === 'STAFF';
   const ownerId = isStaff ? toBigIntId(user.userId ?? user.id) : query.ownerId ? toBigIntId(query.ownerId) : undefined;
+  const clientId = query.clientId ? toBigIntId(query.clientId) : undefined;
   let orderBy: Record<string, Prisma.SortOrder> = { created_at: 'desc' };
   if (query.sort) {
     const isDesc = query.sort.startsWith('-');
@@ -21,7 +22,7 @@ export async function listLeads(query: LeadQuery, user?: any) {
     orderBy = { [raw === 'expectedValue' ? 'expected_value' : 'created_at']: isDesc ? 'desc' : 'asc' };
   }
   const [leads, total] = await findMany({
-    skip, take: query.limit, status: query.status, ownerId, orderBy: orderBy as Prisma.LeadOrderByWithRelationInput,
+    skip, take: query.limit, status: query.status, ownerId, clientId, orderBy: orderBy as Prisma.LeadOrderByWithRelationInput,
   });
   return {
     data: leads.map(formatLead),

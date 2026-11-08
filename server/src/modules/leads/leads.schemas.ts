@@ -14,6 +14,7 @@ export const leadQuerySchema = z.object({
   limit: z.coerce.number().min(1).max(100).default(10),
   status: leadStatusEnum.optional(),
   ownerId: z.string().optional(),
+  clientId: z.string().optional(),
   sort: z.enum(['createdAt', '-createdAt', 'expectedValue', '-expectedValue']).optional(),
 });
 

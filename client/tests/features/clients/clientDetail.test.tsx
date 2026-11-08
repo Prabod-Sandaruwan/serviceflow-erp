@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import ClientDetailPage from '../../../src/features/clients/ClientDetailPage';
@@ -6,6 +6,19 @@ import * as clientHooks from '../../../src/features/clients/hooks';
 
 vi.mock('../../../src/features/clients/hooks', () => ({
   useClient: vi.fn(),
+  useUpdateClient: vi.fn(() => ({ mutate: vi.fn(), mutateAsync: vi.fn(), isPending: false })),
+}));
+
+vi.mock('../../../src/features/leads/hooks', () => ({
+  useLeads: vi.fn(() => ({ data: { data: [] }, isLoading: false })),
+}));
+
+vi.mock('../../../src/features/quotations/hooks', () => ({
+  useQuotations: vi.fn(() => ({ data: { data: [] }, isLoading: false })),
+}));
+
+vi.mock('../../../src/features/projects/hooks', () => ({
+  useProjects: vi.fn(() => ({ data: { data: [] }, isLoading: false })),
 }));
 
 describe('ClientDetailPage Component (CRM-006)', () => {
@@ -21,19 +34,14 @@ describe('ClientDetailPage Component (CRM-006)', () => {
     isActive: true,
   };
 
-  it('renders client detail information, badges and placeholder tabs', () => {
+  it('renders client detail information, badges and opens inline edit modal', () => {
     vi.mocked(clientHooks.useClient).mockReturnValue({
-      isLoading: false,
-      isError: false,
-      data: { data: dummyClient },
-      refetch: vi.fn(),
+      isLoading: false, isError: false, data: { data: dummyClient }, refetch: vi.fn(),
     } as any);
 
     render(
       <MemoryRouter initialEntries={['/clients/client-99']}>
-        <Routes>
-          <Route path="/clients/:id" element={<ClientDetailPage />} />
-        </Routes>
+        <Routes><Route path="/clients/:id" element={<ClientDetailPage />} /></Routes>
       </MemoryRouter>
     );
 
@@ -44,13 +52,13 @@ describe('ClientDetailPage Component (CRM-006)', () => {
     expect(screen.getByText('Perera')).toBeInTheDocument();
     expect(screen.getByText('123 Harbor Rd, Colombo')).toBeInTheDocument();
 
-    const editBtn = screen.getByRole('button', { name: /Edit Client/i });
+    const editBtn = screen.getByRole('button', { name: /Edit Details|Edit Client/i });
     expect(editBtn).toBeInTheDocument();
-    expect(editBtn.closest('a')).toHaveAttribute('href', '/clients/client-99/edit');
+    fireEvent.click(editBtn);
+    expect(screen.getByRole('heading', { name: /Edit Client Details/i })).toBeInTheDocument();
 
     expect(screen.getByRole('heading', { name: 'Leads' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Quotations' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Projects' })).toBeInTheDocument();
   });
 });
-
