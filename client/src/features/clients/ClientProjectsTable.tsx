@@ -82,3 +82,4 @@ export function ClientProjectsTable({ projects, clientId }: ClientProjectsTableP
 }
 
 export default ClientProjectsTable;
+

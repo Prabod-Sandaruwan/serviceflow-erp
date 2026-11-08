@@ -52,3 +52,4 @@ export function ClientContactCard({ client, onEdit }: ClientContactCardProps) {
 }
 
 export default ClientContactCard;
+

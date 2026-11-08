@@ -80,3 +80,4 @@ export function ClientEditModal({ client, isOpen, onClose }: ClientEditModalProp
 }
 
 export default ClientEditModal;
+

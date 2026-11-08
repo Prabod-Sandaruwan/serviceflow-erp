@@ -75,3 +75,4 @@ export function ClientLeadsTable({ leads, clientId }: ClientLeadsTableProps) {
 }
 
 export default ClientLeadsTable;
+

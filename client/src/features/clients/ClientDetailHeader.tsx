@@ -84,3 +84,4 @@ export function ClientDetailHeader({ client }: { client: Client }) {
 }
 
 export default ClientDetailHeader;
+

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update, convert } from './leads.controller';
+import { stats, list, getById, create, update, convert } from './leads.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -7,6 +7,7 @@ import { registry } from '../../config/openapi';
 const router = Router();
 const roles = ['ADMIN', 'MANAGER', 'STAFF'];
 
+route(router, 'get', '/stats', { roles, handler: [requireAuth, requireRole(roles), stats] });
 route(router, 'get', '/', { roles, handler: [requireAuth, requireRole(roles), list] });
 route(router, 'post', '/', { roles, handler: [requireAuth, requireRole(roles), create] });
 route(router, 'get', '/:id', { roles, handler: [requireAuth, requireRole(roles), getById] });

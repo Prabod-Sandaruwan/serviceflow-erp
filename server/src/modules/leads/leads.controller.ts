@@ -12,6 +12,17 @@ import {
   updateLead,
   convertLead,
 } from './leads.service';
+import { getLeadStats } from './leads.stats';
+
+export async function stats(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const user = req.auth || (req as any).user;
+    const result = await getLeadStats(user);
+    res.json({ data: result });
+  } catch (err) {
+    next(err);
+  }
+}
 
 export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
@@ -67,5 +78,5 @@ export async function convert(req: Request, res: Response, next: NextFunction): 
   }
 }
 
-export const LeadsController = { list, getById, create, update, convert };
+export const LeadsController = { stats, list, getById, create, update, convert };
 export default LeadsController;
