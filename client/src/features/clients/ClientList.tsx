@@ -72,7 +72,7 @@ export default function ClientList() {
         onRefresh={() => query.refetch()} activeCount={query.data?.data?.filter((c) => c.isActive).length}
       />
 
-      <div className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white p-4 shadow-xs">
+      <div className="space-y-4">
         <QueryBoundary query={query} isEmpty={(d) => !d?.data || d.data.length === 0} emptyMessage="No clients found">
           <Table columns={columns} data={query.data?.data} />
           <Pagination
