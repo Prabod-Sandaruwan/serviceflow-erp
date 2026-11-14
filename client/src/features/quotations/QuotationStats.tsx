@@ -63,3 +63,4 @@ export function QuotationStats({ quotations = [] }: { quotations?: Quotation[] }
 }
 
 export default QuotationStats;
+

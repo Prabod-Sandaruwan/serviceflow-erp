@@ -78,3 +78,4 @@ describe('FollowUpList Page Feature', () => {
     await waitFor(() => expect(spyExport).toHaveBeenCalledWith(mockFollowUps));
   });
 });
+

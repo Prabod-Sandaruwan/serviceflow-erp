@@ -37,3 +37,4 @@ export function QuotationTabs({ activeTab, onTabChange, isStaff }: QuotationTabs
 }
 
 export default QuotationTabs;
+

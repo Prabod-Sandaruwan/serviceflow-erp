@@ -6,6 +6,7 @@ import { Pagination } from '../../components/ui/Pagination';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { EmployeeModal } from './EmployeeModal';
 import { EmployeeFilterBar } from './EmployeeFilterBar';
+import { EmployeeStats } from './EmployeeStats';
 import { getEmployeeColumns } from './employeeColumns';
 import { downloadAllEmployeesCsv } from './exportEmployees';
 
@@ -61,6 +62,8 @@ export default function EmployeeList() {
           </button>
         </div>
       </section>
+
+      <EmployeeStats employees={data} total={total} />
 
       <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5">
         <EmployeeFilterBar

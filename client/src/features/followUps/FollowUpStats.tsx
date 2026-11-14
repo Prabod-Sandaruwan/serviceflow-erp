@@ -58,3 +58,4 @@ export function FollowUpStats({ followUps = [] }: { followUps?: FollowUp[] }) {
 }
 
 export default FollowUpStats;
+

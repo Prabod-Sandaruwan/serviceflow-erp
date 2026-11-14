@@ -74,3 +74,4 @@ export function FollowUpTable({ followUps, onMarkDone, isPendingDone = false }: 
 }
 
 export default FollowUpTable;
+

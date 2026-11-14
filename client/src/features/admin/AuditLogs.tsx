@@ -5,6 +5,7 @@ import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { Pagination } from '../../components/ui/Pagination';
 import { AuditFilterBar } from './AuditFilterBar';
 import { AuditLogRow } from './AuditLogRow';
+import { AuditStats } from './AuditStats';
 import { exportAuditLogs } from './exportAuditLogs';
 
 export default function AuditLogs() {
@@ -19,6 +20,7 @@ export default function AuditLogs() {
   const query = useAuditLogs({ page, limit: 20, entityType, action, from, to });
   const data = (query.data as any)?.data || [];
   const meta = (query.data as any)?.meta;
+  const total = meta?.total ?? data.length;
 
   useEffect(() => {
     if (!liveStream) return;
@@ -36,28 +38,21 @@ export default function AuditLogs() {
           <p className="mt-1 text-xs text-slate-500">Immutable record of administrative, user, and financial operations</p>
         </div>
         <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setLiveStream((v) => !v)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 shadow-xs transition"
-          >
+          <button type="button" onClick={() => setLiveStream((v) => !v)} className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 shadow-xs transition">
             <span className={`w-2 h-2 rounded-full ${liveStream ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`} />
             <span>Live Stream: {liveStream ? 'Active' : 'Auto-refresh'}</span>
           </button>
-          <button
-            type="button"
-            onClick={() => exportAuditLogs(data)}
-            className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs shadow-blue-200 transition"
-          >
+          <button type="button" onClick={() => exportAuditLogs(data)} className="inline-flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs shadow-blue-200 transition">
             <Download className="w-3.5 h-3.5" /><span>Export CSV / JSON</span>
           </button>
         </div>
       </div>
 
+      <AuditStats logs={data} total={total} />
+
       <AuditFilterBar
-        from={from} onFromChange={setFrom} to={to} onToChange={setTo}
-        entityType={entityType} onEntityTypeChange={setEntityType}
-        action={action} onActionChange={setAction} onFilter={() => setPage(1)} onReset={handleReset}
+        from={from} onFromChange={setFrom} to={to} onToChange={setTo} entityType={entityType}
+        onEntityTypeChange={setEntityType} action={action} onActionChange={setAction} onFilter={() => setPage(1)} onReset={handleReset}
       />
 
       <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
@@ -77,10 +72,7 @@ export default function AuditLogs() {
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs">
                 {data.map((log: any) => (
-                  <AuditLogRow
-                    key={log.id} log={log} isExpanded={expandedRow === log.id}
-                    onToggle={() => setExpandedRow(expandedRow === log.id ? null : log.id)}
-                  />
+                  <AuditLogRow key={log.id} log={log} isExpanded={expandedRow === log.id} onToggle={() => setExpandedRow(expandedRow === log.id ? null : log.id)} />
                 ))}
               </tbody>
             </table>

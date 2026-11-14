@@ -36,3 +36,4 @@ export async function downloadAllFollowUpsCsv(fallback: FollowUp[] = []) {
 }
 
 export default downloadAllFollowUpsCsv;
+

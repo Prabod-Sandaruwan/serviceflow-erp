@@ -58,3 +58,4 @@ export function ProjectStats({ projects = [] }: { projects?: Project[] }) {
 }
 
 export default ProjectStats;
+
