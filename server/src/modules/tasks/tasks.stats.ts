@@ -26,8 +26,9 @@ export async function getTaskStats(req: Request, res: Response, next: NextFuncti
       else if (g.status === 'DONE') stats.done = count;
       else if (g.status === 'CANCELLED') stats.cancelled = count;
     }
-    ok(res, { data: stats });
+    ok(res, stats);
   } catch (err) {
     next(err);
   }
 }
+

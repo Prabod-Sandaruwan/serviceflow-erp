@@ -3,7 +3,8 @@ import type { Task } from './types';
 
 export function TaskStats({ fallbackTasks }: { fallbackTasks?: Task[] }) {
   const { data } = useTaskStats();
-  const apiStats = data?.data;
+  const raw: any = data?.data;
+  const apiStats = raw && typeof raw.todo === 'number' ? raw : raw?.data;
 
   const fallback = (fallbackTasks || []).reduce(
     (acc, t) => {
@@ -69,3 +70,4 @@ export function TaskStats({ fallbackTasks }: { fallbackTasks?: Task[] }) {
 }
 
 export default TaskStats;
+
