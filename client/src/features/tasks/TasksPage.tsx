@@ -2,44 +2,40 @@ import { useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
 import { useTasks } from './hooks';
-import { Table, type Column } from '../../components/ui/Table';
+import { Table } from '../../components/ui/Table';
 import { Pagination } from '../../components/ui/Pagination';
-import { StatusBadge } from '../../components/ui/StatusBadge';
-import { Button, Select } from '../../components/ui/Forms';
 import { Modal } from '../../components/ui/Modal';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
+import { TaskStats } from './TaskStats';
+import { TaskFilterBar } from './TaskFilterBar';
+import { getTaskColumns } from './taskColumns';
+import { TaskKanbanBoard } from './TaskKanbanBoard';
+import { TaskCreateModal } from './TaskCreateModal';
 import { TaskForm } from './TaskForm';
+import { downloadAllTasksCsv } from './exportTasks';
 import type { Task } from './types';
-
-const PRIORITIES = [
-  { value: '', label: 'All Priorities' }, { value: 'LOW', label: 'Low' },
-  { value: 'MEDIUM', label: 'Medium' }, { value: 'HIGH', label: 'High' }, { value: 'URGENT', label: 'Urgent' },
-];
-const STATUSES = [
-  { value: '', label: 'All Statuses' }, { value: 'TODO', label: 'To Do' },
-  { value: 'IN_PROGRESS', label: 'In Progress' }, { value: 'DONE', label: 'Done' }, { value: 'CANCELLED', label: 'Cancelled' },
-];
-const SORTS = [
-  { value: 'createdAt:desc', label: 'Newest First' }, { value: 'createdAt:asc', label: 'Oldest First' },
-  { value: 'dueDate:asc', label: 'Due Date (Earliest)' }, { value: 'dueDate:desc', label: 'Due Date (Latest)' },
-  { value: 'title:asc', label: 'Title (A-Z)' }, { value: 'title:desc', label: 'Title (Z-A)' },
-];
 
 export function TasksPage() {
   const { user } = useAuth();
   const isStaff = user?.role === 'STAFF';
   const [searchParams, setSearchParams] = useSearchParams();
+  const [viewMode, setViewMode] = useState<'table' | 'board'>('table');
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+
   const page = searchParams.get('page') || '1';
   const priority = searchParams.get('priority') || '';
   const status = searchParams.get('status') || '';
   const sort = searchParams.get('sort') || 'createdAt:desc';
+  const search = searchParams.get('search') || '';
   const overdue = searchParams.get('overdue') === 'true';
-  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   const [sortBy, sortOrder] = sort.split(':');
   const empId = user?.employee?.id || user?.employeeId;
   const assigneeId = isStaff ? (empId ? String(empId) : undefined) : (searchParams.get('assigneeId') || undefined);
-  const query = useTasks({ page, priority: priority || undefined, status: status || undefined, overdue: overdue ? true : undefined, assigneeId, sortBy, sortOrder });
+
+  const query = useTasks({ page, priority: priority || undefined, status: status || undefined, overdue: overdue ? true : undefined, search: search || undefined, assigneeId, sortBy, sortOrder });
+  const tasks = query.data?.data || [];
 
   const setFilter = (k: string, v: string) => {
     setSearchParams((prev) => {
@@ -50,46 +46,42 @@ export function TasksPage() {
     });
   };
 
-  const columns: Column<Task>[] = useMemo(() => [
-    {
-      key: 'title', label: 'Title',
-      render: (t) => (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <span style={{ fontWeight: 600 }}>{t.title}</span>
-          {t.isOverdue && <span style={{ padding: '0.15rem 0.4rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, background: '#fee2e2', color: '#991b1b' }}>Overdue</span>}
-        </div>
-      ),
-    },
-    { key: 'priority', label: 'Priority', render: (t) => <span style={{ fontWeight: 600, fontSize: '0.8rem' }}>{t.priority}</span> },
-    { key: 'status', label: 'Status', render: (t) => <StatusBadge status={t.status} /> },
-    { key: 'assignee', label: 'Assignee', render: (t) => <span>{t.assignee?.fullName || '-'}</span> },
-    { key: 'dueDate', label: 'Due Date', render: (t) => <span>{t.dueDate || '-'}</span> },
-    {
-      key: 'actions', label: 'Actions',
-      render: (t) => <Button type="button" variant="secondary" onClick={() => setEditingTask(t)} style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }}>Edit</Button>,
-    },
-  ], []);
+  const columns = useMemo(() => getTaskColumns((t) => setEditingTask(t)), []);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ marginBottom: '1.25rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>Tasks</h1>
-        <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>Manage assignments, priorities, and deadlines across projects</p>
-      </div>
-      <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
-        <div style={{ width: '150px' }}><Select id="task-filter-priority" value={priority} options={PRIORITIES} onChange={(e) => setFilter('priority', e.target.value)} /></div>
-        <div style={{ width: '150px' }}><Select id="task-filter-status" value={status} options={STATUSES} onChange={(e) => setFilter('status', e.target.value)} /></div>
-        <div style={{ width: '180px' }}><Select id="task-filter-sort" value={sort} options={SORTS} onChange={(e) => setFilter('sort', e.target.value)} /></div>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', fontWeight: 600, color: '#334155', cursor: 'pointer' }}>
-          <input type="checkbox" id="overdue-filter" checked={overdue} onChange={(e) => setFilter('overdue', e.target.checked ? 'true' : '')} /> Overdue Only
-        </label>
-      </div>
-      <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', padding: '1.25rem' }}>
+    <div className="p-6 md:p-8 space-y-6 max-w-7xl mx-auto">
+      <section className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Tasks</h1>
+          <p className="text-xs text-slate-500 mt-1">Manage assignments, priorities, and deadlines across projects</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs">
+            <button type="button" onClick={() => setViewMode('table')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition ${viewMode === 'table' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}>Table</button>
+            <button type="button" onClick={() => setViewMode('board')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md font-semibold transition ${viewMode === 'board' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}>Board</button>
+          </div>
+          <button type="button" onClick={() => downloadAllTasksCsv(tasks)} className="inline-flex items-center gap-1.5 px-3.5 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-lg shadow-xs">Export Tasks</button>
+          <button type="button" onClick={() => setCreateOpen(true)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg shadow-xs shadow-blue-500/20">Create Task</button>
+        </div>
+      </section>
+
+      <TaskStats fallbackTasks={tasks} />
+      <TaskFilterBar search={search} onSearchChange={(v) => setFilter('search', v)} priority={priority} onPriorityChange={(v) => setFilter('priority', v)} status={status} onStatusChange={(v) => setFilter('status', v)} sort={sort} onSortChange={(v) => setFilter('sort', v)} overdue={overdue} onOverdueChange={(v) => setFilter('overdue', v ? 'true' : '')} onRefresh={() => query.refetch()} />
+
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-xs p-5">
         <QueryBoundary query={query} isEmpty={(d) => !d?.data || d.data.length === 0} emptyMessage="No tasks found matching filters">
-          <Table columns={columns} data={query.data?.data} />
-          <Pagination page={Number(page)} totalPages={query.data?.meta?.totalPages || 1} onPageChange={(p) => setFilter('page', String(p))} />
+          {viewMode === 'table' ? (
+            <>
+              <Table columns={columns} data={tasks} />
+              <Pagination page={Number(page)} totalPages={query.data?.meta?.totalPages || 1} onPageChange={(p) => setFilter('page', String(p))} />
+            </>
+          ) : (
+            <TaskKanbanBoard tasks={tasks} onEdit={(t) => setEditingTask(t)} />
+          )}
         </QueryBoundary>
       </div>
+
+      {createOpen && <TaskCreateModal isOpen={createOpen} onClose={() => setCreateOpen(false)} />}
       <Modal isOpen={Boolean(editingTask)} onClose={() => setEditingTask(null)} title="Edit Task">
         {editingTask && <TaskForm key={editingTask.id} task={editingTask} projectId={editingTask.projectId} onClose={() => setEditingTask(null)} />}
       </Modal>

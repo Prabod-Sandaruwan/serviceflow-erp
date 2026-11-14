@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { list, listByProject, create, update } from './tasks.controller';
+import { getTaskStats } from './tasks.stats';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -11,6 +12,11 @@ const managerRoles = ['ADMIN', 'MANAGER'];
 route(router, 'get', '/tasks', {
   roles: allRoles,
   handler: [requireAuth, requireRole(allRoles), list],
+});
+
+route(router, 'get', '/tasks/stats', {
+  roles: allRoles,
+  handler: [requireAuth, requireRole(allRoles), getTaskStats],
 });
 
 route(router, 'get', '/projects/:id/tasks', {
@@ -33,6 +39,13 @@ registry.registerPath({
   path: '/api/v1/tasks',
   summary: 'List tasks with filtering and pagination',
   responses: { 200: { description: 'Task list' }, 401: { description: 'Unauthenticated' } },
+});
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/tasks/stats',
+  summary: 'Get tasks statistics breakdown',
+  responses: { 200: { description: 'Tasks stats' }, 401: { description: 'Unauthenticated' } },
 });
 
 registry.registerPath({
@@ -65,7 +78,6 @@ registry.registerPath({
     401: { description: 'Unauthenticated' },
     403: { description: 'Forbidden' },
     404: { description: 'Task not found' },
-    409: { description: 'Project cancelled or invalid status transition' },
     422: { description: 'Validation error' },
   },
 });
