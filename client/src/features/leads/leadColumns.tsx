@@ -79,3 +79,4 @@ export function getLeadColumns(): Column<Lead>[] {
 }
 
 export default getLeadColumns;
+

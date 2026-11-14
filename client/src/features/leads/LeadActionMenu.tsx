@@ -63,3 +63,4 @@ export function LeadActionMenu({ lead }: { lead: Lead }) {
 }
 
 export default LeadActionMenu;
+

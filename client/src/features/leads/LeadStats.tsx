@@ -64,3 +64,4 @@ export function LeadStats({ leads }: { leads?: Lead[] }) {
 }
 
 export default LeadStats;
+

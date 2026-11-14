@@ -56,3 +56,4 @@ export function LeadKanbanBoard({ leads }: { leads: Lead[] }) {
 }
 
 export default LeadKanbanBoard;
+
