@@ -1,39 +1,48 @@
 import { api } from '../../lib/api';
 import type { Client, ClientsResponse } from './types';
 
+const escape = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+
 export function exportClientsToCsv(clients: Client[]) {
-  if (!clients || clients.length === 0) return;
+  const list = clients || [];
   const headers = ['ID', 'Name', 'Type', 'Email', 'Phone', 'Contact Person', 'Status'];
-  const rows = clients.map((c) => [
-    `"#CLI-${c.id.slice(-4)}"`,
-    `"${(c.displayName || '').replace(/"/g, '""')}"`,
-    `"${c.clientType}"`,
-    `"${(c.email || '').replace(/"/g, '""')}"`,
-    `"${(c.phone || '').replace(/"/g, '""')}"`,
-    `"${(c.contactPerson || '').replace(/"/g, '""')}"`,
-    `"${c.isActive ? 'Active' : 'Inactive'}"`,
+  const rows = list.map((c) => [
+    escape(`CLI-${c.id.slice(-4)}`),
+    escape(c.displayName || ''),
+    escape(c.clientType || ''),
+    escape(c.email || ''),
+    escape(c.phone || ''),
+    escape(c.contactPerson || ''),
+    escape(c.isActive ? 'Active' : 'Inactive'),
   ]);
-  const csvContent = [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+  const csvContent = '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
   const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
+  const url = window.URL ? window.URL.createObjectURL(blob) : '';
   const a = document.createElement('a');
   a.href = url;
   a.download = `clients-directory-${new Date().toISOString().slice(0, 10)}.csv`;
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  if (window.URL?.revokeObjectURL) window.URL.revokeObjectURL(url);
 }
 
 export async function downloadAllClientsCsv(fallbackClients: Client[] = []) {
+  let list = fallbackClients;
   try {
-    const res = await api.get<ClientsResponse>('/clients?limit=1000');
-    const list = res?.data?.length ? res.data : fallbackClients;
-    exportClientsToCsv(list);
+    const res = await api.get<ClientsResponse>('/clients?limit=100&page=1');
+    if (res?.data && res.data.length > 0) {
+      list = [...res.data];
+      const totalPages = res.meta?.totalPages || 1;
+      for (let p = 2; p <= Math.min(totalPages, 10); p++) {
+        const next = await api.get<ClientsResponse>(`/clients?limit=100&page=${p}`);
+        if (next?.data?.length) list.push(...next.data);
+      }
+    }
   } catch {
-    exportClientsToCsv(fallbackClients);
+    // fallback
   }
+  exportClientsToCsv(list);
 }
 
 export default downloadAllClientsCsv;
-
