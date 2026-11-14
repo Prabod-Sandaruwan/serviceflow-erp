@@ -8,6 +8,7 @@ export const createEmployeeSchema = z.object({
       email: z.string().email().trim().toLowerCase(),
       jobTitle: z.string().min(1),
       phone: z.string().optional(),
+      role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
     })
     .strict(),
 });
@@ -21,6 +22,7 @@ export const updateEmployeeSchema = z.object({
       email: z.string().email().trim().toLowerCase().optional(),
       jobTitle: z.string().min(1).optional(),
       phone: z.string().optional(),
+      role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
       isActive: z.boolean().optional(),
     })
     .strict(),
@@ -36,6 +38,7 @@ export const listEmployeesQuerySchema = paginationQuerySchema.extend({
       return val;
     }, z.boolean().optional()),
   search: z.string().trim().optional(),
+  role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
 });
 
 export type ListEmployeesQuery = z.infer<typeof listEmployeesQuerySchema>;

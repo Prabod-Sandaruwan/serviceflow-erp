@@ -21,6 +21,7 @@ const formatEmployee = (emp: any) => ({
   full_name: emp.full_name,
   job_title: emp.job_title,
   is_active: emp.is_active,
+  role: emp.user?.role || 'STAFF',
 });
 
 export class EmployeesService {
@@ -42,7 +43,7 @@ export class EmployeesService {
       });
       const pHash = await hashPassword('ServiceFlow@2026');
       const user = await tx.user.create({
-        data: { email: input.email, password_hash: pHash, role: 'STAFF', employeeId: employee.id, must_change_password: true, is_active: true },
+        data: { email: input.email, password_hash: pHash, role: input.role || 'STAFF', employeeId: employee.id, must_change_password: true, is_active: true },
       });
       const res = formatEmployee({ ...employee, user });
       await AuditService.record(tx, {
@@ -65,8 +66,11 @@ export class EmployeesService {
           await tx.user.update({ where: { id: current.user.id }, data: { email: input.email } });
         } else {
           const pHash = await hashPassword('ServiceFlow@2026');
-          await tx.user.create({ data: { email: input.email, password_hash: pHash, role: 'STAFF', employeeId: id } });
+          await tx.user.create({ data: { email: input.email, password_hash: pHash, role: input.role || 'STAFF', employeeId: id } });
         }
+      }
+      if (input.role && current.user) {
+        await tx.user.update({ where: { id: current.user.id }, data: { role: input.role } });
       }
       const data: any = {};
       if (input.fullName !== undefined) data.full_name = input.fullName;

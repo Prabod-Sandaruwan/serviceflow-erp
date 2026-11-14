@@ -10,6 +10,7 @@ export const employeeSchema = z.object({
   email: z.string().email('Invalid email address'),
   jobTitle: z.string().min(1, 'Job title is required'),
   phone: z.string().optional(),
+  role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
   isActive: z.string().optional(),
 });
 
@@ -26,20 +27,22 @@ export function EmployeeModal({ isOpen, onClose, employee }: EmployeeModalProps)
 
   const form = useZodForm(employeeSchema, {
     defaultValues: {
-      fullName: employee?.fullName || '',
+      fullName: employee?.fullName || employee?.full_name || '',
       email: employee?.email || '',
-      jobTitle: employee?.jobTitle || '',
+      jobTitle: employee?.jobTitle || employee?.job_title || '',
       phone: employee?.phone || '',
+      role: employee?.role || 'STAFF',
       isActive: employee ? String(employee.isActive !== false) : 'true',
     },
   });
 
   useEffect(() => {
     form.reset({
-      fullName: employee?.fullName || '',
+      fullName: employee?.fullName || employee?.full_name || '',
       email: employee?.email || '',
-      jobTitle: employee?.jobTitle || '',
+      jobTitle: employee?.jobTitle || employee?.job_title || '',
       phone: employee?.phone || '',
+      role: employee?.role || 'STAFF',
       isActive: employee ? String(employee.isActive !== false) : 'true',
     });
   }, [employee]);
@@ -67,17 +70,24 @@ export function EmployeeModal({ isOpen, onClose, employee }: EmployeeModalProps)
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={employee ? 'Edit Employee' : 'Add Employee'}>
-      {globalError && <div role="alert" style={{ color: '#dc2626', fontSize: '0.85rem', marginBottom: '1rem' }}>{globalError}</div>}
-      <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+      {globalError && (
+        <div role="alert" className="p-3 mb-4 text-xs font-semibold text-rose-700 bg-rose-50 border border-rose-200 rounded-lg">
+          {globalError}
+        </div>
+      )}
+      <form onSubmit={form.handleSubmit(onSubmit)} noValidate className="space-y-3.5">
         <Input id="fullName" label="Full Name" error={form.formState.errors.fullName?.message} {...form.register('fullName')} />
         <Input id="email" label="Email" type="email" error={form.formState.errors.email?.message} {...form.register('email')} />
         <Input id="jobTitle" label="Job Title" error={form.formState.errors.jobTitle?.message} {...form.register('jobTitle')} />
         <Input id="phone" label="Phone" error={form.formState.errors.phone?.message} {...form.register('phone')} />
+        <Select id="role" label="Role" options={[{ value: 'ADMIN', label: 'Admin' }, { value: 'MANAGER', label: 'Manager' }, { value: 'STAFF', label: 'Staff' }]} error={form.formState.errors.role?.message} {...form.register('role')} />
         {employee && <Select id="isActive" label="Status" options={[{ value: 'true', label: 'Active' }, { value: 'false', label: 'Inactive' }]} error={form.formState.errors.isActive?.message} {...form.register('isActive')} />}
-        <Button type="submit" disabled={form.formState.isSubmitting} style={{ width: '100%', marginTop: '1rem', background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)' }}>
+        <Button type="submit" disabled={form.formState.isSubmitting} className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-sm">
           {employee ? 'Save Changes' : 'Add Employee'}
         </Button>
       </form>
     </Modal>
   );
 }
+
+export default EmployeeModal;
