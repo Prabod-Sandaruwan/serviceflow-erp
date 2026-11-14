@@ -23,7 +23,7 @@ describe('Profile Page Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders profile card and handles edit modal', async () => {
+  it('renders profile card and handles edit modal and logout other sessions', async () => {
     vi.mocked(useAuth).mockReturnValue({
       status: 'authenticated',
       user: {
@@ -41,6 +41,7 @@ describe('Profile Page Component', () => {
 
     const queryClient = new QueryClient();
     vi.mocked(api.patch).mockResolvedValueOnce({ success: true });
+    vi.mocked(api.post).mockResolvedValueOnce({ count: 1 });
 
     render(
       <QueryClientProvider client={queryClient}>
@@ -54,17 +55,29 @@ describe('Profile Page Component', () => {
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/User Profile/i);
     expect(screen.getAllByText('admin@serviceflow.lk').length).toBeGreaterThan(0);
+    expect(screen.getByText(/Session expires in 8 hours/i)).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /Change Password/i })).toHaveAttribute('href', '/profile/password');
 
     fireEvent.click(screen.getByRole('button', { name: /Edit Profile/i }));
     expect(screen.getByText('Full Legal Name')).toBeInTheDocument();
+    expect(screen.getByLabelText(/Phone Number/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Job Title/i)).toBeInTheDocument();
 
     const input = screen.getByLabelText(/Full Legal Name/i);
     fireEvent.change(input, { target: { value: 'Updated Admin Name' } });
     fireEvent.click(screen.getByRole('button', { name: /Save Changes/i }));
 
     await waitFor(() => {
-      expect(api.patch).toHaveBeenCalledWith('/employees/10', { fullName: 'Updated Admin Name' });
+      expect(api.patch).toHaveBeenCalledWith('/auth/me', {
+        fullName: 'Updated Admin Name',
+        phone: '',
+        jobTitle: '',
+      });
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /Log out all other devices/i }));
+    await waitFor(() => {
+      expect(api.post).toHaveBeenCalledWith('/auth/logout-other-sessions');
     });
   });
 });

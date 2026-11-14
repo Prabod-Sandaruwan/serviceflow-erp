@@ -22,3 +22,4 @@ export function ProfileCard({ user, fullName, initials, onEditName }: ProfileCar
     </div>
   );
 }
+

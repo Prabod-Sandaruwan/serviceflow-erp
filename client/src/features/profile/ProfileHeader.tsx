@@ -64,3 +64,4 @@ export function ProfileHeader({ user, fullName, initials }: ProfileHeaderProps) 
     </div>
   );
 }
+

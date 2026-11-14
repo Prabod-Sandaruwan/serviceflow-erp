@@ -1,9 +1,43 @@
+import { useState } from 'react';
 import { useAuth } from '../auth/AuthProvider';
+import { api } from '../../lib/api';
+import { useToast } from '../../components/ui/Toast';
+
+function getClientBrowserInfo(): string {
+  const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  let b = 'Browser';
+  if (ua.includes('Edg/')) b = 'Edge';
+  else if (ua.includes('Chrome/')) b = 'Chrome';
+  else if (ua.includes('Firefox/')) b = 'Firefox';
+  else if (ua.includes('Safari/')) b = 'Safari';
+  let os = 'Operating System';
+  if (ua.includes('Win')) os = 'Windows';
+  else if (ua.includes('Mac')) os = 'macOS';
+  else if (ua.includes('Linux')) os = 'Linux';
+  else if (ua.includes('Android')) os = 'Android';
+  else if (ua.includes('iPhone')) os = 'iOS';
+  return `${b} on ${os}`;
+}
 
 export function ProfileSupplementaryCards() {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
+  const { addToast } = useToast();
+  const [loggingOut, setLoggingOut] = useState(false);
   const department = user?.employee?.department || 'Operations & Core IT';
   const accessLabel = user?.role === 'ADMIN' ? 'Direct Admin Access' : 'Direct Staff Access';
+  const browserInfo = getClientBrowserInfo();
+
+  const handleLogoutOtherDevices = async () => {
+    setLoggingOut(true);
+    try {
+      await api.post('/auth/logout-other-sessions');
+      addToast('All other device sessions have been terminated', 'success');
+    } catch {
+      addToast('Failed to terminate other sessions', 'error');
+    } finally {
+      setLoggingOut(false);
+    }
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -19,17 +53,16 @@ export function ProfileSupplementaryCards() {
           </div>
           <span className="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">Active Now</span>
         </div>
-        <p className="text-xs text-slate-600 leading-relaxed">
-          Browser on Windows • Colombo, Sri Lanka
-        </p>
+        <p className="text-xs text-slate-600 leading-relaxed">{browserInfo} • Colombo, Sri Lanka</p>
         <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-          <span className="text-slate-500">Session expires in 4 hours</span>
+          <span className="text-slate-500">Session expires in 8 hours (Rolling)</span>
           <button
             type="button"
-            onClick={() => logout()}
-            className="text-rose-600 hover:text-rose-700 font-medium transition-colors"
+            disabled={loggingOut}
+            onClick={handleLogoutOtherDevices}
+            className="text-rose-600 hover:text-rose-700 font-medium transition-colors disabled:opacity-50"
           >
-            Log out this session
+            {loggingOut ? 'Terminating...' : 'Log out all other devices'}
           </button>
         </div>
       </div>
@@ -46,9 +79,7 @@ export function ProfileSupplementaryCards() {
           </div>
           <span className="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Primary HQ</span>
         </div>
-        <p className="text-xs text-slate-600 leading-relaxed">
-          ServiceFlow Technologies Ltd. • Colombo 03, Western Province
-        </p>
+        <p className="text-xs text-slate-600 leading-relaxed">ServiceFlow Technologies Ltd. • Colombo 03, Western Province</p>
         <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
           <span className="text-slate-500">Department: {department}</span>
           <span className="text-indigo-600 font-medium">{accessLabel}</span>

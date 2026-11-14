@@ -7,13 +7,14 @@ interface ProfileSecurityBarProps {
 
 export function ProfileSecurityBar({ user }: ProfileSecurityBarProps) {
   const accountId = user?.id ? `USR-${String(user.id).padStart(5, '0')}` : 'USR-00001';
-  const createdAtFormatted = (user as any)?.created_at || (user as any)?.createdAt
-    ? new Date((user as any).created_at || (user as any).createdAt).toLocaleDateString('en-US', {
-        month: 'short',
-        day: '2-digit',
-        year: 'numeric',
-      })
+  const rawCreated = (user as any)?.created_at || (user as any)?.createdAt;
+  const createdAtFormatted = rawCreated
+    ? new Date(rawCreated).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
     : 'Oct 02, 2023';
+  const rawUpdated = (user as any)?.updated_at || (user as any)?.updatedAt;
+  const updatedAtFormatted = rawUpdated
+    ? new Date(rawUpdated).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
+    : createdAtFormatted;
 
   return (
     <>
@@ -21,7 +22,7 @@ export function ProfileSecurityBar({ user }: ProfileSecurityBarProps) {
         <div>
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Security Credentials</h4>
           <p className="text-xs text-slate-500 mt-0.5">
-            Password was last changed on <span className="font-medium text-slate-700">January 14, 2025</span>
+            Password secured • Last profile activity on <span className="font-medium text-slate-700">{updatedAtFormatted}</span>
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -29,7 +30,7 @@ export function ProfileSecurityBar({ user }: ProfileSecurityBarProps) {
             <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
             </svg>
-            <span>2FA: Enabled</span>
+            <span>Session Auth: Active</span>
           </div>
           <Link
             to="/profile/password"
