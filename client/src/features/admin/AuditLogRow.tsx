@@ -67,3 +67,4 @@ export function AuditLogRow({ log, isExpanded, onToggle }: AuditLogRowProps) {
 }
 
 export default AuditLogRow;
+

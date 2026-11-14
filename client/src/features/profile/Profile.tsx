@@ -1,71 +1,64 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthProvider';
+import { ProfileCard } from './ProfileCard';
+import { ProfileSupplementaryCards } from './ProfileSupplementaryCards';
+import { ProfileEditModal } from './ProfileEditModal';
 
 export default function Profile() {
   const { user } = useAuth();
-  const fullName = user?.employee?.fullName || user?.fullName || 'Not specified';
-  const initials = (fullName !== 'Not specified' ? fullName : user?.email || 'U')
+  const navigate = useNavigate();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const rawName = user?.employee?.fullName || (user?.employee as any)?.full_name || user?.fullName;
+  const fullName = rawName && rawName.trim() ? rawName.trim() : 'Not specified';
+  const initials = (fullName !== 'Not specified' ? fullName : user?.email || 'AD')
     .slice(0, 2)
     .toUpperCase();
 
+  const handleActivityLog = () => {
+    if (user?.role === 'ADMIN') {
+      navigate('/admin/audit');
+    }
+  };
+
   return (
-    <div style={{ padding: '2rem', maxWidth: '640px', margin: '0 auto' }}>
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>
-          User Profile
-        </h1>
-        <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem', color: '#64748b' }}>
-          Manage your personal account details and security settings
-        </p>
-      </div>
-
-      <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06)', overflow: 'hidden' }}>
-        <div style={{ height: '5px', background: 'linear-gradient(90deg, #4f46e5 0%, #06b6d4 100%)' }} />
-
-        <div style={{ padding: '1.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.75rem', paddingBottom: '1.25rem', borderBottom: '1px solid #f1f5f9' }}>
-            <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '1.2rem', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.25)' }}>
-              {initials}
-            </div>
-            <div>
-              <div style={{ fontWeight: 700, fontSize: '1.1rem', color: '#0f172a' }}>{fullName}</div>
-              <div style={{ fontSize: '0.85rem', color: '#64748b' }}>{user?.email}</div>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gap: '0.85rem', marginBottom: '2rem' }}>
-            <div style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #edf2f7' }}>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Full Name</span>
-              <span style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.925rem' }}>{fullName}</span>
-            </div>
-            <div style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #edf2f7' }}>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Email Address</span>
-              <span style={{ color: '#0f172a', fontWeight: 600, fontSize: '0.925rem' }}>{user?.email}</span>
-            </div>
-            <div style={{ padding: '0.85rem 1rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #edf2f7' }}>
-              <span style={{ color: '#64748b', display: 'block', fontSize: '0.75rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.2rem' }}>Role</span>
-              <span style={{ display: 'inline-block', padding: '0.2rem 0.65rem', background: 'rgba(99, 102, 241, 0.12)', color: '#4f46e5', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700 }}>{user?.role}</span>
-            </div>
-          </div>
-
-          <Link
-            to="/profile/password"
-            style={{
-              display: 'inline-block',
-              padding: '0.65rem 1.25rem',
-              background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
-              color: '#fff',
-              borderRadius: '8px',
-              textDecoration: 'none',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
-            }}
+    <div className="max-w-4xl mx-auto space-y-6 p-6 md:p-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold font-heading text-slate-900 tracking-tight flex items-center gap-2">
+            User <span className="text-blue-600">Profile</span>
+          </h1>
+          <p className="text-sm text-slate-500 mt-1">Manage your personal account details and security settings</p>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleActivityLog}
+            title={user?.role === 'ADMIN' ? 'View audit logs' : 'Audit logs available for admins'}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200 rounded-lg shadow-2xs hover:bg-slate-50 transition-colors"
           >
-            Change Password
-          </Link>
+            <svg className="w-3.5 h-3.5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            </svg>
+            <span>Activity Log</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setIsEditOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 rounded-lg shadow-2xs hover:bg-blue-700 transition-colors"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+            </svg>
+            <span>Edit Profile</span>
+          </button>
         </div>
       </div>
+
+      <ProfileCard user={user} fullName={fullName} initials={initials} onEditName={() => setIsEditOpen(true)} />
+      <ProfileSupplementaryCards />
+      <ProfileEditModal user={user} isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} />
     </div>
   );
 }
