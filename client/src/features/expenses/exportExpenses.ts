@@ -39,3 +39,4 @@ export async function downloadAllExpensesCsv(fallbackExpenses: Expense[] = []) {
 }
 
 export default downloadAllExpensesCsv;
+

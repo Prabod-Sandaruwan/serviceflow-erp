@@ -84,3 +84,4 @@ describe('Redesigned ExpensesPage Component', () => {
     await waitFor(() => expect(spyExport).toHaveBeenCalledWith(mockExpenses));
   });
 });
+

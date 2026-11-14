@@ -73,3 +73,4 @@ export function ExpensesTable({ expenses, onEdit, onVoid }: ExpensesTableProps) 
 }
 
 export default ExpensesTable;
+
