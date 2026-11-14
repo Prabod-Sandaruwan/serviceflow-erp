@@ -6,6 +6,7 @@ export class EmployeeRepository {
   static async list(query: ListEmployeesQuery, skip: number, take: number) {
     const where: any = {};
     if (query.isActive !== undefined) where.is_active = query.isActive;
+    if (query.role) where.user = { role: query.role };
     if (query.search) {
       where.OR = [
         { full_name: { contains: query.search } },

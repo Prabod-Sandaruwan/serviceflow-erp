@@ -38,12 +38,14 @@ export function useResetPassword() {
   });
 }
 
-export function useEmployees(page = 1, search = '') {
+export function useEmployees(page = 1, search = '', role = '', isActive = '') {
   return useQuery({
-    queryKey: ['employees', page, search],
+    queryKey: ['employees', page, search, role, isActive],
     queryFn: async () => {
       const q = new URLSearchParams({ page: String(page), pageSize: '10' });
       if (search) q.set('search', search);
+      if (role) q.set('role', role);
+      if (isActive) q.set('isActive', isActive);
       return api.get<{ data: any[]; meta: any }>(`/employees?${q.toString()}`);
     },
   });

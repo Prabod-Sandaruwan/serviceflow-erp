@@ -1,12 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 import { clientQuerySchema, createClientSchema, updateClientSchema } from './clients.schemas';
 import { listClients, getClient, createClient, updateClient } from './clients.service';
+import { getClientStats } from './clients.stats';
 
 export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const parsedQuery = clientQuerySchema.parse(req.query);
     const result = await listClients(parsedQuery);
     res.json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function stats(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await getClientStats();
+    res.json({ data: result });
   } catch (err) {
     next(err);
   }
@@ -43,5 +53,5 @@ export async function update(req: Request, res: Response, next: NextFunction): P
   }
 }
 
-export const ClientsController = { list, getById, create, update };
+export const ClientsController = { list, stats, getById, create, update };
 export default ClientsController;

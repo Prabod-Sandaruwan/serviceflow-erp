@@ -1,10 +1,7 @@
 import prisma, { Prisma } from '../../lib/prisma';
 
 export interface FindManyLeadParams {
-  skip?: number;
-  take?: number;
-  status?: any;
-  ownerId?: bigint;
+  skip?: number; take?: number; status?: any; ownerId?: bigint; clientId?: bigint;
   orderBy?: Prisma.LeadOrderByWithRelationInput;
 }
 
@@ -12,6 +9,9 @@ export async function findMany(params: FindManyLeadParams) {
   const where: Prisma.LeadWhereInput = {};
   if (params.status) where.status = params.status;
   if (params.ownerId) where.ownerId = params.ownerId;
+  if (params.clientId) {
+    where.OR = [{ convertedClientId: params.clientId }, { quotations: { some: { clientId: params.clientId } } }];
+  }
 
   return Promise.all([
     prisma.lead.findMany({

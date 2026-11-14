@@ -15,9 +15,17 @@ import {
   listInvoicesQuerySchema,
 } from './invoices.schemas';
 import { generateInvoicePdf } from './invoice.pdf';
+import { getInvoiceStats } from './invoices.stats';
 import { ok, paged } from '../../shared/http';
 
 const actorOf = (req: Request) => req.auth || (req as any).user;
+
+export async function stats(_req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const result = await getInvoiceStats();
+    ok(res, result);
+  } catch (err) { next(err); }
+}
 
 export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

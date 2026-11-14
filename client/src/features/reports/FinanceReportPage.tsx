@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useFinanceReport, useDownloadCsv } from './hooks';
 import { ReportDateFilter } from './ReportDateFilter';
+import { FinanceKpiCards } from './FinanceKpiCards';
+import { FinanceReportTable } from './FinanceReportTable';
 
 function getCurrentMonth() {
   const now = new Date(), y = now.getFullYear(), m = now.getMonth();
@@ -8,11 +10,6 @@ function getCurrentMonth() {
   const end = `${y}-${String(m + 1).padStart(2, '0')}-${String(new Date(y, m + 1, 0).getDate()).padStart(2, '0')}`;
   return { from: start, to: end };
 }
-
-const fmt = (v?: string | number) =>
-  v !== undefined && v !== null && v !== ''
-    ? `$${Number(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-    : '—';
 
 export function FinanceReportPage() {
   const [dates, setDates] = useState(getCurrentMonth());
@@ -23,8 +20,13 @@ export function FinanceReportPage() {
   return (
     <div className="space-y-6 p-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">Finance Report</h1>
-        <p className="mt-1 text-sm text-slate-600">Company-wide financial performance, collections, and liabilities.</p>
+        <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+          <span>Finance &amp; Billing</span>
+          <span>&rsaquo;</span>
+          <span className="text-slate-600 font-medium">Finance Report</span>
+        </div>
+        <h1 className="text-2xl font-black tracking-tight text-slate-900">Finance Report</h1>
+        <p className="mt-0.5 text-xs text-slate-500">Company-wide financial performance, collections, liabilities, and estimated margins</p>
       </div>
 
       <ReportDateFilter
@@ -36,48 +38,14 @@ export function FinanceReportPage() {
       />
 
       {isLoading ? (
-        <div className="p-4 text-sm text-slate-500">Loading finance report...</div>
+        <div className="p-8 text-center text-sm text-slate-500 bg-white rounded-xl border border-slate-200">Loading finance report...</div>
       ) : isError ? (
-        <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">Failed to load finance report.</div>
+        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-700">Failed to load finance report.</div>
       ) : (
-        <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-          <table className="min-w-full divide-y divide-slate-200 text-left text-sm" data-testid="finance-report-table">
-            <thead className="bg-slate-50 text-xs font-semibold text-slate-700">
-              <tr>
-                <th className="px-4 py-3">Metric</th>
-                <th className="px-4 py-3 text-right">Amount</th>
-                <th className="px-4 py-3">Basis / Criteria</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 text-slate-900">
-              <tr>
-                <td className="px-4 py-3 font-medium">Revenue</td>
-                <td className="px-4 py-3 text-right font-mono font-bold" data-testid="metric-revenue">{fmt(d?.revenue)}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">Invoice subtotals (ISSUED, PARTIALLY_PAID, PAID)</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-3 font-medium">Payments Received</td>
-                <td className="px-4 py-3 text-right font-mono font-bold" data-testid="metric-payments">{fmt(d?.paymentsReceived)}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">Active payment receipts recorded</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-3 font-medium">Outstanding</td>
-                <td className="px-4 py-3 text-right font-mono font-bold" data-testid="metric-outstanding">{fmt(d?.outstanding)}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">Pending receivables on issued invoices</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-3 font-medium">Expenses</td>
-                <td className="px-4 py-3 text-right font-mono font-bold" data-testid="metric-expenses">{fmt(d?.expenses)}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">Active recorded operational expenses</td>
-              </tr>
-              <tr className="bg-slate-50 font-semibold">
-                <td className="px-4 py-3">Estimated Profit</td>
-                <td className="px-4 py-3 text-right font-mono font-bold text-emerald-700" data-testid="metric-profit">{fmt(d?.estimatedProfitability)}</td>
-                <td className="px-4 py-3 text-xs text-slate-500">Revenue minus Expenses (Margin: {d?.margin || '—'})</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <>
+          <FinanceKpiCards data={d} />
+          <FinanceReportTable data={d} />
+        </>
       )}
     </div>
   );

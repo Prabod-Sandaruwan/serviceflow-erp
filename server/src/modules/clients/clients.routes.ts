@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update } from './clients.controller';
+import { list, stats, getById, create, update } from './clients.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -7,10 +7,18 @@ import { registry } from '../../config/openapi';
 const router = Router();
 const roles = ['ADMIN', 'MANAGER', 'STAFF'];
 
+route(router, 'get', '/stats', { roles, handler: [requireAuth, requireRole(roles), stats] });
 route(router, 'get', '/', { roles, handler: [requireAuth, requireRole(roles), list] });
 route(router, 'post', '/', { roles, handler: [requireAuth, requireRole(roles), create] });
 route(router, 'get', '/:id', { roles, handler: [requireAuth, requireRole(roles), getById] });
 route(router, 'patch', '/:id', { roles, handler: [requireAuth, requireRole(roles), update] });
+
+registry.registerPath({
+  method: 'get',
+  path: '/api/v1/clients/stats',
+  summary: 'Get client aggregate statistics',
+  responses: { 200: { description: 'Client statistics' }, 401: { description: 'Unauthenticated' } },
+});
 
 registry.registerPath({
   method: 'get',

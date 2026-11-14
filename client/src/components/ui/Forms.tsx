@@ -59,7 +59,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
   ),
 );
 
-export interface Option { value: string | number; label: string; }
+export interface Option { value: string | number; label: string; disabled?: boolean; }
 export interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> { id: string; label?: string; error?: string; options: Option[]; }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
@@ -78,7 +78,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
         {...props}
       >
         {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>{opt.label}</option>
+          <option key={opt.value} value={opt.value} disabled={opt.disabled}>{opt.label}</option>
         ))}
       </select>
     </FormField>

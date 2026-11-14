@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { list, getById, create, update, issue, cancel, getPdf } from './invoices.controller';
+import { list, getById, create, update, issue, cancel, getPdf, stats } from './invoices.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
@@ -8,6 +8,7 @@ const router = Router();
 const allRoles = ['ADMIN', 'MANAGER', 'STAFF'];
 const managerRoles = ['ADMIN', 'MANAGER'];
 
+route(router, 'get', '/stats', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), stats] });
 route(router, 'get', '/', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), list] });
 route(router, 'get', '/:id', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), getById] });
 route(router, 'get', '/:id/pdf', { roles: allRoles, handler: [requireAuth, requireRole(allRoles), getPdf] });

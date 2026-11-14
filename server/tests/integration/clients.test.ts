@@ -65,11 +65,12 @@ describe('Clients API Integration Tests (CRM-004)', () => {
     expect(res.status).toBe(403);
   });
 
-  it('PATCH /api/v1/clients/:id as ADMIN successfully updates isActive', async () => {
-    const client = await createClient({ displayName: 'Active Client' });
+  it('PATCH /api/v1/clients/:id as ADMIN successfully updates isActive preserving email', async () => {
+    const client = await createClient({ displayName: 'Active Client', email: 'active@client.com' });
     const res = await withCsrf(adminAgent.patch(`/api/v1/clients/${client.id}`), adminAgent)
       .send({ isActive: false });
     expect(res.status).toBe(200);
     expect(res.body.data.isActive).toBe(false);
+    expect(res.body.data.email).toBe('active@client.com');
   });
 });

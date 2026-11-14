@@ -32,6 +32,7 @@ export interface LeadQuery {
   limit?: number | string;
   status?: string;
   ownerId?: string;
+  clientId?: string;
   search?: string;
   sort?: string;
 }
