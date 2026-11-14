@@ -91,3 +91,4 @@ describe('InvoicesPage Redesign & Functionality', () => {
     expect(screen.getByRole('link', { name: /\+ Create Invoice/i })).toHaveAttribute('href', '/invoices/new');
   });
 });
+

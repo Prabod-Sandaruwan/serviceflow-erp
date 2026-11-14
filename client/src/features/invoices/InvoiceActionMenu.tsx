@@ -83,3 +83,4 @@ export function InvoiceActionMenu({ invoice, onRecordPayment, onIssue }: Invoice
 }
 
 export default InvoiceActionMenu;
+

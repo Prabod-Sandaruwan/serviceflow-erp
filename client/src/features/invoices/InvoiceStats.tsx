@@ -73,3 +73,4 @@ export function InvoiceStats({ invoices = [] }: { invoices?: Invoice[] }) {
 }
 
 export default InvoiceStats;
+

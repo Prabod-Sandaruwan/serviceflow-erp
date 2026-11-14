@@ -18,13 +18,15 @@ export const createInvoiceItemSchema = z.object({
   unitPrice: z.union([z.number(), z.string()]).optional(),
 });
 
+const emptyToNull = (val: unknown) => (typeof val === 'string' && val.trim() === '' ? null : val);
+
 const taxFields = {
-  taxType: z.string().max(20).optional().nullable(),
-  taxRate: z.coerce.number().min(0).max(100).optional().nullable(),
-  taxAmount: numericAmountSchema.optional(),
-  taxReference: z.string().max(60).optional().nullable(),
-  notes: z.string().optional().nullable(),
-  dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional().nullable(),
+  taxType: z.preprocess(emptyToNull, z.string().max(20).optional().nullable()),
+  taxRate: z.preprocess(emptyToNull, z.coerce.number().min(0).max(100).optional().nullable()),
+  taxAmount: z.preprocess((v) => (v === '' ? '0' : v), numericAmountSchema.optional()),
+  taxReference: z.preprocess(emptyToNull, z.string().max(60).optional().nullable()),
+  notes: z.preprocess(emptyToNull, z.string().optional().nullable()),
+  dueDate: z.preprocess(emptyToNull, z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional().nullable()),
 };
 
 export const createInvoiceSchema = z.object({
@@ -50,19 +52,17 @@ export const cancelInvoiceSchema = z.object({
 
 export const listInvoicesQuerySchema = z.object({
   status: invoiceStatusEnum.optional(),
-  clientId: z.string().optional(),
-  projectId: z.string().optional(),
-  overdue: z.preprocess((v) => (v === 'true' || v === true ? true : v === 'false' || v === false ? false : undefined), z.boolean().optional()),
-  from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
-  to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+  clientId: z.union([z.string(), z.number(), z.bigint()]).optional(),
+  projectId: z.union([z.string(), z.number(), z.bigint()]).optional(),
+  overdue: z.union([z.boolean(), z.enum(['true', 'false'])]).transform((v) => v === true || v === 'true').optional(),
+  from: z.string().optional(),
+  to: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
-  pageSize: z.coerce.number().int().min(1).max(100).optional(),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });
 
 export type CreateInvoiceInput = z.infer<typeof createInvoiceSchema>;
 export type UpdateInvoiceInput = z.infer<typeof updateInvoiceSchema>;
-export type CreateInvoiceItemInput = z.infer<typeof createInvoiceItemSchema>;
 export type IssueInvoiceInput = z.infer<typeof issueInvoiceSchema>;
 export type CancelInvoiceInput = z.infer<typeof cancelInvoiceSchema>;
 export type ListInvoicesQuery = z.infer<typeof listInvoicesQuerySchema>;

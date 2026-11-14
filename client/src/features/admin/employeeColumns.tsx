@@ -91,3 +91,4 @@ export function getEmployeeColumns(onEdit: (e: any) => void): Column<any>[] {
 }
 
 export default getEmployeeColumns;
+

@@ -87,3 +87,4 @@ export function InvoiceFilterBar({
 }
 
 export default InvoiceFilterBar;
+

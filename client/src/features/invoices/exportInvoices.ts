@@ -45,3 +45,4 @@ export async function downloadAllInvoicesCsv(fallbackInvoices: Invoice[] = []) {
 }
 
 export default downloadAllInvoicesCsv;
+
