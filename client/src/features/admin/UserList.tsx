@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Download, Plus } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
 import { useUsers, useResetPassword } from './hooks';
 import { Table } from '../../components/ui/Table';
@@ -8,6 +9,8 @@ import { Button, Input } from '../../components/ui/Forms';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
 import { useToast } from '../../components/ui/Toast';
 import { UserModal } from './UserModal';
+import { UserStats } from './UserStats';
+import { downloadAllUsersCsv } from './exportUsers';
 
 export default function UserList() {
   const { user: authUser } = useAuth();
@@ -16,6 +19,7 @@ export default function UserList() {
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const query = useUsers(page, search);
   const resetPassword = useResetPassword();
@@ -26,27 +30,26 @@ export default function UserList() {
     try {
       await resetPassword.mutateAsync({ id: user.id, tempPassword: temp });
       addToast(`Password reset for ${user.email}`, 'success');
-    } catch {
-      addToast('Failed to reset password', 'error');
-    }
+    } catch { addToast('Failed to reset password', 'error'); }
+  };
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    await downloadAllUsersCsv(data);
+    setIsExporting(false);
   };
 
   const columns = [
-    { key: 'email', label: 'Email' },
-    { key: 'fullName', label: 'Full Name', render: (r: any) => r.fullName || r.employee?.fullName || '-' },
-    { key: 'role', label: 'Role' },
+    { key: 'email', label: 'Email', render: (r: any) => <span className="font-semibold text-slate-800">{r.email}</span> },
+    { key: 'fullName', label: 'Full Name', render: (r: any) => r.fullName || r.employee?.fullName || '—' },
+    { key: 'role', label: 'Role', render: (r: any) => <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-50 text-blue-700 border border-blue-200">{r.role}</span> },
     { key: 'isActive', label: 'Status', render: (r: any) => <StatusBadge status={r.isActive !== false ? 'ACTIVE' : 'INACTIVE'} /> },
     {
-      key: 'actions',
-      label: 'Actions',
+      key: 'actions', label: 'Actions',
       render: (r: any) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <Button variant="secondary" onClick={() => { setEditingUser(r); setModalOpen(true); }} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem', background: 'rgba(99, 102, 241, 0.08)', color: '#4f46e5', border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: '6px', fontWeight: 600 }}>
-            Edit
-          </Button>
-          <Button variant="danger" onClick={() => handleReset(r)} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem', background: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '6px', fontWeight: 600 }}>
-            Reset
-          </Button>
+          <Button variant="secondary" onClick={() => { setEditingUser(r); setModalOpen(true); }} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}>Edit</Button>
+          <Button variant="danger" onClick={() => handleReset(r)} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}>Reset</Button>
         </div>
       ),
     },
@@ -56,18 +59,29 @@ export default function UserList() {
   const meta = (query.data as any)?.meta;
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="space-y-6 p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 style={{ margin: 0, fontSize: '1.75rem', fontWeight: 800, display: 'inline-block', background: 'linear-gradient(90deg, #0f172a 0%, #1d4ed8 50%, #2563eb 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-0.025em' }}>Users</h1>
-          <p style={{ margin: '0.25rem 0 0', fontSize: '0.85rem', color: '#64748b' }}>System accounts, access permissions, and role management</p>
+          <div className="flex items-center gap-1.5 text-xs text-slate-400 mb-1">
+            <span>Administration</span><span>&rsaquo;</span><span className="text-slate-600 font-medium">Access Control</span>
+          </div>
+          <h1 className="text-2xl font-black tracking-tight text-slate-900">Users</h1>
+          <p className="mt-0.5 text-xs text-slate-500">System accounts, access permissions, and role management</p>
         </div>
-        <Button onClick={() => { setEditingUser(null); setModalOpen(true); }} style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)', boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)', borderRadius: '8px', fontWeight: 600 }}>Add User</Button>
+        <div className="flex items-center gap-2.5">
+          <button type="button" onClick={handleExport} disabled={isExporting} className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 shadow-2xs transition cursor-pointer">
+            <Download className="w-3.5 h-3.5" />{isExporting ? 'Exporting...' : 'Export CSV'}
+          </button>
+          <button type="button" onClick={() => { setEditingUser(null); setModalOpen(true); }} className="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm shadow-blue-500/20 transition cursor-pointer">
+            <Plus className="w-4 h-4" />Add User
+          </button>
+        </div>
       </div>
-      <div style={{ maxWidth: '320px', marginBottom: '1.25rem' }}>
-        <Input id="user-search" placeholder="Search users..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-      </div>
-      <div style={{ background: '#fff', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)', padding: '1.25rem' }}>
+      <UserStats users={data} />
+      <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs p-5">
+        <div className="max-w-xs mb-4">
+          <Input id="user-search" placeholder="Search users..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
+        </div>
         <QueryBoundary query={query} emptyMessage="No users found.">
           <Table columns={columns} data={data} />
           {meta && <Pagination page={page} totalPages={meta.totalPages || 1} onPageChange={setPage} />}

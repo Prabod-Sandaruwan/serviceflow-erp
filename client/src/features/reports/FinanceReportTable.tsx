@@ -47,3 +47,4 @@ export function FinanceReportTable({ data: d }: { data?: any }) {
 }
 
 export default FinanceReportTable;
+
