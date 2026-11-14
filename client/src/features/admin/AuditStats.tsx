@@ -62,3 +62,4 @@ export function AuditStats({ logs = [], total }: { logs?: any[]; total?: number 
 }
 
 export default AuditStats;
+

@@ -64,3 +64,4 @@ export function EmployeeStats({ employees = [], total }: { employees?: any[]; to
 }
 
 export default EmployeeStats;
+
