@@ -14,7 +14,10 @@ export function drawFooter(doc: PDFKit.PDFDocument, invoice: any, startY = 460):
   doc.fontSize(13).font('Helvetica-Oblique').fillColor('#1e40af').text(signerName, 300, sigY + 6);
   doc.fontSize(7.5).font('Helvetica-Bold').fillColor('#0f172a').text(signerName, 300, sigY + 23);
   doc.fontSize(6.5).font('Helvetica').fillColor('#475569').text(signerTitle, 300, sigY + 33);
-  doc.fontSize(6).fillColor('#64748b').text('ServiceFlow ERP', 300, sigY + 42);
+  const companyName = process.env.COMPANY_NAME || '';
+  if (companyName) {
+    doc.fontSize(6).fillColor('#64748b').text(companyName, 300, sigY + 42);
+  }
 
   // Bottom Audit Bar
   const botY = 780;

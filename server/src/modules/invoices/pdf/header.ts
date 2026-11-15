@@ -15,8 +15,10 @@ export function drawHeader(doc: PDFKit.PDFDocument, invoice: any): void {
   doc.fontSize(14).font('Helvetica-Bold').fillColor('#ffffff').text('S', 38, 25, { width: 26, align: 'center' });
 
   // Brand Titles from Environment / DB
-  const companyName = process.env.COMPANY_NAME || 'ServiceFlow ERP';
-  doc.fontSize(13).font('Helvetica-Bold').fillColor('#0f172a').text(companyName, 72, 20);
+  const companyName = process.env.COMPANY_NAME || '';
+  if (companyName) {
+    doc.fontSize(13).font('Helvetica-Bold').fillColor('#0f172a').text(companyName, 72, 20);
+  }
   doc.fontSize(6.5).font('Helvetica-Bold').fillColor('#64748b').text('ENTERPRISE CLOUD SOLUTIONS', 72, 34);
 
   // Invoice Title & Status Badge

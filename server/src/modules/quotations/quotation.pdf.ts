@@ -1,5 +1,5 @@
 import { Writable } from 'stream';
-import { createPdfDocument, drawCompanyHeader } from '../../shared/pdf/layout';
+import { createPdfDocument, drawCompanyHeader, drawFooter, formatAmount } from '../../shared/pdf/layout';
 import { formatDate } from '../../shared/dates';
 
 export interface QuotationPdfItem {
@@ -48,8 +48,8 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
   for (const item of vm.items) {
     doc.text(item.description, 60, y);
     doc.text(String(item.quantity), 320, y, { width: 40, align: 'right' });
-    doc.text(item.unitPrice.toFixed(2), 370, y, { width: 75, align: 'right' });
-    doc.text(item.lineAmount.toFixed(2), 455, y, { width: 80, align: 'right' });
+    doc.text(formatAmount(item.unitPrice), 370, y, { width: 75, align: 'right' });
+    doc.text(formatAmount(item.lineAmount), 455, y, { width: 80, align: 'right' });
     y += 18;
   }
 
@@ -57,14 +57,14 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
   doc.moveTo(350, y).lineTo(545, y).strokeColor('#e5e7eb').lineWidth(1).stroke();
   y += 8;
   doc.font('Helvetica').text('Subtotal:', 350, y);
-  doc.text(vm.subtotal.toFixed(2), 455, y, { width: 80, align: 'right' });
+  doc.text(formatAmount(vm.subtotal), 455, y, { width: 80, align: 'right' });
   y += 15;
   doc.text('Tax:', 350, y);
-  doc.text(vm.taxAmount.toFixed(2), 455, y, { width: 80, align: 'right' });
+  doc.text(formatAmount(vm.taxAmount), 455, y, { width: 80, align: 'right' });
   y += 15;
   doc.font('Helvetica-Bold').fontSize(10).fillColor('#111827').text('Total:', 350, y);
-  doc.text(vm.total.toFixed(2), 455, y, { width: 80, align: 'right' });
+  doc.text(formatAmount(vm.total), 455, y, { width: 80, align: 'right' });
 
+  drawFooter(doc, vm.quotationNumber);
   doc.end();
 }
-

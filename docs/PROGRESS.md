@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** PDF-001 (Phase 12 Started)  
+**Current Task:** PDF-002 (Task PDF-001 Complete)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN)
 
 ## Completed Phases
@@ -105,7 +105,7 @@
 - [x] FIN-015: Verify finance acceptance (AS-11, AS-12, AS-14 CSV) and extend seed
 
 ## Phase 12 — PDF Documents and Reporting Quality
-- [ ] PDF-001: Review the shared PDF layout and company configuration
+- [x] PDF-001: Review the shared PDF layout and company configuration
 - [ ] PDF-002: Handle long descriptions and page breaks
 - [ ] PDF-003: Add PDF content tests
 - [ ] PDF-004: Verify PDF authorization, error handling and visual quality
