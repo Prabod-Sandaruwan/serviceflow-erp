@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Spinner } from './Spinner';
 
 export interface Column<T> {
   key: keyof T | string;
@@ -22,7 +23,11 @@ export function Table<T extends Record<string, any>>({
   emptyText = 'No data available',
 }: TableProps<T>) {
   if (isLoading) {
-    return <div style={{ padding: '2rem', textAlign: 'center', color: '#64748b', background: '#fff', borderRadius: '8px' }}>Loading...</div>;
+    return (
+      <div style={{ background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+        <Spinner size="md" label="Loading data..." />
+      </div>
+    );
   }
   if (isError) {
     return <div style={{ padding: '2rem', textAlign: 'center', color: '#dc2626', background: '#fff', borderRadius: '8px' }}>Failed to load data.</div>;

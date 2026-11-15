@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { AppShell } from '../layouts/AppShell';
 import { RequireAuth, RequireRole } from './guards';
 import { navConfig } from '../layouts/navConfig';
+import { Spinner } from '../components/ui/Spinner';
 
 const Login = lazy(() => import('../features/auth/Login'));
 const Dashboard = lazy(() => import('../features/dashboard/Dashboard'));
@@ -34,7 +35,7 @@ const LogoutConfirm = lazy(() => import('../features/auth/LogoutConfirm'));
 const NotFound = lazy(() => import('../components/NotFound'));
 
 const withSuspense = (Component: React.ComponentType) => (
-  <Suspense fallback={<div style={{ padding: '2rem' }}>Loading...</div>}>
+  <Suspense fallback={<Spinner size="lg" label="Loading page..." />}>
     <Component />
   </Suspense>
 );

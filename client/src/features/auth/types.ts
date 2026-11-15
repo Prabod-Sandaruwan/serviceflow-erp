@@ -10,6 +10,8 @@ export interface User {
     fullName?: string;
     department?: string;
     position?: string;
+    phone?: string;
+    jobTitle?: string;
   };
 }
 

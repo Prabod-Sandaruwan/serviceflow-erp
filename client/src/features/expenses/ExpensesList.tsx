@@ -5,6 +5,7 @@ import { ExpensesTable } from './ExpensesTable';
 import { ExpenseForm } from './ExpenseForm';
 import { VoidExpenseDialog } from './VoidExpenseDialog';
 import { Pagination } from '../../components/ui/Pagination';
+import { Spinner } from '../../components/ui/Spinner';
 import type { Expense } from './types';
 
 export function ExpensesList() {
@@ -53,7 +54,9 @@ export function ExpensesList() {
         onReset={handleReset}
       />
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-slate-500 bg-white rounded-xl border border-slate-200">Loading expenses...</div>
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <Spinner size="md" label="Loading expenses..." />
+        </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">No expenses found.</div>
       ) : (

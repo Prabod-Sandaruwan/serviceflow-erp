@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { Select } from '../../components/ui/Forms';
 import { useProjects } from '../projects/hooks';
 import { useMilestones } from '../milestones/hooks';
