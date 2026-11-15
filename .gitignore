@@ -45,3 +45,7 @@ lerna-debug.log*
 **/.agents/
 **/.claude/
 **/.windsurf/
+
+# Generated Test Artifacts
+*.pdf
+
