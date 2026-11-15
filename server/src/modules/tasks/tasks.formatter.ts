@@ -18,7 +18,9 @@ export const formatTask = (t: any) => ({
   createdAt: t.createdAt ?? t.created_at,
   updatedAt: t.updatedAt ?? t.updated_at,
   isOverdue: isOverdueTask(t),
-  assignee: t.assignee ? { id: t.assignee.id.toString(), fullName: t.assignee.full_name } : undefined,
+  assignee: t.assignee
+    ? { id: t.assignee.id.toString(), fullName: t.assignee.full_name }
+    : undefined,
   milestone: t.milestone ? { id: t.milestone.id.toString(), name: t.milestone.name } : undefined,
 });
 

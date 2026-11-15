@@ -25,7 +25,7 @@ export const sessionStore = new MySQLStore(
       },
     },
   },
-  pool as any,
+  pool as any
 );
 
 export const sessionMiddleware = session({

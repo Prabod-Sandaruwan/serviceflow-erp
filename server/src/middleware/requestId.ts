@@ -9,16 +9,10 @@ declare global {
   }
 }
 
-export const requestIdMiddleware = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const requestIdMiddleware = (req: Request, res: Response, next: NextFunction): void => {
   const incoming = req.headers['x-request-id'];
   const reqId =
-    typeof incoming === 'string' && incoming.trim().length > 0
-      ? incoming.trim()
-      : randomUUID();
+    typeof incoming === 'string' && incoming.trim().length > 0 ? incoming.trim() : randomUUID();
 
   req.id = reqId;
   res.setHeader('X-Request-Id', reqId);

@@ -1,5 +1,12 @@
 import { Writable } from 'stream';
-import { createPdfDocument, drawCompanyHeader, drawFooter, formatAmount, checkPageBreak, measureRowHeight } from '../../shared/pdf/layout';
+import {
+  createPdfDocument,
+  drawCompanyHeader,
+  drawFooter,
+  formatAmount,
+  checkPageBreak,
+  measureRowHeight,
+} from '../../shared/pdf/layout';
 import { formatDate } from '../../shared/dates';
 
 export interface QuotationPdfItem {
@@ -33,7 +40,11 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
   const doc = createPdfDocument(outStream);
   drawCompanyHeader(doc);
 
-  doc.fontSize(14).font('Helvetica-Bold').fillColor('#222222').text(`QUOTATION ${vm.quotationNumber}`, 50, 105);
+  doc
+    .fontSize(14)
+    .font('Helvetica-Bold')
+    .fillColor('#222222')
+    .text(`QUOTATION ${vm.quotationNumber}`, 50, 105);
   doc.fontSize(9).font('Helvetica').fillColor('#444444');
   doc.text(`Client: ${vm.clientName}`, 50, 125);
   doc.text(`Valid Until: ${formatDate(vm.validUntil)}`, 50, 138);
@@ -45,7 +56,10 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
   for (const item of vm.items) {
     doc.font('Helvetica').fontSize(9);
     const rowHeight = measureRowHeight(doc, item.description, 250, 6, 18);
-    checkPageBreak(doc, rowHeight + 4, (d) => { drawQuotationTableHeader(d, 56.7); d.y = 56.7 + 24; });
+    checkPageBreak(doc, rowHeight + 4, (d) => {
+      drawQuotationTableHeader(d, 56.7);
+      d.y = 56.7 + 24;
+    });
     const curY = doc.y;
     doc.font('Helvetica').fontSize(9).fillColor('#374151');
     doc.text(item.description, 60, curY, { width: 250, align: 'left' });
@@ -55,7 +69,10 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
     doc.y = curY + rowHeight;
   }
 
-  checkPageBreak(doc, 70, (d) => { drawQuotationTableHeader(d, 56.7); d.y = 56.7 + 24; });
+  checkPageBreak(doc, 70, (d) => {
+    drawQuotationTableHeader(d, 56.7);
+    d.y = 56.7 + 24;
+  });
   let y = doc.y + 10;
   doc.moveTo(350, y).lineTo(545, y).strokeColor('#e5e7eb').lineWidth(1).stroke();
   y += 8;
@@ -73,7 +90,10 @@ export function buildQuotationPdf(vm: QuotationPdfViewModel, outStream: Writable
     for (let i = range.start; i < range.start + range.count; i++) {
       doc.switchToPage(i);
       doc.save().opacity(0.12).fontSize(80).font('Helvetica-Bold').fillColor('#ff0000');
-      doc.rotate(-45, { origin: [300, 450] }).text('DRAFT', 180, 420).restore();
+      doc
+        .rotate(-45, { origin: [300, 450] })
+        .text('DRAFT', 180, 420)
+        .restore();
     }
   }
 

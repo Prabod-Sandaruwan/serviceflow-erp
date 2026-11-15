@@ -57,4 +57,3 @@ export function statusFor(total: string | number, paid: string | number): string
   if (p < t) return 'PARTIALLY_PAID';
   return 'PAID';
 }
-

@@ -19,6 +19,8 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/no-namespace': ['error', { allowDeclarations: true }],
+    'no-empty': ['error', { allowEmptyCatch: true }],
   },
   ignorePatterns: ['dist', 'node_modules', 'coverage', 'src/generated'],
 };

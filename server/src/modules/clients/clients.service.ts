@@ -1,12 +1,23 @@
 import { Prisma } from '@prisma/client';
-import { findMany, findById, checkDuplicate, isClientOwnedByStaff, create, update } from './clients.repository';
+import {
+  findMany,
+  findById,
+  checkDuplicate,
+  isClientOwnedByStaff,
+  create,
+  update,
+} from './clients.repository';
 import { ClientQuery, CreateClientInput, UpdateClientInput } from './clients.schemas';
 import { formatClient } from './clients.formatter';
 import { ApiError } from '../../shared/errors';
 import { AuditService } from '../audit/audit.service';
 
 const toBigIntId = (id: string | bigint): bigint => {
-  try { return BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Client not found'); }
+  try {
+    return BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Client not found');
+  }
 };
 
 export async function listClients(query: ClientQuery) {
@@ -18,12 +29,21 @@ export async function listClients(query: ClientQuery) {
     orderBy = { [raw === 'displayName' ? 'display_name' : 'created_at']: isDesc ? 'desc' : 'asc' };
   }
   const [clients, total] = await findMany({
-    skip, take: query.limit, search: query.search, type: query.type, isActive: query.isActive,
+    skip,
+    take: query.limit,
+    search: query.search,
+    type: query.type,
+    isActive: query.isActive,
     orderBy: orderBy as Prisma.ClientOrderByWithRelationInput,
   });
   return {
     data: clients.map(formatClient),
-    meta: { total, page: query.page, limit: query.limit, totalPages: Math.ceil(total / query.limit) || 1 },
+    meta: {
+      total,
+      page: query.page,
+      limit: query.limit,
+      totalPages: Math.ceil(total / query.limit) || 1,
+    },
   };
 }
 
@@ -42,8 +62,12 @@ export async function createClient(data: CreateClientInput, user?: any) {
 
   if (actorId) {
     await AuditService.log({
-      action: 'CLIENT_CREATED', entityType: 'CLIENT', entityId: newClient.id,
-      actorUserId: actorId, actorRole: user?.role, after: formatted,
+      action: 'CLIENT_CREATED',
+      entityType: 'CLIENT',
+      entityId: newClient.id,
+      actorUserId: actorId,
+      actorRole: user?.role,
+      after: formatted,
     });
   }
   return { data: formatted, duplicateWarning };
@@ -58,13 +82,15 @@ export async function updateClient(id: string | bigint, data: UpdateClientInput,
   const actorId = user?.userId ?? user?.id;
 
   if (actorRole === 'STAFF') {
-    if (data.isActive !== undefined) throw new ApiError(403, 'FORBIDDEN', 'Staff cannot change active status');
+    if (data.isActive !== undefined)
+      throw new ApiError(403, 'FORBIDDEN', 'Staff cannot change active status');
     const isOwned = await isClientOwnedByStaff(rawId, BigInt(actorId));
     if (!isOwned) throw new ApiError(403, 'FORBIDDEN', 'Not authorized to edit this client');
   }
 
   const email = data.email !== undefined ? data.email : existing.email;
-  const regNumber = data.registrationNumber !== undefined ? data.registrationNumber : existing.registration_number;
+  const regNumber =
+    data.registrationNumber !== undefined ? data.registrationNumber : existing.registration_number;
   const duplicateWarning = await checkDuplicate(email, regNumber, rawId);
 
   const updated = await update(rawId, data);
@@ -72,8 +98,13 @@ export async function updateClient(id: string | bigint, data: UpdateClientInput,
 
   if (actorId) {
     await AuditService.log({
-      action: 'CLIENT_UPDATED', entityType: 'CLIENT', entityId: rawId,
-      actorUserId: actorId, actorRole, before: formatClient(existing), after: formatted,
+      action: 'CLIENT_UPDATED',
+      entityType: 'CLIENT',
+      entityId: rawId,
+      actorUserId: actorId,
+      actorRole,
+      before: formatClient(existing),
+      after: formatted,
     });
   }
   return { data: formatted, duplicateWarning };

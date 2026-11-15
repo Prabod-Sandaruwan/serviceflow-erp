@@ -4,11 +4,7 @@ import {
   createFollowUpSchema,
   updateFollowUpSchema,
 } from './followups.schemas';
-import {
-  listFollowUps,
-  createFollowUp,
-  updateFollowUp,
-} from './followups.service';
+import { listFollowUps, createFollowUp, updateFollowUp } from './followups.service';
 
 export async function list(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {

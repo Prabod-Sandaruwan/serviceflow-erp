@@ -5,7 +5,11 @@ import { formatFollowUp } from './followups.formatter';
 import { ApiError } from '../../shared/errors';
 
 const toBigIntId = (id: string | bigint): bigint => {
-  try { return BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Invalid ID'); }
+  try {
+    return BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Invalid ID');
+  }
 };
 
 export async function checkLeadAccess(leadId: string | bigint, user: any) {

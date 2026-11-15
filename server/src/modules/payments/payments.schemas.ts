@@ -21,7 +21,10 @@ export const recordPaymentSchema = z
     idempotencyKey: z.string().max(64).optional().nullable(),
   })
   .superRefine((data, ctx) => {
-    if ((data.method === 'BANK_TRANSFER' || data.method === 'CARD') && (!data.reference || !data.reference.trim())) {
+    if (
+      (data.method === 'BANK_TRANSFER' || data.method === 'CARD') &&
+      (!data.reference || !data.reference.trim())
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: 'Reference is required for bank transfer and card payments',
@@ -45,7 +48,11 @@ export const recordPaymentSchema = z
 export type RecordPaymentInput = z.infer<typeof recordPaymentSchema>;
 
 export const voidPaymentSchema = z.object({
-  reason: z.string().trim().min(5, 'Reason must be at least 5 characters').max(500, 'Reason cannot exceed 500 characters'),
+  reason: z
+    .string()
+    .trim()
+    .min(5, 'Reason must be at least 5 characters')
+    .max(500, 'Reason cannot exceed 500 characters'),
 });
 
 export type VoidPaymentInput = z.infer<typeof voidPaymentSchema>;

@@ -20,15 +20,25 @@ export const leadQuerySchema = z.object({
 
 export const createLeadSchema = z.object({
   ownerId: z.string().or(z.number()).optional(),
-  expectedValue: z.coerce.number().min(0, 'Expected value cannot be negative').optional().nullable(),
+  expectedValue: z.coerce
+    .number()
+    .min(0, 'Expected value cannot be negative')
+    .optional()
+    .nullable(),
   notes: z.string().optional(),
 });
 
 export const updateLeadSchema = z
   .object({
-    status: z.enum(['NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL_SENT', 'CONVERTED', 'LOST', 'WON']).optional(),
+    status: z
+      .enum(['NEW', 'CONTACTED', 'QUALIFIED', 'PROPOSAL_SENT', 'CONVERTED', 'LOST', 'WON'])
+      .optional(),
     lostReason: z.string().trim().optional().nullable(),
-    expectedValue: z.coerce.number().min(0, 'Expected value cannot be negative').optional().nullable(),
+    expectedValue: z.coerce
+      .number()
+      .min(0, 'Expected value cannot be negative')
+      .optional()
+      .nullable(),
     ownerId: z.string().or(z.number()).optional(),
     notes: z.string().optional(),
   })

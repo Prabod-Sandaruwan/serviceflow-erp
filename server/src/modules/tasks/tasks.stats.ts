@@ -31,4 +31,3 @@ export async function getTaskStats(req: Request, res: Response, next: NextFuncti
     next(err);
   }
 }
-

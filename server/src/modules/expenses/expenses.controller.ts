@@ -5,12 +5,7 @@ import {
   voidExpenseSchema,
   listExpensesQuerySchema,
 } from './expenses.schemas';
-import {
-  createExpense,
-  updateExpense,
-  voidExpense,
-  listExpenses,
-} from './expenses.service';
+import { createExpense, updateExpense, voidExpense, listExpenses } from './expenses.service';
 
 const actorOf = (req: Request) => (req as any).auth || (req as any).user;
 const parseActor = (req: Request) => {

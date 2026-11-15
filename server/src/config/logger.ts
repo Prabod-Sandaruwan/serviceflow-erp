@@ -15,10 +15,7 @@ export const REDACT_PATHS = [
 const isTest = process.env.NODE_ENV === 'test';
 const isDev = process.env.NODE_ENV === 'development';
 
-export const createLogger = (
-  options?: LoggerOptions,
-  destination?: DestinationStream
-) => {
+export const createLogger = (options?: LoggerOptions, destination?: DestinationStream) => {
   return pino(
     {
       level: isTest ? 'silent' : process.env.LOG_LEVEL || 'info',

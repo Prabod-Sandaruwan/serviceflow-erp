@@ -42,7 +42,11 @@ export async function approve(req: Request, res: Response, next: NextFunction): 
   }
 }
 
-export async function listByProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function listByProject(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const result = await getMilestones(req.params.id as string);
     ok(res, result);

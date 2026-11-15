@@ -10,10 +10,16 @@ type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | st
 function assertStaffLimits(task: any, data: UpdateTaskInput, actor?: Actor) {
   if (actor?.role !== 'STAFF') return;
   const { title, description, priority, assigneeId, milestoneId, dueDate } = data;
-  if ([title, description, priority, assigneeId, milestoneId, dueDate].some((v) => v !== undefined)) {
+  if (
+    [title, description, priority, assigneeId, milestoneId, dueDate].some((v) => v !== undefined)
+  ) {
     throw new ApiError(403, 'FORBIDDEN', 'Staff may only update task status');
   }
-  if (!task.assigneeId || !actor.employeeId || task.assigneeId.toString() !== actor.employeeId.toString()) {
+  if (
+    !task.assigneeId ||
+    !actor.employeeId ||
+    task.assigneeId.toString() !== actor.employeeId.toString()
+  ) {
     throw new ApiError(403, 'FORBIDDEN', 'Cannot update a task not assigned to you');
   }
 }
@@ -24,10 +30,15 @@ async function resolveRelations(data: UpdateTaskInput, task: any) {
     if (data.assigneeId === null || data.assigneeId === '') assigneeId = null;
     else {
       let raw: bigint;
-      try { raw = BigInt(data.assigneeId); } catch { throw new ApiError(422, 'EMPLOYEE_NOT_FOUND', 'Employee not found'); }
+      try {
+        raw = BigInt(data.assigneeId);
+      } catch {
+        throw new ApiError(422, 'EMPLOYEE_NOT_FOUND', 'Employee not found');
+      }
       const emp = await prisma.employee.findUnique({ where: { id: raw } });
       if (!emp) throw new ApiError(422, 'EMPLOYEE_NOT_FOUND', 'Employee not found');
-      if (!emp.is_active) throw new ApiError(422, 'EMPLOYEE_INACTIVE', 'Cannot assign task to an inactive employee');
+      if (!emp.is_active)
+        throw new ApiError(422, 'EMPLOYEE_INACTIVE', 'Cannot assign task to an inactive employee');
       assigneeId = raw;
     }
   }
@@ -36,7 +47,11 @@ async function resolveRelations(data: UpdateTaskInput, task: any) {
     if (data.milestoneId === null || data.milestoneId === '') milestoneId = null;
     else {
       let raw: bigint;
-      try { raw = BigInt(data.milestoneId); } catch { throw new ApiError(422, 'FOREIGN_MILESTONE', 'Milestone not found'); }
+      try {
+        raw = BigInt(data.milestoneId);
+      } catch {
+        throw new ApiError(422, 'FOREIGN_MILESTONE', 'Milestone not found');
+      }
       const ms = await prisma.milestone.findUnique({ where: { id: raw } });
       if (!ms || ms.projectId !== task.projectId) {
         throw new ApiError(422, 'FOREIGN_MILESTONE', 'Milestone belongs to a different project');
@@ -49,7 +64,11 @@ async function resolveRelations(data: UpdateTaskInput, task: any) {
 
 export async function updateTask(id: string, data: UpdateTaskInput, actor?: Actor) {
   let rawId: bigint;
-  try { rawId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Task not found'); }
+  try {
+    rawId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Task not found');
+  }
 
   const task = await findTaskById(rawId);
   if (!task) throw new ApiError(404, 'NOT_FOUND', 'Task not found');

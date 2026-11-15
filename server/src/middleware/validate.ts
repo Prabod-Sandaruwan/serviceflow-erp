@@ -21,11 +21,7 @@ export interface RequestValidationSchema {
 }
 
 export const validate = (schemas: RequestValidationSchema) => {
-  return async (
-    req: Request,
-    _res: Response,
-    next: NextFunction
-  ): Promise<void> => {
+  return async (req: Request, _res: Response, next: NextFunction): Promise<void> => {
     req.valid = req.valid || {};
     const errors: ErrorDetail[] = [];
     const targets: (keyof RequestValidationSchema)[] = ['body', 'query', 'params'];

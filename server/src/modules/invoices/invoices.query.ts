@@ -11,13 +11,13 @@ export async function getInvoices(query: ListInvoicesQuery, actor?: Actor) {
     actorEmployeeId = (actor as any).employeeId != null ? BigInt((actor as any).employeeId) : -1n;
   }
   const page = query.page ?? 1;
-  const pageSize = query.pageSize ?? query.limit ?? 20;
+  const pageSize = query.pageSize ?? (query as any).limit ?? 20;
 
   const [items, total] = await findMany(
     {
       status: query.status,
-      clientId: query.clientId,
-      projectId: query.projectId,
+      clientId: query.clientId != null ? String(query.clientId) : undefined,
+      projectId: query.projectId != null ? String(query.projectId) : undefined,
       overdue: query.overdue,
       from: query.from,
       to: query.to,
@@ -31,7 +31,11 @@ export async function getInvoices(query: ListInvoicesQuery, actor?: Actor) {
 
 export async function getInvoiceById(id: string | bigint | number, actor?: Actor) {
   let rawId: bigint;
-  try { rawId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Invoice not found'); }
+  try {
+    rawId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
+  }
 
   let actorEmployeeId: bigint | undefined;
   if (actor?.role === 'STAFF') {
@@ -46,4 +50,3 @@ export async function getInvoiceById(id: string | bigint | number, actor?: Actor
 
   return formatInvoice(invoice);
 }
-

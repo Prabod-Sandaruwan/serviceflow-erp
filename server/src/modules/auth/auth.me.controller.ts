@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../../config/prisma';
 import { ok } from '../../shared/http';
-import { AppError } from '../../middleware/errorHandler';
+import { AppError } from '../../shared/errors';
 import { purgeUserSessions } from './sessionCleanup';
 
 export class AuthMeController {
@@ -61,4 +61,3 @@ export class AuthMeController {
     }
   }
 }
-

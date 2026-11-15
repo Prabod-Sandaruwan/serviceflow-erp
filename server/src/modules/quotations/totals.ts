@@ -18,10 +18,7 @@ export interface ComputedTotals {
   total: number;
 }
 
-export function computeTotals(
-  items: QuotationItemInput[],
-  taxAmount: number = 0
-): ComputedTotals {
+export function computeTotals(items: QuotationItemInput[], taxAmount: number = 0): ComputedTotals {
   if (!items || items.length === 0) {
     throw new Error('Quotation items cannot be empty');
   }

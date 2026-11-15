@@ -24,12 +24,20 @@ export async function findMany(
   const where: Prisma.InvoiceWhereInput = {};
   if (filters.status) where.status = filters.status;
   if (filters.projectId) {
-    try { where.projectId = BigInt(filters.projectId); } catch { /* ignore */ }
+    try {
+      where.projectId = BigInt(filters.projectId);
+    } catch {
+      /* ignore */
+    }
   }
 
   const projectWhere: Prisma.ProjectWhereInput = {};
   if (filters.clientId) {
-    try { projectWhere.clientId = BigInt(filters.clientId); } catch { /* ignore */ }
+    try {
+      projectWhere.clientId = BigInt(filters.clientId);
+    } catch {
+      /* ignore */
+    }
   }
   if (actorEmployeeId !== undefined) {
     projectWhere.tasks = { some: { assigneeId: actorEmployeeId, status: { not: 'CANCELLED' } } };
@@ -86,4 +94,3 @@ export async function findById(id: bigint, actorEmployeeId?: bigint) {
     },
   });
 }
-

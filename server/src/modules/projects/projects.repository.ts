@@ -71,4 +71,3 @@ export async function findById(id: bigint, actorEmployeeId?: bigint) {
 
 export const ProjectsRepository = { findMany, findById };
 export default ProjectsRepository;
-

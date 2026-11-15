@@ -36,11 +36,20 @@ export function drawCompanyHeader(doc: PDFKit.PDFDocument): void {
   const contacts = [phone, email, website].filter(Boolean).join(' • ');
   const lines = [address, contacts].filter(Boolean);
   if (lines.length) {
-    doc.fontSize(8.5).font('Helvetica').fillColor('#64748b').text(lines.join('\n'), PDF_MARGIN, doc.y + 2);
+    doc
+      .fontSize(8.5)
+      .font('Helvetica')
+      .fillColor('#64748b')
+      .text(lines.join('\n'), PDF_MARGIN, doc.y + 2);
   }
   doc.fillColor('#000000');
   const sepY = Math.max(doc.y + 8, 100);
-  doc.moveTo(PDF_MARGIN, sepY).lineTo(PDF_MARGIN + PDF_CONTENT_WIDTH, sepY).strokeColor('#e2e8f0').lineWidth(1).stroke();
+  doc
+    .moveTo(PDF_MARGIN, sepY)
+    .lineTo(PDF_MARGIN + PDF_CONTENT_WIDTH, sepY)
+    .strokeColor('#e2e8f0')
+    .lineWidth(1)
+    .stroke();
   doc.y = sepY + 12;
 }
 
@@ -51,11 +60,19 @@ export function drawFooter(doc: PDFKit.PDFDocument, documentNumber: string): voi
 
   for (let i = range.start; i < range.start + range.count; i++) {
     doc.switchToPage(i);
-    doc.moveTo(PDF_MARGIN, lineY).lineTo(PDF_MARGIN + PDF_CONTENT_WIDTH, lineY).strokeColor('#e2e8f0').lineWidth(0.75).stroke();
+    doc
+      .moveTo(PDF_MARGIN, lineY)
+      .lineTo(PDF_MARGIN + PDF_CONTENT_WIDTH, lineY)
+      .strokeColor('#e2e8f0')
+      .lineWidth(0.75)
+      .stroke();
     doc.fontSize(8).font('Helvetica').fillColor('#64748b');
     doc.text(documentNumber || '', PDF_MARGIN, footerY, { width: 250, align: 'left' });
     const pageText = `Page ${i + 1 - range.start} of ${range.count}`;
-    doc.text(pageText, PDF_MARGIN + 250, footerY, { width: PDF_CONTENT_WIDTH - 250, align: 'right' });
+    doc.text(pageText, PDF_MARGIN + 250, footerY, {
+      width: PDF_CONTENT_WIDTH - 250,
+      align: 'right',
+    });
   }
 }
 
@@ -84,4 +101,3 @@ export function measureRowHeight(
   const textHeight = doc.heightOfString(text || '', { width: columnWidth });
   return Math.max(minHeight, Math.ceil(textHeight + padding));
 }
-

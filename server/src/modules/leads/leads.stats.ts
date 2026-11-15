@@ -23,7 +23,7 @@ export async function getLeadStats(user?: any) {
   for (const l of leads) {
     const v = l.expected_value ? Number(l.expected_value) : 0;
     totalValue += v;
-    if (l.status === 'CONVERTED' || l.status === 'WON') {
+    if (l.status === 'CONVERTED') {
       convertedValue += v;
       convertedCount++;
     } else if (l.status === 'LOST') {
@@ -48,4 +48,3 @@ export async function getLeadStats(user?: any) {
 }
 
 export default getLeadStats;
-

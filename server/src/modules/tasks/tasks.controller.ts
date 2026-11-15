@@ -15,7 +15,11 @@ export async function list(req: Request, res: Response, next: NextFunction): Pro
   }
 }
 
-export async function listByProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+export async function listByProject(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> {
   try {
     const query = listTasksQuerySchema.parse({ ...req.query, projectId: req.params.id });
     const result = await getTasks(query, actorOf(req));

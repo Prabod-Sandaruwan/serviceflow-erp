@@ -26,7 +26,8 @@ const formatEmployee = (emp: any) => ({
 
 export class EmployeesService {
   static async list(query: ListEmployeesQuery) {
-    const page = query.page || 1, limit = query.limit || 20;
+    const page = query.page || 1,
+      limit = query.limit || 20;
     const { total, employees } = await EmployeeRepository.list(query, (page - 1) * limit, limit);
     return {
       data: toJson(employees.map(formatEmployee)),
@@ -39,21 +40,45 @@ export class EmployeesService {
       const existing = await EmployeeRepository.findByEmail(input.email, tx);
       if (existing) throw new AppError('Email already registered', 'VALIDATION_ERROR', 409);
       const employee = await tx.employee.create({
-        data: { full_name: input.fullName, job_title: input.jobTitle, phone: input.phone, is_active: true },
+        data: {
+          full_name: input.fullName,
+          job_title: input.jobTitle,
+          phone: input.phone,
+          is_active: true,
+        },
       });
       const pHash = await hashPassword('ServiceFlow@2026');
       const user = await tx.user.create({
-        data: { email: input.email, password_hash: pHash, role: input.role || 'STAFF', employeeId: employee.id, must_change_password: true, is_active: true },
+        data: {
+          email: input.email,
+          password_hash: pHash,
+          role: input.role || 'STAFF',
+          employeeId: employee.id,
+          must_change_password: true,
+          is_active: true,
+        },
       });
       const res = formatEmployee({ ...employee, user });
       await AuditService.record(tx, {
-        actor, action: AUDIT_ACTIONS.EMPLOYEE_CREATED, entityType: 'EMPLOYEE', entityId: employee.id, after: res, ip, requestId: reqId,
+        actor,
+        action: AUDIT_ACTIONS.EMPLOYEE_CREATED,
+        entityType: 'EMPLOYEE',
+        entityId: employee.id,
+        after: res,
+        ip,
+        requestId: reqId,
       });
       return toJson(res);
     });
   }
 
-  static async update(id: bigint, input: UpdateEmployeeInput, actor?: Actor, ip?: string, reqId?: string) {
+  static async update(
+    id: bigint,
+    input: UpdateEmployeeInput,
+    actor?: Actor,
+    ip?: string,
+    reqId?: string
+  ) {
     return runInTransaction(async (tx) => {
       const current = await EmployeeRepository.findById(id, tx);
       if (!current) throw new AppError('Employee not found', 'NOT_FOUND', 404);
@@ -66,7 +91,14 @@ export class EmployeesService {
           await tx.user.update({ where: { id: current.user.id }, data: { email: input.email } });
         } else {
           const pHash = await hashPassword('ServiceFlow@2026');
-          await tx.user.create({ data: { email: input.email, password_hash: pHash, role: input.role || 'STAFF', employeeId: id } });
+          await tx.user.create({
+            data: {
+              email: input.email,
+              password_hash: pHash,
+              role: input.role || 'STAFF',
+              employeeId: id,
+            },
+          });
         }
       }
       if (input.role && current.user) {
@@ -81,10 +113,23 @@ export class EmployeesService {
       if (input.isActive === false && updated.user) {
         await tx.user.update({ where: { id: updated.user.id }, data: { is_active: false } });
       }
-      const res = formatEmployee({ ...updated, user: updated.user || (input.email ? { email: input.email } : current.user) });
-      const action = input.isActive === false ? AUDIT_ACTIONS.EMPLOYEE_DEACTIVATED : AUDIT_ACTIONS.EMPLOYEE_UPDATED;
+      const res = formatEmployee({
+        ...updated,
+        user: updated.user || (input.email ? { email: input.email } : current.user),
+      });
+      const action =
+        input.isActive === false
+          ? AUDIT_ACTIONS.EMPLOYEE_DEACTIVATED
+          : AUDIT_ACTIONS.EMPLOYEE_UPDATED;
       await AuditService.record(tx, {
-        actor, action, entityType: 'EMPLOYEE', entityId: id, before: formatEmployee(current), after: res, ip, requestId: reqId,
+        actor,
+        action,
+        entityType: 'EMPLOYEE',
+        entityId: id,
+        before: formatEmployee(current),
+        after: res,
+        ip,
+        requestId: reqId,
       });
       return toJson(res);
     });

@@ -14,7 +14,9 @@ export async function getDashboardSummary(query: any, actor: any) {
     const whereTasks = {
       OR: [
         ...(actor.employeeId ? [{ assigneeId: BigInt(actor.employeeId) }] : []),
-        ...(actor.userId ? [{ assigneeId: BigInt(actor.userId) }, { createdBy: BigInt(actor.userId) }] : []),
+        ...(actor.userId
+          ? [{ assigneeId: BigInt(actor.userId) }, { createdBy: BigInt(actor.userId) }]
+          : []),
       ],
     };
     const [todo, inProgress, done, leadsCount, quotationsCount] = await Promise.all([
@@ -35,9 +37,18 @@ export async function getDashboardSummary(query: any, actor: any) {
 
   const now = new Date();
   const [
-    activeClients, activeProjects, milestones,
-    todo, inProgress, done, overdue,
-    overdueInvoices, revenue, paymentsReceived, expenses, outstanding,
+    activeClients,
+    activeProjects,
+    milestones,
+    todo,
+    inProgress,
+    done,
+    overdue,
+    overdueInvoices,
+    revenue,
+    paymentsReceived,
+    expenses,
+    outstanding,
   ] = await Promise.all([
     prisma.client.count({ where: { is_active: true } }),
     prisma.project.count({ where: { status: 'ACTIVE' } }),
@@ -45,7 +56,9 @@ export async function getDashboardSummary(query: any, actor: any) {
     prisma.task.count({ where: { status: 'TODO' } }),
     prisma.task.count({ where: { status: 'IN_PROGRESS' } }),
     prisma.task.count({ where: { status: 'DONE' } }),
-    prisma.task.count({ where: { status: { notIn: ['DONE', 'CANCELLED'] }, dueDate: { lt: now } } }),
+    prisma.task.count({
+      where: { status: { notIn: ['DONE', 'CANCELLED'] }, dueDate: { lt: now } },
+    }),
     getOverdueInvoices(query.endDate),
     getRevenue(query.startDate, query.endDate),
     getPaymentsReceived(query.startDate, query.endDate),

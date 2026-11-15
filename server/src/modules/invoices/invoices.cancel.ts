@@ -13,10 +13,16 @@ export async function cancelInvoice(
   ctx?: InvoiceServiceContext
 ) {
   let invoiceId: bigint;
-  try { invoiceId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Invoice not found'); }
+  try {
+    invoiceId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
+  }
 
   return runInTransaction(async (tx) => {
-    const rows = await tx.$queryRaw<any[]>`SELECT * FROM invoices WHERE id = ${invoiceId} FOR UPDATE`;
+    const rows = await tx.$queryRaw<
+      any[]
+    >`SELECT * FROM invoices WHERE id = ${invoiceId} FOR UPDATE`;
     const inv = rows?.[0];
     if (!inv) throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
 
@@ -27,7 +33,11 @@ export async function cancelInvoice(
     `;
     const count = Number(activePayments?.[0]?.count ?? 0);
     if (count > 0) {
-      throw new ApiError(409, 'INVOICE_HAS_PAYMENTS', 'Cannot cancel an invoice with active payments');
+      throw new ApiError(
+        409,
+        'INVOICE_HAS_PAYMENTS',
+        'Cannot cancel an invoice with active payments'
+      );
     }
 
     const cancelledBy = actor?.userId ? BigInt(actor.userId) : null;

@@ -19,4 +19,3 @@ export const healthCheckHandler = async (_req: Request, res: Response): Promise<
     });
   }
 };
-

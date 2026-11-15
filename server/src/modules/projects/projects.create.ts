@@ -40,7 +40,11 @@ export async function createProject(
 
     const existingProject = await tx.project.findUnique({ where: { quotationId: rawQuotId } });
     if (existingProject) {
-      throw new ApiError(409, 'PROJECT_ALREADY_EXISTS', 'A project already exists for this quotation.');
+      throw new ApiError(
+        409,
+        'PROJECT_ALREADY_EXISTS',
+        'A project already exists for this quotation.'
+      );
     }
 
     let project: any;
@@ -60,7 +64,11 @@ export async function createProject(
       });
     } catch (err: any) {
       if (err?.code === 'P2002') {
-        throw new ApiError(409, 'PROJECT_ALREADY_EXISTS', 'A project already exists for this quotation.');
+        throw new ApiError(
+          409,
+          'PROJECT_ALREADY_EXISTS',
+          'A project already exists for this quotation.'
+        );
       }
       throw err;
     }
@@ -89,4 +97,3 @@ export async function createProject(
     return formatted;
   });
 }
-

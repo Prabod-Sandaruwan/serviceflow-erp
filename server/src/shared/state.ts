@@ -8,9 +8,7 @@ export interface Transition<S extends string> {
   roles?: Role[];
 }
 
-export type TransitionTable<S extends string> = Partial<
-  Record<S, readonly Transition<S>[]>
->;
+export type TransitionTable<S extends string> = Partial<Record<S, readonly Transition<S>[]>>;
 
 export interface StateMachine<S extends string> {
   name: string;
@@ -50,7 +48,10 @@ const APPROVER_ROLES: Role[] = ['MANAGER', 'ADMIN'];
 
 export const quotationMachine = defineMachine('Quotation', {
   DRAFT: [{ to: 'PENDING_APPROVAL' }],
-  PENDING_APPROVAL: [{ to: 'APPROVED', roles: APPROVER_ROLES }, { to: 'REJECTED', roles: APPROVER_ROLES }],
+  PENDING_APPROVAL: [
+    { to: 'APPROVED', roles: APPROVER_ROLES },
+    { to: 'REJECTED', roles: APPROVER_ROLES },
+  ],
   REJECTED: [{ to: 'DRAFT' }],
   APPROVED: [{ to: 'SENT' }],
   SENT: [{ to: 'ACCEPTED' }, { to: 'DECLINED' }],

@@ -4,7 +4,10 @@ import { AuditService } from '../audit/audit.service';
 import { formatQuotation } from './quotations.formatter';
 import { userInclude } from './quotations.repository';
 
-export interface QuotationDecisionContext { ip?: string; requestId?: string; }
+export interface QuotationDecisionContext {
+  ip?: string;
+  requestId?: string;
+}
 type Actor = { userId?: bigint | string; role?: string };
 
 async function decideQuotation(
@@ -12,10 +15,14 @@ async function decideQuotation(
   decision: 'APPROVED' | 'REJECTED',
   reason?: string,
   actor?: Actor,
-  ctx?: QuotationDecisionContext,
+  ctx?: QuotationDecisionContext
 ) {
   let rawId: bigint;
-  try { rawId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Quotation not found'); }
+  try {
+    rawId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Quotation not found');
+  }
 
   return runInTransaction(async (tx) => {
     const rows = await tx.$queryRaw<{ id: bigint; status: string; created_by: bigint }[]>`
@@ -29,7 +36,11 @@ async function decideQuotation(
       throw new ApiError(409, 'INVALID_STATE_TRANSITION', 'Quotation is not pending approval');
     }
     if (quotation.created_by.toString() === actor?.userId?.toString()) {
-      throw new ApiError(403, 'SELF_APPROVAL_FORBIDDEN', 'Submitter cannot approve or reject their own quotation');
+      throw new ApiError(
+        403,
+        'SELF_APPROVAL_FORBIDDEN',
+        'Submitter cannot approve or reject their own quotation'
+      );
     }
 
     const updated = await tx.quotation.update({
@@ -65,7 +76,11 @@ export async function approveQuotation(id: string, actor?: Actor, ctx?: Quotatio
   return decideQuotation(id, 'APPROVED', undefined, actor, ctx);
 }
 
-export async function rejectQuotation(id: string, reason: string, actor?: Actor, ctx?: QuotationDecisionContext) {
+export async function rejectQuotation(
+  id: string,
+  reason: string,
+  actor?: Actor,
+  ctx?: QuotationDecisionContext
+) {
   return decideQuotation(id, 'REJECTED', reason, actor, ctx);
 }
-

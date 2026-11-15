@@ -7,9 +7,7 @@ export const numericAmountSchema = z
     message: 'Amount must be a non-negative number',
   });
 
-export const invoiceStatusEnum = z.enum([
-  'DRAFT', 'ISSUED', 'PARTIALLY_PAID', 'PAID', 'CANCELLED'
-]);
+export const invoiceStatusEnum = z.enum(['DRAFT', 'ISSUED', 'PARTIALLY_PAID', 'PAID', 'CANCELLED']);
 
 export const createInvoiceItemSchema = z.object({
   description: z.string().min(1).max(255),
@@ -26,7 +24,14 @@ const taxFields = {
   taxAmount: z.preprocess((v) => (v === '' ? '0' : v), numericAmountSchema.optional()),
   taxReference: z.preprocess(emptyToNull, z.string().max(60).optional().nullable()),
   notes: z.preprocess(emptyToNull, z.string().optional().nullable()),
-  dueDate: z.preprocess(emptyToNull, z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional().nullable()),
+  dueDate: z.preprocess(
+    emptyToNull,
+    z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD')
+      .optional()
+      .nullable()
+  ),
 };
 
 export const createInvoiceSchema = z.object({
@@ -47,14 +52,21 @@ export const issueInvoiceSchema = z.object({
 });
 
 export const cancelInvoiceSchema = z.object({
-  reason: z.string().trim().min(5, 'Reason must be at least 5 characters').max(500, 'Reason cannot exceed 500 characters'),
+  reason: z
+    .string()
+    .trim()
+    .min(5, 'Reason must be at least 5 characters')
+    .max(500, 'Reason cannot exceed 500 characters'),
 });
 
 export const listInvoicesQuerySchema = z.object({
   status: invoiceStatusEnum.optional(),
   clientId: z.union([z.string(), z.number(), z.bigint()]).optional(),
   projectId: z.union([z.string(), z.number(), z.bigint()]).optional(),
-  overdue: z.union([z.boolean(), z.enum(['true', 'false'])]).transform((v) => v === true || v === 'true').optional(),
+  overdue: z
+    .union([z.boolean(), z.enum(['true', 'false'])])
+    .transform((v) => v === true || v === 'true')
+    .optional(),
   from: z.string().optional(),
   to: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),

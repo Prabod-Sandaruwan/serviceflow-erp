@@ -5,13 +5,12 @@ import { formatMilestone } from './milestones.formatter';
 import { findMilestoneById } from './milestones.repository';
 
 type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | string | null };
-export interface MilestoneContext { ip?: string; requestId?: string; }
+export interface MilestoneContext {
+  ip?: string;
+  requestId?: string;
+}
 
-export async function approveMilestone(
-  id: string,
-  actor?: Actor,
-  ctx?: MilestoneContext
-) {
+export async function approveMilestone(id: string, actor?: Actor, ctx?: MilestoneContext) {
   let rawId: bigint;
   try {
     rawId = BigInt(id);
@@ -29,7 +28,11 @@ export async function approveMilestone(
   }
 
   if (milestone.status !== 'COMPLETED') {
-    throw new ApiError(409, 'INVALID_STATE_TRANSITION', 'Only COMPLETED milestones can be approved');
+    throw new ApiError(
+      409,
+      'INVALID_STATE_TRANSITION',
+      'Only COMPLETED milestones can be approved'
+    );
   }
 
   const approverId = actor?.userId ? BigInt(actor.userId) : null;

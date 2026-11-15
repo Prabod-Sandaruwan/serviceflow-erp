@@ -9,7 +9,8 @@ export const formatLead = (lead: any) => ({
       : lead.expectedValue !== null && lead.expectedValue !== undefined
         ? Number(lead.expectedValue)
         : null,
-  convertedClientId: lead.convertedClientId?.toString() ?? lead.converted_client_id?.toString() ?? null,
+  convertedClientId:
+    lead.convertedClientId?.toString() ?? lead.converted_client_id?.toString() ?? null,
   createdAt: lead.created_at ?? lead.createdAt,
   updatedAt: lead.updated_at ?? lead.updatedAt,
   ...(lead.owner

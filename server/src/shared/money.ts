@@ -9,9 +9,7 @@ export type MoneyInput = string | Decimal | { toString(): string };
 
 export const parseMoney = (val: unknown): Decimal => {
   if (typeof val === 'number') {
-    throw new TypeError(
-      'JavaScript numbers are forbidden for money. Use decimal string.'
-    );
+    throw new TypeError('JavaScript numbers are forbidden for money. Use decimal string.');
   }
   if (val === null || val === undefined) {
     throw new Error('Money value cannot be null or undefined');
@@ -56,10 +54,7 @@ export const mul = (a: MoneyInput, factor: string | number | Decimal): string =>
   return parseMoney(a).times(f).toFixed(2);
 };
 
-export const lineAmount = (
-  qty: string | number | Decimal,
-  unitPrice: MoneyInput
-): string => {
+export const lineAmount = (qty: string | number | Decimal, unitPrice: MoneyInput): string => {
   const q = new MoneyDecimal(qty instanceof Decimal ? qty.toString() : qty);
   return q.times(parseMoney(unitPrice)).toFixed(2);
 };
@@ -72,8 +67,7 @@ export const sum = (list: MoneyInput[]): string => {
   return total.toFixed(2);
 };
 
-export const eq = (a: MoneyInput, b: MoneyInput): boolean =>
-  parseMoney(a).equals(parseMoney(b));
+export const eq = (a: MoneyInput, b: MoneyInput): boolean => parseMoney(a).equals(parseMoney(b));
 
 export const gt = (a: MoneyInput, b: MoneyInput): boolean =>
   parseMoney(a).greaterThan(parseMoney(b));
@@ -81,8 +75,7 @@ export const gt = (a: MoneyInput, b: MoneyInput): boolean =>
 export const gte = (a: MoneyInput, b: MoneyInput): boolean =>
   parseMoney(a).greaterThanOrEqualTo(parseMoney(b));
 
-export const lt = (a: MoneyInput, b: MoneyInput): boolean =>
-  parseMoney(a).lessThan(parseMoney(b));
+export const lt = (a: MoneyInput, b: MoneyInput): boolean => parseMoney(a).lessThan(parseMoney(b));
 
 export const lte = (a: MoneyInput, b: MoneyInput): boolean =>
   parseMoney(a).lessThanOrEqualTo(parseMoney(b));

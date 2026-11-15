@@ -63,7 +63,7 @@ export class EmployeeRepository {
       where: { email },
       include: { employee: true },
     });
-    return user?.employee ? { ...user.employee, user } : (user ? ({ user } as any) : null);
+    return user?.employee ? { ...user.employee, user } : user ? ({ user } as any) : null;
   }
 }
 

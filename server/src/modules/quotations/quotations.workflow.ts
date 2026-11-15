@@ -5,12 +5,19 @@ import { assertTransition, quotationMachine, Role } from '../../shared/state';
 import { formatQuotation } from './quotations.formatter';
 import { findById } from './quotations.repository';
 
-export interface QuotationWorkflowContext { ip?: string; requestId?: string; }
+export interface QuotationWorkflowContext {
+  ip?: string;
+  requestId?: string;
+}
 type Actor = { userId?: bigint | string; role?: string };
 
 export async function submitQuotation(id: string, actor?: Actor, ctx?: QuotationWorkflowContext) {
   let rawId: bigint;
-  try { rawId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Quotation not found'); }
+  try {
+    rawId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Quotation not found');
+  }
   const quotation = await findById(rawId);
   if (!quotation) throw new ApiError(404, 'NOT_FOUND', 'Quotation not found');
   if (actor?.role === 'STAFF' && quotation.createdBy.toString() !== actor.userId?.toString()) {
@@ -20,7 +27,11 @@ export async function submitQuotation(id: string, actor?: Actor, ctx?: Quotation
   assertTransition(quotationMachine, quotation.status, 'PENDING_APPROVAL', actor?.role as Role);
 
   if (!quotation.items || quotation.items.length === 0 || Number(quotation.total) <= 0) {
-    throw new ApiError(422, 'VALIDATION_ERROR', 'Quotation must have at least one item and total greater than 0');
+    throw new ApiError(
+      422,
+      'VALIDATION_ERROR',
+      'Quotation must have at least one item and total greater than 0'
+    );
   }
 
   return runInTransaction(async (tx) => {
@@ -35,8 +46,14 @@ export async function submitQuotation(id: string, actor?: Actor, ctx?: Quotation
     });
     const formatted = formatQuotation(updated);
     await AuditService.record(tx, {
-      actor, action: 'QUOTATION_SUBMITTED', entityType: 'QUOTATION', entityId: rawId,
-      before: formatQuotation(quotation), after: formatted, ip: ctx?.ip, requestId: ctx?.requestId,
+      actor,
+      action: 'QUOTATION_SUBMITTED',
+      entityType: 'QUOTATION',
+      entityId: rawId,
+      before: formatQuotation(quotation),
+      after: formatted,
+      ip: ctx?.ip,
+      requestId: ctx?.requestId,
     });
     return formatted;
   });
