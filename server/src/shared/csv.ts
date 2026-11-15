@@ -19,8 +19,6 @@ export function escapeCsvCell(val: unknown): string {
 
 export function toCsv(rows: Record<string, any>[], columns: string[]): string {
   const headerRow = columns.map(escapeCsvCell).join(',');
-  const dataRows = rows.map((row) =>
-    columns.map((col) => escapeCsvCell(row[col])).join(',')
-  );
+  const dataRows = rows.map((row) => columns.map((col) => escapeCsvCell(row[col])).join(','));
   return [headerRow, ...dataRows].join('\r\n');
 }

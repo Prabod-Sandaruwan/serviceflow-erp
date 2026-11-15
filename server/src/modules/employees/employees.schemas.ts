@@ -31,12 +31,11 @@ export const updateEmployeeSchema = z.object({
 export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>['body'];
 
 export const listEmployeesQuerySchema = paginationQuerySchema.extend({
-  isActive: z
-    .preprocess((val) => {
-      if (val === 'true' || val === true) return true;
-      if (val === 'false' || val === false) return false;
-      return val;
-    }, z.boolean().optional()),
+  isActive: z.preprocess((val) => {
+    if (val === 'true' || val === true) return true;
+    if (val === 'false' || val === false) return false;
+    return val;
+  }, z.boolean().optional()),
   search: z.string().trim().optional(),
   role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
 });

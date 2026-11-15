@@ -1,11 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../shared/errors';
 
-export function mustChangePasswordGuard(
-  req: Request,
-  _res: Response,
-  next: NextFunction
-): void {
+export function mustChangePasswordGuard(req: Request, _res: Response, next: NextFunction): void {
   try {
     if (!req.auth || !req.auth.mustChangePassword) {
       return next();

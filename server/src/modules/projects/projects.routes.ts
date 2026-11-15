@@ -32,14 +32,21 @@ registry.registerPath({
   method: 'get',
   path: '/api/v1/projects',
   summary: 'List projects',
-  responses: { 200: { description: 'Paginated projects list' }, 401: { description: 'Unauthenticated' } },
+  responses: {
+    200: { description: 'Paginated projects list' },
+    401: { description: 'Unauthenticated' },
+  },
 });
 
 registry.registerPath({
   method: 'get',
   path: '/api/v1/projects/{id}',
   summary: 'Get project details',
-  responses: { 200: { description: 'Project details' }, 401: { description: 'Unauthenticated' }, 404: { description: 'Project not found' } },
+  responses: {
+    200: { description: 'Project details' },
+    401: { description: 'Unauthenticated' },
+    404: { description: 'Project not found' },
+  },
 });
 
 registry.registerPath({

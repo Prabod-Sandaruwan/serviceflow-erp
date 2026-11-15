@@ -62,7 +62,8 @@ export class AuditService {
   }
 
   static async listLogs(query: ListAuditLogsQuery) {
-    const page = query.page || 1, limit = query.limit || 20;
+    const page = query.page || 1,
+      limit = query.limit || 20;
     const where: any = {};
     if (query.entityType) where.entityType = query.entityType;
     if (query.entityId !== undefined) where.entityId = query.entityId;
@@ -76,9 +77,17 @@ export class AuditService {
     }
     const [total, logs] = await prisma.$transaction([
       prisma.auditLog.count({ where }),
-      prisma.auditLog.findMany({ where, skip: (page - 1) * limit, take: limit, orderBy: { createdAt: 'desc' } }),
+      prisma.auditLog.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+      }),
     ]);
-    return { data: toJson(logs), meta: { page, pageSize: limit, total, totalPages: Math.ceil(total / limit) || 1 } };
+    return {
+      data: toJson(logs),
+      meta: { page, pageSize: limit, total, totalPages: Math.ceil(total / limit) || 1 },
+    };
   }
 }
 

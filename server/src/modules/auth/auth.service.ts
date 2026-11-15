@@ -17,9 +17,7 @@ export class AuthService {
       cachedDummyHash = await hashPassword('dummy');
     }
 
-    const hashToVerify = user
-      ? user.password_hash || (user as any).passwordHash
-      : cachedDummyHash;
+    const hashToVerify = user ? user.password_hash || (user as any).passwordHash : cachedDummyHash;
     const isValid = await verifyPassword(hashToVerify, input.password);
     const isActive = user ? (user.is_active ?? (user as any).isActive) : false;
 

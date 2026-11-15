@@ -7,7 +7,10 @@ export const formatClient = (client: any) => ({
   address: client.address ?? null,
   registrationNumber: client.registration_number ?? client.registrationNumber ?? null,
   notes: client.notes ?? null,
-  contactPerson: client.contact_person ?? client.contactPerson ?? (client.client_type === 'INDIVIDUAL' ? (client.display_name ?? client.displayName) : null),
+  contactPerson:
+    client.contact_person ??
+    client.contactPerson ??
+    (client.client_type === 'INDIVIDUAL' ? (client.display_name ?? client.displayName) : null),
   isActive: client.is_active ?? client.isActive ?? true,
   createdAt: client.created_at ?? client.createdAt,
   updatedAt: client.updated_at ?? client.updatedAt,
@@ -18,4 +21,3 @@ export const formatClient = (client: any) => ({
 });
 
 export default formatClient;
-

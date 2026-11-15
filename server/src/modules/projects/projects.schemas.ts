@@ -1,15 +1,19 @@
 import { z } from 'zod';
 
-export const projectStatusEnum = z.enum([
-  'PLANNED', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'CANCELLED',
-]);
+export const projectStatusEnum = z.enum(['PLANNED', 'ACTIVE', 'ON_HOLD', 'COMPLETED', 'CANCELLED']);
 
 export const createProjectSchema = z
   .object({
     quotationId: z.union([z.string(), z.number(), z.bigint()]),
     name: z.string().trim().min(1).max(160).optional(),
-    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
-    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD')
+      .optional(),
+    endDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD')
+      .optional(),
   })
   .refine(
     (data) => {
@@ -25,8 +29,14 @@ export const updateProjectSchema = z
   .object({
     status: projectStatusEnum.optional(),
     reason: z.string().trim().max(500).optional(),
-    startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
-    endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD').optional(),
+    startDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD')
+      .optional(),
+    endDate: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD')
+      .optional(),
   })
   .superRefine((data, ctx) => {
     if (data.startDate && data.endDate && new Date(data.endDate) < new Date(data.startDate)) {

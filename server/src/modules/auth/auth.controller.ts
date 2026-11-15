@@ -24,18 +24,25 @@ export class AuthController {
       req.session.csrfToken = crypto.randomBytes(32).toString('hex');
       await util.promisify(req.session.save.bind(req.session))();
       ok(res, profile);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = req.session?.userId, role = req.session?.role;
+      const userId = req.session?.userId,
+        role = req.session?.role;
       const reqId = (req as any).id || (req.headers['x-request-id'] as string);
       if (userId) {
         await runInTransaction(async (tx) => {
           await AuditService.record(tx, {
-            actor: { userId, role }, action: AUDIT_ACTIONS.LOGOUT,
-            entityType: 'USER', entityId: userId, ip: req.ip, requestId: reqId,
+            actor: { userId, role },
+            action: AUDIT_ACTIONS.LOGOUT,
+            entityType: 'USER',
+            entityId: userId,
+            ip: req.ip,
+            requestId: reqId,
           });
         });
       }
@@ -44,19 +51,24 @@ export class AuthController {
         res.clearCookie('sf.sid');
         res.status(204).send();
       });
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async me(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       if (!req.session?.userId) throw new AppError('UNAUTHENTICATED', 'UNAUTHENTICATED', 401);
       const user = await prisma.user.findUnique({
-        where: { id: BigInt(req.session.userId) }, include: { employee: true },
+        where: { id: BigInt(req.session.userId) },
+        include: { employee: true },
       });
       if (!user || !user.is_active) throw new AppError('UNAUTHENTICATED', 'UNAUTHENTICATED', 401);
       const { password_hash, passwordHash, ...profile } = user as any;
       ok(res, profile);
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 
   static async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -78,15 +90,31 @@ export class AuthController {
       const newHash = await hashPassword(newPassword);
       const reqId = (req as any).id || (req.headers['x-request-id'] as string);
       await runInTransaction(async (tx) => {
-        await tx.user.update({ where: { id: user.id }, data: { password_hash: newHash, must_change_password: false } as any });
-        await AuditService.record(tx, { actor: { userId: user.id, role: user.role }, action: AUDIT_ACTIONS.PASSWORD_CHANGED, entityType: 'USER', entityId: user.id, ip: req.ip, requestId: reqId });
+        await tx.user.update({
+          where: { id: user.id },
+          data: { password_hash: newHash, must_change_password: false } as any,
+        });
+        await AuditService.record(tx, {
+          actor: { userId: user.id, role: user.role },
+          action: AUDIT_ACTIONS.PASSWORD_CHANGED,
+          entityType: 'USER',
+          entityId: user.id,
+          ip: req.ip,
+          requestId: reqId,
+        });
       });
       try {
-        await prisma.$executeRawUnsafe('DELETE FROM sessions WHERE data LIKE ? AND session_id != ?', `%"userId":"${user.id.toString()}"%`, req.sessionID);
+        await prisma.$executeRawUnsafe(
+          'DELETE FROM sessions WHERE data LIKE ? AND session_id != ?',
+          `%"userId":"${user.id.toString()}"%`,
+          req.sessionID
+        );
       } catch {}
       if (req.auth) req.auth.mustChangePassword = false;
       res.status(204).send();
-    } catch (err) { next(err); }
+    } catch (err) {
+      next(err);
+    }
   }
 }
 

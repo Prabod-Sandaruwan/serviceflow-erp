@@ -5,13 +5,7 @@ import {
   updateLeadSchema,
   convertLeadSchema,
 } from './leads.schemas';
-import {
-  listLeads,
-  getLead,
-  createLead,
-  updateLead,
-  convertLead,
-} from './leads.service';
+import { listLeads, getLead, createLead, updateLead, convertLead } from './leads.service';
 import { getLeadStats } from './leads.stats';
 
 export async function stats(req: Request, res: Response, next: NextFunction): Promise<void> {

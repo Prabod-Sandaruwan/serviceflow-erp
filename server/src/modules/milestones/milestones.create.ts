@@ -5,7 +5,10 @@ import { CreateMilestoneInput } from './milestones.schemas';
 import { formatMilestone } from './milestones.formatter';
 
 type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | string | null };
-export interface MilestoneContext { ip?: string; requestId?: string; }
+export interface MilestoneContext {
+  ip?: string;
+  requestId?: string;
+}
 
 export async function createMilestone(
   projectId: string,

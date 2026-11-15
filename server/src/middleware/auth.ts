@@ -8,11 +8,7 @@ const destroySession = (session: any): Promise<void> => {
   });
 };
 
-export async function requireAuth(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> {
+export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const skipPaths = ['/auth/login', '/auth/csrf', '/auth/logout', '/health', '/test-mutation'];
     if (skipPaths.includes(req.path)) {
@@ -44,8 +40,7 @@ export async function requireAuth(
       userId: user.id,
       role: user.role,
       employeeId: user.employeeId,
-      mustChangePassword:
-        user.must_change_password ?? (user as any).mustChangePassword ?? false,
+      mustChangePassword: user.must_change_password ?? (user as any).mustChangePassword ?? false,
     };
 
     next();

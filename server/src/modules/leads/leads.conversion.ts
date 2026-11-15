@@ -19,7 +19,7 @@ export async function convertLead(
   const lead = await findById(rawId);
   if (!lead) throw new ApiError(404, 'NOT_FOUND', 'Lead not found');
 
-  const callerId = user?.userId ?? user?.id ? BigInt(user.userId ?? user.id) : null;
+  const callerId = (user?.userId ?? user?.id) ? BigInt(user.userId ?? user.id) : null;
   if (user?.role === 'STAFF' && lead.ownerId !== callerId) {
     throw new ApiError(403, 'FORBIDDEN', 'Not authorized to convert this lead');
   }

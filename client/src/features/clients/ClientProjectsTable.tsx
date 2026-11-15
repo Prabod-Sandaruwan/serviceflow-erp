@@ -7,7 +7,7 @@ interface ClientProjectsTableProps {
   clientId: string;
 }
 
-const formatDate = (ds?: string) => {
+const formatDate = (ds?: string | null) => {
   if (!ds) return '-';
   try {
     const d = new Date(ds);

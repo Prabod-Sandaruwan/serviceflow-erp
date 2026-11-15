@@ -8,7 +8,10 @@ const router = Router();
 route(router, 'get', '/', { roles: ['ADMIN'], handler: UsersController.list });
 route(router, 'post', '/', { roles: ['ADMIN'], handler: UsersController.create });
 route(router, 'patch', '/:id', { roles: ['ADMIN'], handler: UsersController.update });
-route(router, 'post', '/:id/reset-password', { roles: ['ADMIN'], handler: UsersController.resetPassword });
+route(router, 'post', '/:id/reset-password', {
+  roles: ['ADMIN'],
+  handler: UsersController.resetPassword,
+});
 
 registry.registerPath({
   method: 'get',

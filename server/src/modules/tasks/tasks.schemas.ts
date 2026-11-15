@@ -3,7 +3,10 @@ import { z } from 'zod';
 export const taskPriorityEnum = z.enum(['LOW', 'MEDIUM', 'HIGH', 'URGENT']);
 export const taskStatusEnum = z.enum(['TODO', 'IN_PROGRESS', 'DONE', 'CANCELLED']);
 
-const dateSchema = z.union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'), z.literal('')]).optional().nullable();
+const dateSchema = z
+  .union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date format must be YYYY-MM-DD'), z.literal('')])
+  .optional()
+  .nullable();
 
 export const createTaskSchema = z.object({
   title: z.string().trim().min(1).max(160),
@@ -30,7 +33,10 @@ export const listTasksQuerySchema = z.object({
   assigneeId: z.union([z.string(), z.number(), z.bigint()]).optional(),
   priority: taskPriorityEnum.optional(),
   status: taskStatusEnum.optional(),
-  overdue: z.union([z.boolean(), z.enum(['true', 'false'])]).transform((v) => v === true || v === 'true').optional(),
+  overdue: z
+    .union([z.boolean(), z.enum(['true', 'false'])])
+    .transform((v) => v === true || v === 'true')
+    .optional(),
   search: z.string().trim().optional(),
   sortBy: z.enum(['createdAt', 'dueDate', 'priority', 'title', 'status']).optional(),
   sortOrder: z.enum(['asc', 'desc']).optional(),

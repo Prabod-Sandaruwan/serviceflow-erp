@@ -23,12 +23,11 @@ export type CreateUserInput = z.infer<typeof createUserSchema>['body'];
 
 export const listUsersQuerySchema = paginationQuerySchema.extend({
   role: z.enum(roles).optional(),
-  isActive: z
-    .preprocess((val) => {
-      if (val === 'true' || val === true) return true;
-      if (val === 'false' || val === false) return false;
-      return val;
-    }, z.boolean().optional()),
+  isActive: z.preprocess((val) => {
+    if (val === 'true' || val === true) return true;
+    if (val === 'false' || val === false) return false;
+    return val;
+  }, z.boolean().optional()),
   search: z.string().trim().optional(),
 });
 

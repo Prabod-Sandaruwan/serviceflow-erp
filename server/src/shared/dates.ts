@@ -1,9 +1,6 @@
 export const COMPANY_TIMEZONE = 'Asia/Colombo';
 
-export const formatDate = (
-  date: string | Date,
-  timeZone = COMPANY_TIMEZONE
-): string => {
+export const formatDate = (date: string | Date, timeZone = COMPANY_TIMEZONE): string => {
   if (date instanceof Date) {
     return new Intl.DateTimeFormat('en-CA', {
       timeZone,
@@ -15,15 +12,11 @@ export const formatDate = (
   return date.slice(0, 10);
 };
 
-export const today = (
-  now: Date = new Date(),
-  timeZone = COMPANY_TIMEZONE
-): string => formatDate(now, timeZone);
+export const today = (now: Date = new Date(), timeZone = COMPANY_TIMEZONE): string =>
+  formatDate(now, timeZone);
 
-export const isBefore = (
-  dateA: string | Date,
-  dateB: string | Date
-): boolean => formatDate(dateA) < formatDate(dateB);
+export const isBefore = (dateA: string | Date, dateB: string | Date): boolean =>
+  formatDate(dateA) < formatDate(dateB);
 
 export const isOverdueInvoice = (
   invoice: {
@@ -44,9 +37,7 @@ export const isExpiredQuotation = (
   quotation: { status: string; validUntil: string | Date },
   currentDay = today()
 ): boolean => {
-  return (
-    quotation.status === 'SENT' && isBefore(quotation.validUntil, currentDay)
-  );
+  return quotation.status === 'SENT' && isBefore(quotation.validUntil, currentDay);
 };
 
 export const isOverdueTask = (

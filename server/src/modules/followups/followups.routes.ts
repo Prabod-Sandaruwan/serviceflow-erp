@@ -15,14 +15,21 @@ registry.registerPath({
   method: 'get',
   path: '/api/v1/follow-ups',
   summary: 'List follow-ups with scoping and pagination',
-  responses: { 200: { description: 'Paginated follow-up list' }, 401: { description: 'Unauthenticated' } },
+  responses: {
+    200: { description: 'Paginated follow-up list' },
+    401: { description: 'Unauthenticated' },
+  },
 });
 
 registry.registerPath({
   method: 'post',
   path: '/api/v1/follow-ups',
   summary: 'Create a new follow-up',
-  responses: { 201: { description: 'Follow-up created' }, 401: { description: 'Unauthenticated' }, 422: { description: 'Validation error' } },
+  responses: {
+    201: { description: 'Follow-up created' },
+    401: { description: 'Unauthenticated' },
+    422: { description: 'Validation error' },
+  },
 });
 
 registry.registerPath({

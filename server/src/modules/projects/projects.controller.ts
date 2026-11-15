@@ -1,5 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { createProjectSchema, listProjectsQuerySchema, updateProjectSchema } from './projects.schemas';
+import {
+  createProjectSchema,
+  listProjectsQuerySchema,
+  updateProjectSchema,
+} from './projects.schemas';
 import { createProject, getProjects, getProjectById, updateProject } from './projects.service';
 import { ok, paged } from '../../shared/http';
 

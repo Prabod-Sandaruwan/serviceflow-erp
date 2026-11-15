@@ -43,12 +43,22 @@ export async function updateProject(
       (t: any) => t.status !== 'CANCELLED' && t.status !== 'DONE'
     );
     if (openMilestones || openTasks) {
-      throw new ApiError(409, 'PROJECT_HAS_OPEN_WORK', 'Cannot complete project with open milestones or tasks');
+      throw new ApiError(
+        409,
+        'PROJECT_HAS_OPEN_WORK',
+        'Cannot complete project with open milestones or tasks'
+      );
     }
   }
 
-  const newStart = data.startDate !== undefined ? (data.startDate ? new Date(data.startDate) : null) : project.startDate;
-  const newEnd = data.endDate !== undefined ? (data.endDate ? new Date(data.endDate) : null) : project.endDate;
+  const newStart =
+    data.startDate !== undefined
+      ? data.startDate
+        ? new Date(data.startDate)
+        : null
+      : project.startDate;
+  const newEnd =
+    data.endDate !== undefined ? (data.endDate ? new Date(data.endDate) : null) : project.endDate;
   if (newStart && newEnd && newEnd < newStart) {
     throw new ApiError(422, 'VALIDATION_ERROR', 'End date must not precede start date');
   }
@@ -56,7 +66,8 @@ export async function updateProject(
   const updateData: any = {};
   if (data.status !== undefined) updateData.status = data.status;
   if (data.reason !== undefined) updateData.cancelReason = data.reason;
-  if (data.startDate !== undefined) updateData.startDate = data.startDate ? new Date(data.startDate) : null;
+  if (data.startDate !== undefined)
+    updateData.startDate = data.startDate ? new Date(data.startDate) : null;
   if (data.endDate !== undefined) updateData.endDate = data.endDate ? new Date(data.endDate) : null;
 
   return runInTransaction(async (tx) => {
@@ -74,7 +85,10 @@ export async function updateProject(
     const formatted = formatProject(updated);
     await AuditService.record(tx, {
       actor,
-      action: data.status && data.status !== project.status ? 'PROJECT_STATUS_CHANGED' : 'PROJECT_UPDATED',
+      action:
+        data.status && data.status !== project.status
+          ? 'PROJECT_STATUS_CHANGED'
+          : 'PROJECT_UPDATED',
       entityType: 'PROJECT',
       entityId: rawId,
       before: formatProject(project),

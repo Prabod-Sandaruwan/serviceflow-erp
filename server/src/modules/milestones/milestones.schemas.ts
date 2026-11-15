@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const milestoneStatusEnum = z.enum([
-  'PENDING', 'IN_PROGRESS', 'COMPLETED', 'APPROVED', 'CANCELLED',
+  'PENDING',
+  'IN_PROGRESS',
+  'COMPLETED',
+  'APPROVED',
+  'CANCELLED',
 ]);
 
 export const billingAmountSchema = z

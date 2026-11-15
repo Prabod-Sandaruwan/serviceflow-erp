@@ -60,11 +60,16 @@ export async function getOverdueInvoices(asOfDate: Date) {
     invoiceNumber: row.invoice_number,
     projectId: row.project_id.toString(),
     status: row.status,
-    issueDate: row.issue_date instanceof Date ? row.issue_date.toISOString().slice(0, 10) : String(row.issue_date).slice(0, 10),
-    dueDate: row.due_date instanceof Date ? row.due_date.toISOString().slice(0, 10) : String(row.due_date).slice(0, 10),
+    issueDate:
+      row.issue_date instanceof Date
+        ? row.issue_date.toISOString().slice(0, 10)
+        : String(row.issue_date).slice(0, 10),
+    dueDate:
+      row.due_date instanceof Date
+        ? row.due_date.toISOString().slice(0, 10)
+        : String(row.due_date).slice(0, 10),
     total: toDecimalString(row.total),
     paidAmount: toDecimalString(row.paid_amount),
     balance: toDecimalString(row.balance),
   }));
 }
-

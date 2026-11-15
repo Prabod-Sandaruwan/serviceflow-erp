@@ -30,20 +30,26 @@ export function calculateOutstanding(
 ): string {
   let sum = new Decimal(0);
   const eligible = new Set(['ISSUED', 'PARTIALLY_PAID']);
-  const asOfStr = asOfDate instanceof Date
-    ? asOfDate.toISOString().slice(0, 10)
-    : (asOfDate ? String(asOfDate).slice(0, 10) : undefined);
+  const asOfStr =
+    asOfDate instanceof Date
+      ? asOfDate.toISOString().slice(0, 10)
+      : asOfDate
+        ? String(asOfDate).slice(0, 10)
+        : undefined;
 
   for (const inv of invoices || []) {
     if (!eligible.has(inv.status)) continue;
 
     const rawDate = inv.issueDate ?? inv.issue_date;
     if (rawDate && asOfStr) {
-      const invStr = rawDate instanceof Date ? rawDate.toISOString().slice(0, 10) : String(rawDate).slice(0, 10);
+      const invStr =
+        rawDate instanceof Date ? rawDate.toISOString().slice(0, 10) : String(rawDate).slice(0, 10);
       if (invStr > asOfStr) continue;
     }
 
-    const total = new Decimal(inv.total != null ? (inv.total.toString?.() ?? String(inv.total)) : '0');
+    const total = new Decimal(
+      inv.total != null ? (inv.total.toString?.() ?? String(inv.total)) : '0'
+    );
     const idKey = inv.id != null ? String(inv.id) : '';
     const paid = new Decimal(paidMap[idKey] ?? (inv.id ? paidMap[inv.id] : undefined) ?? '0');
     const balance = total.minus(paid);

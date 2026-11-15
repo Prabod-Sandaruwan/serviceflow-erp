@@ -16,4 +16,3 @@ export async function getInvoicePayments(
   });
   return payments.map(formatPayment);
 }
-

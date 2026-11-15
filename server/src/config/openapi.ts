@@ -19,9 +19,7 @@ export const ErrorResponseSchema = z.object({
   error: z.object({
     code: z.string(),
     message: z.string(),
-    details: z
-      .array(z.object({ field: z.string().optional(), issue: z.string() }))
-      .optional(),
+    details: z.array(z.object({ field: z.string().optional(), issue: z.string() })).optional(),
     requestId: z.string().optional(),
   }),
 });

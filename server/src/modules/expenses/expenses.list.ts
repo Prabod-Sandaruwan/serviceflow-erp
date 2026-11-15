@@ -4,8 +4,10 @@ import { ListExpensesQuery } from './expenses.schemas';
 import { formatExpense } from './expenses.formatter';
 import { toDbCategory } from './expenses.mutate';
 
-const toStart = (d: string) => (d.includes('T') ? new Date(d) : new Date(`${d.slice(0, 10)}T00:00:00.000Z`));
-const toEnd = (d: string) => (d.includes('T') ? new Date(d) : new Date(`${d.slice(0, 10)}T23:59:59.999Z`));
+const toStart = (d: string) =>
+  d.includes('T') ? new Date(d) : new Date(`${d.slice(0, 10)}T00:00:00.000Z`);
+const toEnd = (d: string) =>
+  d.includes('T') ? new Date(d) : new Date(`${d.slice(0, 10)}T23:59:59.999Z`);
 
 export async function listExpenses(query: ListExpensesQuery, actor?: any, _ctx?: any) {
   const where: Prisma.ExpenseWhereInput = {};

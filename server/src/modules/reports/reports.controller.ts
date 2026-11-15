@@ -33,10 +33,10 @@ export async function exportCsvReportHandler(req: Request, res: Response, next: 
     if (query.type === 'finance') {
       const fin = await getFinanceReport(query.startDate, query.endDate);
       const row = {
-        'Revenue': fin.revenue,
+        Revenue: fin.revenue,
         'Payments Received': fin.paymentsReceived,
-        'Outstanding': fin.outstanding,
-        'Expenses': fin.expenses,
+        Outstanding: fin.outstanding,
+        Expenses: fin.expenses,
         'Estimated Profitability': fin.estimatedProfitability,
       };
       csv = toCsv([row], Object.keys(row));
@@ -44,10 +44,10 @@ export async function exportCsvReportHandler(req: Request, res: Response, next: 
       const projects = await getProjectsReport(query.projectId);
       const rows = projects.map((p) => ({
         'Project ID': p.projectId,
-        'Revenue': p.revenue,
-        'Billed': p.billed,
-        'Collected': p.collected,
-        'Expenses': p.expenses,
+        Revenue: p.revenue,
+        Billed: p.billed,
+        Collected: p.collected,
+        Expenses: p.expenses,
         'Estimated Profitability': p.estimatedProfitability,
       }));
       const cols = [

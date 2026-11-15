@@ -7,26 +7,46 @@ import { ApiError } from '../../shared/errors';
 import { AuditService } from '../audit/audit.service';
 
 const toBigIntId = (id: string | bigint | number): bigint => {
-  try { return BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Lead not found'); }
+  try {
+    return BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Lead not found');
+  }
 };
 
 export async function listLeads(query: LeadQuery, user?: any) {
   const skip = (query.page - 1) * query.limit;
   const isStaff = user?.role === 'STAFF';
-  const ownerId = isStaff ? toBigIntId(user.userId ?? user.id) : query.ownerId ? toBigIntId(query.ownerId) : undefined;
+  const ownerId = isStaff
+    ? toBigIntId(user.userId ?? user.id)
+    : query.ownerId
+      ? toBigIntId(query.ownerId)
+      : undefined;
   const clientId = query.clientId ? toBigIntId(query.clientId) : undefined;
   let orderBy: Record<string, Prisma.SortOrder> = { created_at: 'desc' };
   if (query.sort) {
     const isDesc = query.sort.startsWith('-');
     const raw = isDesc ? query.sort.slice(1) : query.sort;
-    orderBy = { [raw === 'expectedValue' ? 'expected_value' : 'created_at']: isDesc ? 'desc' : 'asc' };
+    orderBy = {
+      [raw === 'expectedValue' ? 'expected_value' : 'created_at']: isDesc ? 'desc' : 'asc',
+    };
   }
   const [leads, total] = await findMany({
-    skip, take: query.limit, status: query.status, ownerId, clientId, orderBy: orderBy as Prisma.LeadOrderByWithRelationInput,
+    skip,
+    take: query.limit,
+    status: query.status,
+    ownerId,
+    clientId,
+    orderBy: orderBy as Prisma.LeadOrderByWithRelationInput,
   });
   return {
     data: leads.map(formatLead),
-    meta: { total, page: query.page, limit: query.limit, totalPages: Math.ceil(total / query.limit) || 1 },
+    meta: {
+      total,
+      page: query.page,
+      limit: query.limit,
+      totalPages: Math.ceil(total / query.limit) || 1,
+    },
   };
 }
 
@@ -46,7 +66,12 @@ export async function createLead(data: CreateLeadInput, user?: any) {
   const newLead = await create({ ownerId, expectedValue: data.expectedValue });
   const formatted = formatLead(newLead);
   await AuditService.log({
-    action: 'LEAD_CREATED', entityType: 'LEAD', entityId: newLead.id, actorUserId: callerId, actorRole: user?.role, after: formatted,
+    action: 'LEAD_CREATED',
+    entityType: 'LEAD',
+    entityId: newLead.id,
+    actorUserId: callerId,
+    actorRole: user?.role,
+    after: formatted,
   });
   return formatted;
 }
@@ -61,7 +86,11 @@ export async function updateLead(id: string | bigint, data: UpdateLeadInput, use
   }
   if (existing.status === 'CONVERTED') {
     if (data.status || data.expectedValue !== undefined || data.ownerId || data.lostReason) {
-      throw new ApiError(409, 'INVALID_STATE_TRANSITION', 'Converted leads are read-only except for notes');
+      throw new ApiError(
+        409,
+        'INVALID_STATE_TRANSITION',
+        'Converted leads are read-only except for notes'
+      );
     }
   }
   if (data.status) {
@@ -74,12 +103,20 @@ export async function updateLead(id: string | bigint, data: UpdateLeadInput, use
     throw new ApiError(403, 'FORBIDDEN', 'Staff cannot reassign lead ownership');
   }
   const updated = await update(rawId, {
-    status: data.status, lostReason: data.lostReason, expectedValue: data.expectedValue,
+    status: data.status,
+    lostReason: data.lostReason,
+    expectedValue: data.expectedValue,
     ownerId: data.ownerId ? toBigIntId(data.ownerId) : undefined,
   });
   const formatted = formatLead(updated);
   await AuditService.log({
-    action: 'LEAD_UPDATED', entityType: 'LEAD', entityId: rawId, actorUserId: callerId, actorRole: user?.role, before: formatLead(existing), after: formatted,
+    action: 'LEAD_UPDATED',
+    entityType: 'LEAD',
+    entityId: rawId,
+    actorUserId: callerId,
+    actorRole: user?.role,
+    before: formatLead(existing),
+    after: formatted,
   });
   return formatted;
 }

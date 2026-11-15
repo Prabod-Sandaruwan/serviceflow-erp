@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { User as UserIcon, LogOut, ChevronDown, Menu } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthProvider';
+import { NetworkIndicator } from './NetworkIndicator';
 
 export interface TopHeaderProps {
   onToggleMobile?: () => void;
@@ -31,6 +32,7 @@ export function TopHeader({ onToggleMobile, onLogout }: TopHeaderProps) {
         >
           <Menu className="w-4 h-4" />
         </button>
+        <NetworkIndicator />
       </div>
 
       <div className="flex items-center gap-3">

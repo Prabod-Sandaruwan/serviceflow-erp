@@ -8,7 +8,11 @@ export function assertEditable(invoice: { status: string }): void {
 
 export function assertCancellable(invoice: { status: string }): void {
   if (invoice.status === 'PARTIALLY_PAID' || invoice.status === 'PAID') {
-    throw new ApiError(409, 'INVOICE_HAS_PAYMENTS', 'Cannot cancel a partially paid or paid invoice');
+    throw new ApiError(
+      409,
+      'INVOICE_HAS_PAYMENTS',
+      'Cannot cancel a partially paid or paid invoice'
+    );
   }
   if (invoice.status === 'CANCELLED') {
     throw new ApiError(409, 'ALREADY_CANCELLED', 'Invoice is already cancelled');

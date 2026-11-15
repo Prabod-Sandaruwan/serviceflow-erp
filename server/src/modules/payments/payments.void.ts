@@ -14,7 +14,11 @@ export async function voidPayment(
   ctx?: { ip?: string; requestId?: string }
 ) {
   let paymentId: bigint;
-  try { paymentId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Payment not found'); }
+  try {
+    paymentId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Payment not found');
+  }
 
   const payment = await prisma.payment.findUnique({ where: { id: paymentId } });
   if (!payment) throw new ApiError(404, 'NOT_FOUND', 'Payment not found');
@@ -27,7 +31,9 @@ export async function voidPayment(
   const voidedAt = new Date();
 
   return runInTransaction(async (tx) => {
-    const rows = await tx.$queryRaw<any[]>`SELECT id, total, status FROM invoices WHERE id = ${invoiceId} FOR UPDATE`;
+    const rows = await tx.$queryRaw<
+      any[]
+    >`SELECT id, total, status FROM invoices WHERE id = ${invoiceId} FOR UPDATE`;
     const inv = rows?.[0];
     if (!inv) throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
 
@@ -52,8 +58,17 @@ export async function voidPayment(
       action: 'PAYMENT_VOIDED',
       entityType: 'PAYMENT',
       entityId: paymentId,
-      before: { paymentId: paymentId.toString(), status: payment.status, invoiceStatus: inv.status },
-      after: { paymentId: paymentId.toString(), status: 'VOIDED', voidReason: data.reason, newInvoiceStatus: newStatus },
+      before: {
+        paymentId: paymentId.toString(),
+        status: payment.status,
+        invoiceStatus: inv.status,
+      },
+      after: {
+        paymentId: paymentId.toString(),
+        status: 'VOIDED',
+        voidReason: data.reason,
+        newInvoiceStatus: newStatus,
+      },
       ip: ctx?.ip,
       requestId: ctx?.requestId,
     });
@@ -65,4 +80,3 @@ export async function voidPayment(
     };
   });
 }
-

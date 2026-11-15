@@ -48,4 +48,6 @@ lerna-debug.log*
 
 # Generated Test Artifacts
 *.pdf
+test-results/
+playwright-report/
 

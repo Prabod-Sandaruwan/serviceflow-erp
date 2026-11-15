@@ -26,9 +26,12 @@ export function startSessionCleanup(): void {
     clearInterval(cleanupTimer);
   }
   cleanupExpiredSessions().catch(() => console.error('Session cleanup failed'));
-  cleanupTimer = setInterval(() => {
-    cleanupExpiredSessions().catch(() => console.error('Session cleanup failed'));
-  }, 15 * 60 * 1000);
+  cleanupTimer = setInterval(
+    () => {
+      cleanupExpiredSessions().catch(() => console.error('Session cleanup failed'));
+    },
+    15 * 60 * 1000
+  );
 }
 
 export function stopSessionCleanup(): void {

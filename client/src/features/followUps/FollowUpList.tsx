@@ -6,6 +6,7 @@ import { FollowUpFilterBar } from './FollowUpFilterBar';
 import { FollowUpTable } from './FollowUpTable';
 import { downloadAllFollowUpsCsv } from './exportFollowUps';
 import { Pagination } from '../../components/ui/Pagination';
+import { Spinner } from '../../components/ui/Spinner';
 import { useToast } from '../../components/ui/Toast';
 
 export default function FollowUpList() {
@@ -74,7 +75,9 @@ export default function FollowUpList() {
       />
 
       {isLoading ? (
-        <div className="p-8 text-center text-sm text-slate-500 bg-white rounded-xl border border-slate-200">Loading follow-ups...</div>
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <Spinner size="md" label="Loading follow-ups..." />
+        </div>
       ) : filtered.length === 0 ? (
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">No scheduled follow-ups found.</div>
       ) : (

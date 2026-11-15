@@ -1,13 +1,17 @@
 export function formatPayment(payment: any) {
-  const amountStr = payment.amount != null
-    ? (typeof payment.amount === 'object' && typeof payment.amount.toFixed === 'function'
+  const amountStr =
+    payment.amount != null
+      ? typeof payment.amount === 'object' && typeof payment.amount.toFixed === 'function'
         ? payment.amount.toFixed(2)
-        : Number(payment.amount).toFixed(2))
-    : '0.00';
+        : Number(payment.amount).toFixed(2)
+      : '0.00';
 
-  const payDate = payment.paymentDate instanceof Date
-    ? payment.paymentDate.toISOString().slice(0, 10)
-    : (payment.paymentDate ? String(payment.paymentDate).slice(0, 10) : null);
+  const payDate =
+    payment.paymentDate instanceof Date
+      ? payment.paymentDate.toISOString().slice(0, 10)
+      : payment.paymentDate
+        ? String(payment.paymentDate).slice(0, 10)
+        : null;
 
   const recordedByStr = (payment.recordedBy ?? payment.recorded_by)?.toString() ?? null;
   const voidReasonStr = payment.voidReason ?? payment.void_reason ?? null;

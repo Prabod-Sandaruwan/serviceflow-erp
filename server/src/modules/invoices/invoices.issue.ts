@@ -13,7 +13,11 @@ export async function issueInvoice(
   ctx?: InvoiceServiceContext
 ) {
   let invoiceId: bigint;
-  try { invoiceId = BigInt(id); } catch { throw new ApiError(404, 'NOT_FOUND', 'Invoice not found'); }
+  try {
+    invoiceId = BigInt(id);
+  } catch {
+    throw new ApiError(404, 'NOT_FOUND', 'Invoice not found');
+  }
 
   return runInTransaction(async (tx) => {
     const rows = await tx.$queryRaw<any[]>`
@@ -27,7 +31,11 @@ export async function issueInvoice(
     const milestoneId = BigInt(inv.milestone_id ?? inv.milestoneId);
     const milestone = await tx.milestone.findUnique({ where: { id: milestoneId } });
     if (!milestone || milestone.status !== 'APPROVED') {
-      throw new ApiError(409, 'MILESTONE_NOT_APPROVED', 'Milestone must be approved to issue invoice');
+      throw new ApiError(
+        409,
+        'MILESTONE_NOT_APPROVED',
+        'Milestone must be approved to issue invoice'
+      );
     }
 
     if (new Date(data.dueDate) < new Date(data.issueDate)) {

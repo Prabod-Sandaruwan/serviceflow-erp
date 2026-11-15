@@ -7,7 +7,11 @@ export const formatMilestone = (m: any) => ({
   sortOrder: m.sortOrder ?? m.sort_order ?? 0,
   status: m.status,
   billingAmount: m.billingAmount != null ? m.billingAmount.toString() : '0',
-  dueDate: m.dueDate ? (m.dueDate instanceof Date ? m.dueDate.toISOString().slice(0, 10) : String(m.dueDate).slice(0, 10)) : null,
+  dueDate: m.dueDate
+    ? m.dueDate instanceof Date
+      ? m.dueDate.toISOString().slice(0, 10)
+      : String(m.dueDate).slice(0, 10)
+    : null,
   completedAt: m.completedAt ?? m.completed_at ?? null,
   approvedAt: m.approvedAt ?? m.approved_at ?? null,
   approvedBy: m.approvedBy?.toString() ?? m.approved_by?.toString() ?? null,

@@ -13,11 +13,7 @@ export function ensureCsrfToken(req: Request): string {
   return req.session.csrfToken;
 }
 
-export function csrfMiddleware(
-  req: Request,
-  _res: Response,
-  next: NextFunction
-): void {
+export function csrfMiddleware(req: Request, _res: Response, next: NextFunction): void {
   if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
     return next();
   }
@@ -37,10 +33,7 @@ export function csrfMiddleware(
   const headerBuf = Buffer.from(headerToken);
   const sessionBuf = Buffer.from(sessionToken);
 
-  if (
-    headerBuf.length !== sessionBuf.length ||
-    !crypto.timingSafeEqual(headerBuf, sessionBuf)
-  ) {
+  if (headerBuf.length !== sessionBuf.length || !crypto.timingSafeEqual(headerBuf, sessionBuf)) {
     return next(new AppError('Invalid CSRF token', 'CSRF_INVALID', 403));
   }
 

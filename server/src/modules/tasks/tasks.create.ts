@@ -5,11 +5,7 @@ import { formatTask } from './tasks.formatter';
 
 type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | string | null };
 
-export async function createTask(
-  projectId: string,
-  data: CreateTaskInput,
-  actor?: Actor
-) {
+export async function createTask(projectId: string, data: CreateTaskInput, actor?: Actor) {
   let rawProjectId: bigint;
   try {
     rawProjectId = BigInt(projectId);
@@ -32,7 +28,8 @@ export async function createTask(
     }
     const emp = await prisma.employee.findUnique({ where: { id: rawAssigneeId } });
     if (!emp) throw new ApiError(422, 'EMPLOYEE_NOT_FOUND', 'Employee not found');
-    if (!emp.is_active) throw new ApiError(422, 'EMPLOYEE_INACTIVE', 'Cannot assign task to an inactive employee');
+    if (!emp.is_active)
+      throw new ApiError(422, 'EMPLOYEE_INACTIVE', 'Cannot assign task to an inactive employee');
   }
 
   let rawMilestoneId: bigint | null = null;

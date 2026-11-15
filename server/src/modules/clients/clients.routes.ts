@@ -24,28 +24,44 @@ registry.registerPath({
   method: 'get',
   path: '/api/v1/clients',
   summary: 'List clients with pagination and filtering',
-  responses: { 200: { description: 'Paginated client list' }, 401: { description: 'Unauthenticated' } },
+  responses: {
+    200: { description: 'Paginated client list' },
+    401: { description: 'Unauthenticated' },
+  },
 });
 
 registry.registerPath({
   method: 'post',
   path: '/api/v1/clients',
   summary: 'Create a client record',
-  responses: { 201: { description: 'Client created' }, 401: { description: 'Unauthenticated' }, 422: { description: 'Validation error' } },
+  responses: {
+    201: { description: 'Client created' },
+    401: { description: 'Unauthenticated' },
+    422: { description: 'Validation error' },
+  },
 });
 
 registry.registerPath({
   method: 'get',
   path: '/api/v1/clients/{id}',
   summary: 'Get client details by ID',
-  responses: { 200: { description: 'Client details' }, 401: { description: 'Unauthenticated' }, 404: { description: 'Not found' } },
+  responses: {
+    200: { description: 'Client details' },
+    401: { description: 'Unauthenticated' },
+    404: { description: 'Not found' },
+  },
 });
 
 registry.registerPath({
   method: 'patch',
   path: '/api/v1/clients/{id}',
   summary: 'Update client details',
-  responses: { 200: { description: 'Client updated' }, 401: { description: 'Unauthenticated' }, 403: { description: 'Forbidden' }, 404: { description: 'Not found' } },
+  responses: {
+    200: { description: 'Client updated' },
+    401: { description: 'Unauthenticated' },
+    403: { description: 'Forbidden' },
+    404: { description: 'Not found' },
+  },
 });
 
 export const clientRoutes = router;

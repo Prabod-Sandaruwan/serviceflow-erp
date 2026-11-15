@@ -7,7 +7,10 @@ import { formatMilestone } from './milestones.formatter';
 import { hasNonCancelledInvoices, findMilestoneById } from './milestones.repository';
 
 type Actor = { userId?: bigint | string; role?: string; employeeId?: bigint | string | null };
-export interface MilestoneContext { ip?: string; requestId?: string; }
+export interface MilestoneContext {
+  ip?: string;
+  requestId?: string;
+}
 
 export async function updateMilestone(
   id: string,
@@ -29,21 +32,34 @@ export async function updateMilestone(
   }
 
   if (data.status && data.status !== milestone.status) {
-    assertTransition(milestoneMachine, milestone.status as any, data.status as any, actor?.role as any);
+    assertTransition(
+      milestoneMachine,
+      milestone.status as any,
+      data.status as any,
+      actor?.role as any
+    );
   }
 
   if (data.status === 'COMPLETED') {
     const activeTasks = (milestone.tasks || []).filter((t: any) => t.status !== 'CANCELLED');
     const hasOpenTasks = activeTasks.some((t: any) => t.status !== 'DONE');
     if (hasOpenTasks) {
-      throw new ApiError(409, 'MILESTONE_HAS_OPEN_TASKS', 'Cannot complete milestone with open tasks');
+      throw new ApiError(
+        409,
+        'MILESTONE_HAS_OPEN_TASKS',
+        'Cannot complete milestone with open tasks'
+      );
     }
   }
 
   if (data.status === 'CANCELLED') {
     const hasInvoices = await hasNonCancelledInvoices(rawId);
     if (hasInvoices) {
-      throw new ApiError(409, 'MILESTONE_HAS_INVOICES', 'Cannot cancel milestone with non-cancelled invoices');
+      throw new ApiError(
+        409,
+        'MILESTONE_HAS_INVOICES',
+        'Cannot cancel milestone with non-cancelled invoices'
+      );
     }
   }
 
@@ -55,7 +71,8 @@ export async function updateMilestone(
   if (data.status !== undefined) {
     updateData.status = data.status;
     if (data.status === 'COMPLETED' && !milestone.completedAt) updateData.completedAt = new Date();
-    if (data.status === 'IN_PROGRESS' && milestone.status === 'COMPLETED') updateData.completedAt = null;
+    if (data.status === 'IN_PROGRESS' && milestone.status === 'COMPLETED')
+      updateData.completedAt = null;
   }
 
   const updated = await prisma.milestone.update({ where: { id: rawId }, data: updateData });
@@ -63,7 +80,10 @@ export async function updateMilestone(
 
   await AuditService.record(prisma, {
     actor,
-    action: data.status && data.status !== milestone.status ? 'MILESTONE_STATUS_CHANGED' : 'MILESTONE_UPDATED',
+    action:
+      data.status && data.status !== milestone.status
+        ? 'MILESTONE_STATUS_CHANGED'
+        : 'MILESTONE_UPDATED',
     entityType: 'MILESTONE',
     entityId: rawId,
     before: formatMilestone(milestone),

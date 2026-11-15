@@ -30,21 +30,33 @@ registry.registerPath({
   method: 'get',
   path: '/api/v1/reports/finance',
   summary: 'Financial summary report',
-  responses: { 200: { description: 'Finance report' }, 403: { description: 'Forbidden' }, 422: { description: 'Validation error' } },
+  responses: {
+    200: { description: 'Finance report' },
+    403: { description: 'Forbidden' },
+    422: { description: 'Validation error' },
+  },
 });
 
 registry.registerPath({
   method: 'get',
   path: '/api/v1/reports/projects',
   summary: 'Projects profitability report',
-  responses: { 200: { description: 'Projects report' }, 403: { description: 'Forbidden' }, 422: { description: 'Validation error' } },
+  responses: {
+    200: { description: 'Projects report' },
+    403: { description: 'Forbidden' },
+    422: { description: 'Validation error' },
+  },
 });
 
 registry.registerPath({
   method: 'get',
   path: '/api/v1/reports/export.csv',
   summary: 'Export report to CSV',
-  responses: { 200: { description: 'CSV export' }, 403: { description: 'Forbidden' }, 422: { description: 'Validation error' } },
+  responses: {
+    200: { description: 'CSV export' },
+    403: { description: 'Forbidden' },
+    422: { description: 'Validation error' },
+  },
 });
 
 export const reportRoutes = router;

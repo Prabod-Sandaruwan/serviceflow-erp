@@ -33,7 +33,10 @@ export function generateInvoicePdf(invoice: any): Promise<Buffer> {
       for (let i = range.start; i < range.start + range.count; i++) {
         doc.switchToPage(i);
         doc.save().opacity(0.08).fontSize(80).font('Helvetica-Bold').fillColor(color);
-        doc.rotate(-45, { origin: [297, 420] }).text(text, xPos, 390).restore();
+        doc
+          .rotate(-45, { origin: [297, 420] })
+          .text(text, xPos, 390)
+          .restore();
       }
     }
 
