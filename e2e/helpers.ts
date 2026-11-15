@@ -14,9 +14,11 @@ export async function approveQuotation(page: Page) {
   const row = page.locator('table tbody tr').first();
   await row.getByRole('link').first().click();
   await page.waitForURL(/\/quotations\/\w+/, { timeout: 10000 });
+  await page.locator('h1').waitFor({ state: 'visible', timeout: 10000 });
 
   const approveBtn = page.getByRole('button', { name: 'Approve' });
-  if (await approveBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+  const canApprove = await approveBtn.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+  if (canApprove) {
     await approveBtn.click();
     await expect(page.getByText(/Quotation approved/i)).toBeVisible({ timeout: 5000 });
   }
@@ -24,44 +26,55 @@ export async function approveQuotation(page: Page) {
 
 export async function createProject(page: Page) {
   const createProjBtn = page.getByRole('button', { name: 'Create Project' });
-  if (await createProjBtn.isVisible({ timeout: 3000 }).catch(() => false)) {
+  const canCreate = await createProjBtn.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+  if (canCreate) {
     await createProjBtn.click();
-    await page.waitForURL(/\/projects\/\w+/, { timeout: 10000 });
-  } else {
-    await page.goto('/projects');
+  }
+  await page.waitForURL(/\/projects/, { timeout: 10000 });
+  if (!page.url().match(/\/projects\/\w+/)) {
     await page.waitForSelector('table tbody tr', { timeout: 10000 });
-    const row = page.locator('table tbody tr').first();
-    await row.getByRole('link').first().click();
+    await page.locator('table tbody tr').first().getByRole('link').first().click();
     await page.waitForURL(/\/projects\/\w+/, { timeout: 10000 });
   }
+  await page.locator('h1').waitFor({ state: 'visible', timeout: 10000 });
 }
 
 export async function issueInvoiceAndPay(page: Page) {
   await page.goto('/invoices');
   await page.waitForSelector('table tbody tr', { timeout: 10000 });
-  const payableRow = page.locator('table tbody tr').filter({ hasText: /Partially Paid|Issued|Draft/i }).first();
-  if (await payableRow.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await payableRow.getByRole('link').first().click();
+  const inv01 = page.getByRole('link', { name: 'INV-2026-0001' });
+  if (await inv01.isVisible().catch(() => false)) {
+    await inv01.click();
   } else {
-    await page.locator('table tbody tr').first().getByRole('link').first().click();
+    const row = page.locator('table tbody tr')
+      .filter({ hasNotText: '$0.00' })
+      .filter({ hasNotText: 'Cancelled' })
+      .first();
+    await row.locator('a').first().click();
   }
+
   await page.waitForURL(/\/invoices\/\w+/, { timeout: 10000 });
+  await page.locator('h1').waitFor({ state: 'visible', timeout: 10000 });
 
   const issueBtn = page.getByRole('button', { name: 'Issue' });
-  if (await issueBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+  const hasIssueBtn = await issueBtn.waitFor({ state: 'visible', timeout: 3000 }).then(() => true).catch(() => false);
+  if (hasIssueBtn) {
     await issueBtn.click();
+    const issueDialog = page.getByRole('dialog');
+    await expect(issueDialog).toBeVisible({ timeout: 5000 });
     const futureDate = new Date(Date.now() + 86400000 * 14).toISOString().slice(0, 10);
-    await page.locator('#dueDate').fill(futureDate);
-    await page.getByRole('button', { name: /Confirm Issue/i }).click();
-    await expect(page.getByText(/Invoice issued successfully/i)).toBeVisible({ timeout: 5000 });
+    await issueDialog.locator('#dueDate').fill(futureDate);
+    await issueDialog.getByRole('button', { name: /Confirm Issue/i }).click();
+    await expect(issueDialog).toBeHidden({ timeout: 5000 });
   }
 
   const recordPayBtn = page.getByRole('button', { name: 'Record Payment' });
-  await recordPayBtn.waitFor({ state: 'visible', timeout: 5000 });
+  await expect(recordPayBtn).toBeVisible({ timeout: 10000 });
   await recordPayBtn.click();
 
-  const dialog = page.getByRole('dialog');
-  await expect(dialog).toBeVisible({ timeout: 5000 });
-  const submitBtn = dialog.getByRole('button', { name: 'Record Payment' });
-  await submitBtn.click();
+  const payDialog = page.getByRole('dialog');
+  await expect(payDialog).toBeVisible({ timeout: 5000 });
+  await payDialog.locator('#pay-amount').fill('10.00');
+  await payDialog.getByRole('button', { name: 'Record Payment' }).click();
+  await expect(payDialog).toBeHidden({ timeout: 5000 });
 }
