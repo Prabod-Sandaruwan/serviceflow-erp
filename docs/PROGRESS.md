@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** Phase 12 Complete (PDF-001..PDF-004 Done)  
+**Current Task:** TEST-001 (Phase 13 Started)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN), Phase 12 (PDF)
 
 ## Completed Phases
@@ -110,6 +110,19 @@
 - [x] PDF-002: Handle long descriptions and page breaks
 - [x] PDF-003: Add PDF content tests
 - [x] PDF-004: Verify PDF authorization, error handling and visual quality
+
+## Phase 13 — Integration and System Testing
+- [ ] TEST-001: Create the end-to-end API workflow test
+- [ ] TEST-002: Test role permissions across the complete workflow
+- [ ] TEST-003: Test invoice cancellation and payment voiding flows
+- [ ] TEST-004: Cross-check financial calculations against hand-calculated values
+- [ ] TEST-005: Re-run and harden the concurrency suite
+- [ ] TEST-006: Test date filtering and report exclusions at boundaries
+- [ ] TEST-007: Test session expiry and CSRF end to end
+- [ ] TEST-008: Audit frontend error and empty states
+- [ ] TEST-009: Run the full quality gate and fix regressions
+- [ ] TEST-010: Review coverage of critical business logic
+- [ ] TEST-011: Add Playwright end-to-end tests (optional)
 
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
