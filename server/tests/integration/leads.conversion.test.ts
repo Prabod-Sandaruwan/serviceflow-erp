@@ -3,6 +3,8 @@ import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient } from '../helpers/factories';
 import prisma from '../../src/config/prisma';
 
+const CONCURRENCY_COUNT = process.env.CONCURRENCY_COUNT ? parseInt(process.env.CONCURRENCY_COUNT, 10) : 5;
+
 describe('Lead Conversion API Integration Tests (CRM-009, CRM-010)', () => {
   let adminAgent: any, staffAgent: any, adminUser: any;
 
@@ -13,14 +15,17 @@ describe('Lead Conversion API Integration Tests (CRM-009, CRM-010)', () => {
     staffAgent = await loginAs(makeAgent(), 'STAFF');
   });
 
-  it('concurrency: simultaneous requests result in exactly one 2xx and one 409 with only 1 client created', async () => {
+  it('concurrency: simultaneous requests result in exactly one 2xx and others 409 with only 1 client created', async () => {
     const lead = await prisma.lead.create({ data: { ownerId: adminUser.id, status: 'QUALIFIED' } });
-    const req1 = withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({});
-    const req2 = withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({});
+    const requests = Array.from({ length: CONCURRENCY_COUNT }, () =>
+      withCsrf(adminAgent.post(`/api/v1/leads/${lead.id}/convert`), adminAgent).send({})
+    );
+    const results = await Promise.all(requests);
+    const successes = results.filter((r) => r.status === 200 || r.status === 201);
+    const conflicts = results.filter((r) => r.status === 409);
 
-    const [res1, res2] = await Promise.all([req1, req2]);
-    const statuses = [res1.status, res2.status].sort();
-    expect(statuses).toEqual([200, 409]);
+    expect(successes).toHaveLength(1);
+    expect(conflicts).toHaveLength(CONCURRENCY_COUNT - 1);
     expect(await prisma.client.count()).toBe(1);
 
     const updated = await prisma.lead.findUnique({ where: { id: lead.id } });

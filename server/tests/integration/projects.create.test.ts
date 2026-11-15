@@ -3,6 +3,8 @@ import { makeAgent, loginAs, withCsrf } from '../helpers/agent';
 import { truncateAll, createClient, createQuotation } from '../helpers/factories';
 import prisma from '../../src/config/prisma';
 
+const CONCURRENCY_COUNT = process.env.CONCURRENCY_COUNT ? parseInt(process.env.CONCURRENCY_COUNT, 10) : 5;
+
 describe('Project Creation API (PROJ-002)', () => {
   let managerAgent: any;
   let client: any;
@@ -52,21 +54,18 @@ describe('Project Creation API (PROJ-002)', () => {
     expect(expRes.body.error.code).toBe('QUOTATION_NOT_ACCEPTED');
   });
 
-  it('safely handles concurrent creation: exactly one succeeds with 201 and others return 409', async () => {
+  it('safely handles concurrent creation: invariant of exactly one project per quotation', async () => {
     const quotation = await createQuotation({ clientId: client.id, createdBy: managerAgent.user.id, status: 'ACCEPTED' });
-    const agents = await Promise.all([
-      loginAs(makeAgent(), 'ADMIN'), loginAs(makeAgent(), 'MANAGER'), loginAs(makeAgent(), 'MANAGER'),
-    ]);
-    const results = await Promise.all(
-      agents.map((ag) => withCsrf(ag.post('/api/v1/projects'), ag).send({ quotationId: quotation.id.toString() }))
+    const requests = Array.from({ length: CONCURRENCY_COUNT }, () =>
+      withCsrf(managerAgent.post('/api/v1/projects'), managerAgent).send({ quotationId: quotation.id.toString() })
     );
+    const results = await Promise.all(requests);
+    const successes = results.filter((r) => r.status === 201);
+    const conflicts = results.filter((r) => r.status === 409);
 
-    const statuses = results.map((r) => r.status);
-    expect(statuses.filter((s) => s === 201)).toHaveLength(1);
-    expect(statuses.filter((s) => s === 409)).toHaveLength(2);
-
-    const errorCodes = results.filter((r) => r.status === 409).map((r) => r.body.error?.code);
-    expect(errorCodes.every((c) => c === 'PROJECT_ALREADY_EXISTS')).toBe(true);
+    expect(successes).toHaveLength(1);
+    expect(conflicts).toHaveLength(CONCURRENCY_COUNT - 1);
+    expect(conflicts.every((r) => r.body.error?.code === 'PROJECT_ALREADY_EXISTS')).toBe(true);
     const count = await prisma.project.count({ where: { quotationId: quotation.id } });
     expect(count).toBe(1);
   });
