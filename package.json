@@ -11,6 +11,7 @@
     "lint": "npm --prefix server run lint && npm --prefix client run lint",
     "typecheck": "npm --prefix server run typecheck && npm --prefix client run typecheck",
     "test": "npm --prefix server test && npm --prefix client test",
+    "test:coverage": "npm --prefix server run test:coverage",
     "build": "npm --prefix server run build && npm --prefix client run build"
   }
 }
