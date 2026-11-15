@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** TEST-006 (Task TEST-005 Complete)  
+**Current Task:** TEST-007 (Task TEST-006 Complete)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN), Phase 12 (PDF)
 
 ## Completed Phases
@@ -118,7 +118,7 @@
 - [x] TEST-004: Cross-check financial calculations against hand-calculated values
 - [x] TEST-005: Re-run and harden the concurrency suite
   - Note: Ran the payments, projects, and conversion concurrency tests 20 times consecutively locally. 0 failures recorded. Pool size is configurable.
-- [ ] TEST-006: Test date filtering and report exclusions at boundaries
+- [x] TEST-006: Test date filtering and report exclusions at boundaries
 - [ ] TEST-007: Test session expiry and CSRF end to end
 - [ ] TEST-008: Audit frontend error and empty states
 - [ ] TEST-009: Run the full quality gate and fix regressions
