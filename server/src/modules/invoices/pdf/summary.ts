@@ -1,9 +1,13 @@
 import { numberToWords } from './words';
+import { checkPageBreak } from '../../../shared/pdf/layout';
 
 const fmt = (v: any) => '$' + Number(v || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function drawSummary(doc: PDFKit.PDFDocument, invoice: any, startY: number): number {
-  const y = Math.max(startY, 310);
+  const totalsBlockHeight = invoice.notes ? 150 : 120;
+  const breakOccurred = checkPageBreak(doc, totalsBlockHeight);
+  const isMultiPage = doc.bufferedPageRange ? doc.bufferedPageRange().count > 1 : false;
+  const y = breakOccurred ? 45 : Math.max(startY, isMultiPage ? startY : 310);
 
   // Left Column: AMOUNT IN WORDS
   doc.roundedRect(38, y, 252, 42, 5).fillAndStroke('#f8fafc', '#e2e8f0');

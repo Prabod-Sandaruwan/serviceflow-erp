@@ -58,3 +58,30 @@ export function drawFooter(doc: PDFKit.PDFDocument, documentNumber: string): voi
     doc.text(pageText, PDF_MARGIN + 250, footerY, { width: PDF_CONTENT_WIDTH - 250, align: 'right' });
   }
 }
+
+export function checkPageBreak(
+  doc: PDFKit.PDFDocument,
+  requiredHeight: number,
+  drawHeaderCallback?: (doc: PDFKit.PDFDocument) => void
+): boolean {
+  const bottomMargin = doc.page?.margins?.bottom ?? PDF_MARGIN;
+  const pageHeight = doc.page?.height ?? PDF_PAGE_HEIGHT;
+  if (doc.y + requiredHeight > pageHeight - bottomMargin) {
+    doc.addPage();
+    if (drawHeaderCallback) drawHeaderCallback(doc);
+    return true;
+  }
+  return false;
+}
+
+export function measureRowHeight(
+  doc: PDFKit.PDFDocument,
+  text: string,
+  columnWidth: number,
+  padding = 6,
+  minHeight = 18
+): number {
+  const textHeight = doc.heightOfString(text || '', { width: columnWidth });
+  return Math.max(minHeight, Math.ceil(textHeight + padding));
+}
+
