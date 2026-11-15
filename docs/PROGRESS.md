@@ -1,6 +1,6 @@
 # ServiceFlow ERP - Implementation Progress
 
-**Current Task:** TEST-003 (Task TEST-002 Complete)  
+**Current Task:** TEST-004 (Task TEST-003 Complete)  
 **Completed Phases:** Phase 0 (PREP), Phase 1 (FOUND), Phase 2 (DB), Phase 3 (INFRA), Phase 4 (AUTH), Phase 5 (UI), Phase 6 (CRM), Phase 7 (QUOT), Phase 8 (PROJ), Phase 9 (INV), Phase 10 (PAY), Phase 11 (FIN), Phase 12 (PDF)
 
 ## Completed Phases
@@ -114,7 +114,7 @@
 ## Phase 13 — Integration and System Testing
 - [x] TEST-001: Create the end-to-end API workflow test
 - [x] TEST-002: Test role permissions across the complete workflow
-- [ ] TEST-003: Test invoice cancellation and payment voiding flows
+- [x] TEST-003: Test invoice cancellation and payment voiding flows
 - [ ] TEST-004: Cross-check financial calculations against hand-calculated values
 - [ ] TEST-005: Re-run and harden the concurrency suite
 - [ ] TEST-006: Test date filtering and report exclusions at boundaries
