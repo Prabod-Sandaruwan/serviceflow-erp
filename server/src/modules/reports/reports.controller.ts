@@ -61,8 +61,9 @@ export async function exportCsvReportHandler(req: Request, res: Response, next: 
       csv = toCsv(rows, cols);
     }
 
+    const filename = (req.query.filename as string) || 'export.csv';
     res.setHeader('Content-Type', 'text/csv');
-    res.setHeader('Content-Disposition', 'attachment; filename="export.csv"');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.status(200).send(csv);
   } catch (err) {
     next(err);

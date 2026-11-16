@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api';
+import { api, API_BASE_URL } from '../../lib/api';
 import type { Quotation } from './types';
 
 export const downloadQuotationPdf = async (id: string, filename = 'quotation.pdf') => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
-  const res = await fetch(`${BASE_URL}/quotations/${id}/pdf`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE_URL}/quotations/${id}/pdf`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to download quotation PDF');
   const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);

@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { api } from '../../lib/api';
+import { api, API_BASE_URL } from '../../lib/api';
 import type {
   DashboardSummaryResponse,
   FinanceReportResponse,
@@ -42,13 +42,12 @@ export function useProjectReport(from?: string, to?: string) {
 export function useDownloadCsv(type: 'finance' | 'projects') {
   return useMutation({
     mutationFn: async ({ from, to }: { from?: string; to?: string } = {}) => {
-      const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
       const clean: Record<string, string> = { type };
       if (from && from.trim() !== '') clean.from = from.trim();
       if (to && to.trim() !== '') clean.to = to.trim();
       const q = new URLSearchParams(clean).toString();
 
-      const res = await fetch(`${BASE_URL}/reports/export.csv?${q}`, { credentials: 'include' });
+      const res = await fetch(`${API_BASE_URL}/reports/export.csv?${q}`, { credentials: 'include' });
       if (!res.ok) throw new Error('Failed to download CSV');
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);

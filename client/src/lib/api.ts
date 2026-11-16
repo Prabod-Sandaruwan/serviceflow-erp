@@ -1,6 +1,6 @@
 import { ApiError } from './ApiError';
 
-const BASE_URL =
+export const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
 
 let csrfToken: string | null = null;
@@ -15,7 +15,7 @@ export const clearCsrfToken = () => {
 };
 
 async function fetchCsrf(): Promise<void> {
-  const res = await fetch(`${BASE_URL}/auth/csrf`, { credentials: 'include' }).catch(() => null);
+  const res = await fetch(`${API_BASE_URL}/auth/csrf`, { credentials: 'include' }).catch(() => null);
   const body = await res?.json().catch(() => null);
   csrfToken = body?.data?.csrfToken || body?.csrfToken || null;
 }
@@ -39,7 +39,7 @@ async function request<T>(
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   let res: Response;
   try {
-    res = await fetch(`${BASE_URL}${path}`, {
+    res = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       headers,
       credentials: 'include',

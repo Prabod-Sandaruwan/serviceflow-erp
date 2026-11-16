@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../lib/api';
+import { api, API_BASE_URL } from '../../lib/api';
 import type { Invoice, InvoicesResponse } from './types';
 
 export interface UseInvoicesParams {
@@ -36,8 +36,7 @@ export function useInvoice(id?: string) {
 }
 
 export const downloadInvoicePdf = async (id: string, filename = 'invoice.pdf') => {
-  const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api/v1';
-  const res = await fetch(`${BASE_URL}/invoices/${id}/pdf`, { credentials: 'include' });
+  const res = await fetch(`${API_BASE_URL}/invoices/${id}/pdf`, { credentials: 'include' });
   if (!res.ok) throw new Error('Failed to download invoice PDF');
   const blob = await res.blob();
   const url = window.URL.createObjectURL(blob);

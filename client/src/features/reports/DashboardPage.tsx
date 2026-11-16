@@ -21,6 +21,7 @@ export function DashboardPage() {
   const { mutate: download } = useDownloadCsv('finance');
 
   const isStaff = user?.role === 'STAFF';
+  const periodBadge = `Q${Math.ceil((new Date(dates.from).getMonth() + 1) / 3)} Financials`;
   const hasData = isStaff
     ? Boolean(res?.data && (res.data.tasks || res.data.leadsCount !== undefined))
     : Boolean(res?.data && (res.data.financials || res.data.counts));
@@ -37,7 +38,7 @@ export function DashboardPage() {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black tracking-tight text-slate-900">{isStaff ? 'Staff Dashboard' : 'Executive Dashboard'}</h1>
-            {!isStaff && <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">Q4 Financials</span>}
+            {!isStaff && <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-bold text-indigo-700">{periodBadge}</span>}
           </div>
           <p className="mt-1 text-xs text-slate-500">{isStaff ? 'Track your active tasks, leads, and quotations.' : 'Consolidated company cash collection, burn rate, and financial health.'}</p>
         </div>
