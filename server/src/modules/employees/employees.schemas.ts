@@ -7,6 +7,7 @@ export const createEmployeeSchema = z.object({
       fullName: z.string().min(2),
       email: z.string().email().trim().toLowerCase(),
       jobTitle: z.string().min(1),
+      department: z.string().optional(),
       phone: z.string().optional(),
       role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
     })
@@ -21,6 +22,7 @@ export const updateEmployeeSchema = z.object({
       fullName: z.string().min(2).optional(),
       email: z.string().email().trim().toLowerCase().optional(),
       jobTitle: z.string().min(1).optional(),
+      department: z.string().optional(),
       phone: z.string().optional(),
       role: z.enum(['ADMIN', 'MANAGER', 'STAFF']).optional(),
       isActive: z.boolean().optional(),

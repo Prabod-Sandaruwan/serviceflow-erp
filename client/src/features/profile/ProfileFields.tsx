@@ -10,7 +10,7 @@ export function ProfileFields({ user, fullName, onEditName }: ProfileFieldsProps
   const role = user?.role || 'STAFF';
   const phone = user?.employee?.phone || (user?.employee as any)?.phone || 'Not provided';
   const jobTitle = user?.employee?.jobTitle || (user?.employee as any)?.job_title || user?.employee?.position || 'Staff Member';
-  const dept = user?.employee?.department || 'Operations';
+  const dept = user?.employee?.department || (user?.employee as any)?.department;
   const roleDesc = role === 'ADMIN'
     ? 'Full administrative access across all organizational units, financial records, and user management.'
     : role === 'MANAGER'
@@ -43,7 +43,7 @@ export function ProfileFields({ user, fullName, onEditName }: ProfileFieldsProps
             <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Phone &amp; Designation</label>
             <button onClick={onEditName} className="text-xs text-blue-600 hover:text-blue-700 font-medium opacity-0 group-hover:opacity-100 transition-opacity">Edit</button>
           </div>
-          <div className="mt-1 text-sm font-semibold text-slate-900">{phone} • <span className="text-slate-600 font-normal">{jobTitle} ({dept})</span></div>
+          <div className="mt-1 text-sm font-semibold text-slate-900">{phone} • <span className="text-slate-600 font-normal">{jobTitle}{dept ? ` (${dept})` : ''}</span></div>
         </div>
       </div>
 
