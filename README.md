@@ -86,8 +86,7 @@ See `docs/images/` for visual documentation.
 
 ---
 
-## Scope & Known Limitations
+## Scope, Known Limitations & Future Work
 
-- Single organization setup with Sri Lankan Rupee (LKR) currency denomination.
-- Manual sales tax configuration (VAT, SSCL) without automatic external tax-filing integration.
-- Localized deployment profile designed for dedicated on-premise or cloud virtual machines.
+- **Known Limitations**: Single-company only; LKR currency only; manual tax rates (VAT/SSCL); no hourly labor costing; local/VM deployment; session cleanup is best-effort.
+- **Future Extensions (SRS §13 Exclusions)**: Multi-company tenancy; automated payment gateways; multi-currency; mobile companion app; automated tax authority filing.
