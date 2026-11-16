@@ -31,6 +31,15 @@ export async function voidPayment(
   const voidedAt = new Date();
 
   return runInTransaction(async (tx) => {
+    const pRows = await tx.$queryRaw<
+      any[]
+    >`SELECT id, status FROM payments WHERE id = ${paymentId} FOR UPDATE`;
+    const curPay = pRows?.[0];
+    if (!curPay) throw new ApiError(404, 'NOT_FOUND', 'Payment not found');
+    if (curPay.status === 'VOIDED') {
+      throw new ApiError(409, 'ALREADY_VOIDED', 'Payment is already voided');
+    }
+
     const rows = await tx.$queryRaw<
       any[]
     >`SELECT id, total, status FROM invoices WHERE id = ${invoiceId} FOR UPDATE`;
