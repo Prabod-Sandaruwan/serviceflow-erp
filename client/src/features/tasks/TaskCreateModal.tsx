@@ -13,7 +13,7 @@ interface TaskCreateModalProps {
 
 export function TaskCreateModal({ isOpen, onClose }: TaskCreateModalProps) {
   const { data: projectsData } = useProjects({ pageSize: 50 });
-  const { data: empsData } = useEmployees({ pageSize: 100 });
+  const { data: empsData } = useEmployees(1, '', '', 'true');
   const [projectId, setProjectId] = useState('');
   const { data: msData } = useMilestones(projectId);
   const [title, setTitle] = useState('');

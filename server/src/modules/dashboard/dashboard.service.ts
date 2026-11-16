@@ -42,6 +42,8 @@ export async function getDashboardSummary(query: any, actor: any) {
     todo, inProgress, done, overdue,
     overdueInvoices, revenue, paymentsReceived,
     expenses, outstanding, trajectories, featuredProject,
+    trajectories,
+    featuredProject,
   ] = await Promise.all([
     prisma.client.count({ where: { is_active: true } }),
     prisma.project.count({ where: { status: 'ACTIVE' } }),

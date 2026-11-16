@@ -2,8 +2,22 @@ import prisma from '../../config/prisma';
 
 export async function getMonthlyTrajectories() {
   const now = new Date();
-  const months: Array<{ m: string; inv: number; col: number; exp: number; isCurrent: boolean }> = [];
-  const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const months: Array<{ m: string; inv: number; col: number; exp: number; isCurrent: boolean }> =
+    [];
+  const monthNames = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
 
   for (let i = 4; i >= 0; i--) {
     const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -13,7 +27,10 @@ export async function getMonthlyTrajectories() {
     const [invRows, payRows, expRows] = await Promise.all([
       prisma.invoice.aggregate({
         _sum: { total: true },
-        where: { issueDate: { gte: start, lte: end }, status: { in: ['ISSUED', 'PARTIALLY_PAID', 'PAID'] } },
+        where: {
+          issueDate: { gte: start, lte: end },
+          status: { in: ['ISSUED', 'PARTIALLY_PAID', 'PAID'] },
+        },
       }),
       prisma.payment.aggregate({
         _sum: { amount: true },
@@ -60,7 +77,7 @@ export async function getFeaturedProject() {
     id: p.id.toString(),
     projectCode: p.projectCode,
     name: p.name,
-    clientName: p.client?.displayName || 'Client',
+    clientName: p.client?.display_name || 'Client',
     totalMilestones: validMs.length,
     completedMilestones: compMs.length,
     progressPercent: validMs.length ? Math.round((compMs.length / validMs.length) * 100) : 0,
