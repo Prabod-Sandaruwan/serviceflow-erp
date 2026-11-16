@@ -41,7 +41,7 @@ export async function getDashboardSummary(query: any, actor: any) {
     activeClients, activeProjects, milestones,
     todo, inProgress, done, overdue,
     overdueInvoices, revenue, paymentsReceived,
-    expenses, outstanding, trajectories, featuredProject,
+    expenses, outstanding,
     trajectories,
     featuredProject,
   ] = await Promise.all([
