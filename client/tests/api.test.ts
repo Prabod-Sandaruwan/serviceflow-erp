@@ -81,4 +81,12 @@ describe('api client', () => {
       expect(apiErr.requestId).toBe('req-abc-123');
     }
   });
+
+  it('Network failure throws ApiError with status 0 and NETWORK_ERROR', async () => {
+    mockFetch.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    await expect(api.get('/network-fail')).rejects.toMatchObject({
+      status: 0,
+      code: 'NETWORK_ERROR',
+    });
+  });
 });

@@ -15,8 +15,8 @@ export const clearCsrfToken = () => {
 };
 
 async function fetchCsrf(): Promise<void> {
-  const res = await fetch(`${BASE_URL}/auth/csrf`, { credentials: 'include' });
-  const body = await res.json().catch(() => null);
+  const res = await fetch(`${BASE_URL}/auth/csrf`, { credentials: 'include' }).catch(() => null);
+  const body = await res?.json().catch(() => null);
   csrfToken = body?.data?.csrfToken || body?.csrfToken || null;
 }
 
@@ -28,24 +28,26 @@ async function request<T>(
   const method = (options.method || 'GET').toUpperCase();
   const isMutation = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
 
-  if (isMutation && !csrfToken) {
-    await fetchCsrf();
-  }
+  if (isMutation && !csrfToken) await fetchCsrf();
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...((options.headers as Record<string, string>) || {}),
   };
-  if (isMutation && csrfToken) {
-    headers['X-CSRF-Token'] = csrfToken;
-  }
+  if (isMutation && csrfToken) headers['X-CSRF-Token'] = csrfToken;
 
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers,
-    credentials: 'include',
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers,
+      credentials: 'include',
+    });
+  } catch (err: any) {
+    if (err instanceof ApiError) throw err;
+    throw new ApiError(0, 'NETWORK_ERROR', err?.message || 'Network error: could not connect to server');
+  }
 
   const body = res.status === 204 ? null : await res.json().catch(() => null);
 
