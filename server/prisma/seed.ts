@@ -9,6 +9,7 @@ import { seedQuotations } from './seed.quotations';
 import { seedProjects } from './seed.projects';
 import { seedInvoices } from './seed.invoices';
 import { seedExpenses } from './seed.expenses';
+import { seedAuditLogs } from './seed.audit';
 
 if (process.env.NODE_ENV === 'production') {
   console.error('Database seeding is not permitted in production.');
@@ -87,6 +88,7 @@ async function main() {
   await seedProjects(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedInvoices(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedExpenses(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
+  await seedAuditLogs(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   console.log('Database seeded with demo accounts (password: 12345): admin, manager1, manager2, staff1, staff2@serviceflow.lk');
 }
 
