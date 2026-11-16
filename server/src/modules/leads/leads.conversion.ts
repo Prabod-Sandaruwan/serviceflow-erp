@@ -59,7 +59,7 @@ export async function convertLead(
     }
 
     if (callerId) {
-      await AuditService.log({
+      await AuditService.record(tx as any, {
         action: 'LEAD_CONVERTED',
         entityType: 'LEAD',
         entityId: lead.id,
