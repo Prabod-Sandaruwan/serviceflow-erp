@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import type { AdminCounts } from './types';
 
@@ -15,9 +16,9 @@ export function ProjectDeliveryCard({ c }: { c?: AdminCounts | null }) {
             <h3 className="text-base font-bold text-slate-900">Project Velocity &amp; Resource Delivery</h3>
             <p className="mt-1 text-xs text-slate-500">Sprint throughput, milestone pace, and task delivery health</p>
           </div>
-          <a href="/reports/projects" className="flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+          <Link to="/reports/projects" className="flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
             View Projects <ArrowUpRight className="h-3 w-3" />
-          </a>
+          </Link>
         </div>
 
         {/* Featured Project Card */}

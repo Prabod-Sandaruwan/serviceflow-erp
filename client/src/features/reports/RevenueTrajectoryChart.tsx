@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import type { DashboardFinancials } from './types';
 
@@ -66,9 +67,9 @@ export function RevenueTrajectoryChart({ f: _ }: { f?: DashboardFinancials | nul
           <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
           <span>High collection turnaround in November: prior milestone billings converted to liquid cash.</span>
         </div>
-        <a href="/reports/finance" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors shrink-0">
+        <Link to="/reports/finance" className="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition-colors shrink-0">
           View Full Financial Ledger &rarr;
-        </a>
+        </Link>
       </div>
     </div>
   );

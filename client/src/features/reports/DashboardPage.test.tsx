@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthContext } from '../auth/AuthProvider';
 import { DashboardPage } from './DashboardPage';
@@ -40,11 +41,13 @@ describe('DashboardPage Component (FIN-012)', () => {
     } as any);
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={createAuth('MANAGER')}>
-          <DashboardPage />
-        </AuthContext.Provider>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider value={createAuth('MANAGER')}>
+            <DashboardPage />
+          </AuthContext.Provider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     expect(screen.getByText('Estimated profit')).toBeInTheDocument();
@@ -70,11 +73,13 @@ describe('DashboardPage Component (FIN-012)', () => {
     } as any);
 
     render(
-      <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={createAuth('STAFF')}>
-          <DashboardPage />
-        </AuthContext.Provider>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider value={createAuth('STAFF')}>
+            <DashboardPage />
+          </AuthContext.Provider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
     expect(screen.getByText('Tasks')).toBeInTheDocument();

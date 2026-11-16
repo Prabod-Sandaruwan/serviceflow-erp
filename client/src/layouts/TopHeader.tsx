@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { User as UserIcon, LogOut, ChevronDown, Menu } from 'lucide-react';
+import { User as UserIcon, LogOut, Menu } from 'lucide-react';
 import { useAuth } from '../features/auth/AuthProvider';
 import { NetworkIndicator } from './NetworkIndicator';
 
@@ -19,7 +19,7 @@ export function TopHeader({ onToggleMobile, onLogout }: TopHeaderProps) {
       ? 'bg-blue-50 text-blue-700 border-blue-200'
       : 'bg-slate-100 text-slate-700 border-slate-200';
 
-  const subtitle = role === 'ADMIN' ? 'Head of Operations' : role === 'MANAGER' ? 'Project Delivery' : 'Engineering & Support';
+  const subtitle = user?.employee?.jobTitle || (role === 'ADMIN' ? 'Administrator' : role === 'MANAGER' ? 'Project Manager' : 'Staff Member');
 
   return (
     <header className="h-16 flex-shrink-0 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between z-20 shadow-xs">
@@ -36,7 +36,11 @@ export function TopHeader({ onToggleMobile, onLogout }: TopHeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-3 pl-1.5 pr-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 transition group cursor-pointer">
+        <NavLink
+          to="/profile"
+          title="View and edit your profile"
+          className="flex items-center gap-3 pl-1.5 pr-2.5 py-1 rounded-xl bg-slate-50 border border-slate-200 hover:border-slate-300 hover:bg-slate-100 transition group cursor-pointer"
+        >
           <div className="relative">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
               {initial}
@@ -55,9 +59,7 @@ export function TopHeader({ onToggleMobile, onLogout }: TopHeaderProps) {
             </div>
             <span className="text-[10px] text-slate-400">{subtitle}</span>
           </div>
-
-          <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-700 transition-colors" />
-        </div>
+        </NavLink>
 
         <NavLink
           to="/profile"
