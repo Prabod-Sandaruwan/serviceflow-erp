@@ -3,18 +3,34 @@ import { z } from 'zod';
 
 dotenv.config();
 
-const envSchema = z.object({
-  PORT: z.coerce.number().default(3000),
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  FRONTEND_URL: z.string().url().default('http://localhost:5173'),
-  DATABASE_URL: z.string().min(1).optional(),
-  SESSION_SECRET: z.string().min(1).default('development_secret_key_change_in_production'),
-  COMPANY_NAME: z.string().optional().default(''),
-  COMPANY_ADDRESS: z.string().optional().default(''),
-  COMPANY_PHONE: z.string().optional().default(''),
-  COMPANY_EMAIL: z.string().optional().default(''),
-  COMPANY_WEBSITE: z.string().optional().default(''),
-});
+const envSchema = z
+  .object({
+    PORT: z.coerce.number().default(3000),
+    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+    FRONTEND_URL: z.string().url().default('http://localhost:5173'),
+    DATABASE_URL: z.string().min(1).optional(),
+    SESSION_SECRET: z.string().min(1).default('development_secret_key_change_in_production'),
+    COMPANY_NAME: z.string().optional().default(''),
+    COMPANY_ADDRESS: z.string().optional().default(''),
+    COMPANY_PHONE: z.string().optional().default(''),
+    COMPANY_EMAIL: z.string().optional().default(''),
+    COMPANY_WEBSITE: z.string().optional().default(''),
+  })
+  .refine(
+    (data) => {
+      if (data.NODE_ENV === 'production') {
+        return (
+          data.SESSION_SECRET.length >= 32 &&
+          data.SESSION_SECRET !== 'development_secret_key_change_in_production'
+        );
+      }
+      return true;
+    },
+    {
+      message: 'SESSION_SECRET must be at least 32 chars and not default in production',
+      path: ['SESSION_SECRET'],
+    }
+  );
 
 const parseEnv = () => {
   const parsed = envSchema.safeParse(process.env);

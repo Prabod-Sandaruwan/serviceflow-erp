@@ -1,6 +1,7 @@
 import session from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import { pool } from '../config/mysqlPool';
+import env from '../config/env';
 
 declare module 'express-session' {
   interface SessionData {
@@ -30,7 +31,7 @@ export const sessionStore = new MySQLStore(
 
 export const sessionMiddleware = session({
   name: 'sf.sid',
-  secret: process.env.SESSION_SECRET || 'fallback-secret',
+  secret: env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   rolling: true,
@@ -38,7 +39,7 @@ export const sessionMiddleware = session({
   cookie: {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.COOKIE_SECURE === 'true',
+    secure: env.NODE_ENV === 'production' || process.env.COOKIE_SECURE === 'true',
     maxAge: 8 * 3600000,
   },
 });

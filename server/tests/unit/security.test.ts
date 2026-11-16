@@ -59,4 +59,13 @@ describe('INFRA-009: Security Headers & CORS Middleware', () => {
     expect(res.headers['access-control-allow-origin']).toBeUndefined();
     expect(res.headers['access-control-allow-methods']).toBeUndefined();
   });
+
+  it('rejects CSRF with 403 on subdomain-spoofed Origin', async () => {
+    const res = await request(app)
+      .post('/api/v1/auth/login')
+      .set('Origin', `${CLIENT_ORIGIN}.attacker.com`)
+      .send({});
+    expect(res.status).toBe(403);
+    expect(res.body.error.code).toBe('CSRF_INVALID');
+  });
 });

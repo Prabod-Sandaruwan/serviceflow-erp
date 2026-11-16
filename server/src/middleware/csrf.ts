@@ -13,13 +13,24 @@ export function ensureCsrfToken(req: Request): string {
   return req.session.csrfToken;
 }
 
+function isAllowedOrigin(raw: string | undefined): boolean {
+  if (!raw || typeof raw !== 'string') return false;
+  try {
+    const parsed = new URL(raw);
+    const expected = new URL(CLIENT_ORIGIN);
+    return parsed.origin === expected.origin;
+  } catch {
+    return false;
+  }
+}
+
 export function csrfMiddleware(req: Request, _res: Response, next: NextFunction): void {
   if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
     return next();
   }
 
-  const origin = req.headers.origin || req.headers.referer;
-  if (!origin || typeof origin !== 'string' || !origin.startsWith(CLIENT_ORIGIN)) {
+  const rawOrigin = req.headers.origin || req.headers.referer;
+  if (!isAllowedOrigin(rawOrigin)) {
     return next(new AppError('Invalid Origin', 'CSRF_INVALID', 403));
   }
 

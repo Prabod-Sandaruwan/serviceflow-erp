@@ -70,5 +70,16 @@ describe('Clients Module (CRM-002)', () => {
     expect(typeRes.body.data.length).toBe(1);
     expect(typeRes.body.data[0].displayName).toBe('Alpha User');
   });
+
+  it('filters clients with type=BUSINESS mapping to COMPANY without error', async () => {
+    const agent = makeAgent();
+    await loginAs(agent, 'MANAGER');
+
+    await createClient({ displayName: 'Mega Corp', clientType: 'COMPANY' });
+    const res = await agent.get('/api/v1/clients?type=BUSINESS');
+    expect(res.status).toBe(200);
+    expect(res.body.data.length).toBe(1);
+    expect(res.body.data[0].displayName).toBe('Mega Corp');
+  });
 });
 
