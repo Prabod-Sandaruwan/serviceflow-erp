@@ -4,6 +4,7 @@ import {
   OpenApiGeneratorV3,
 } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
+import { registeredRoutes } from '../shared/routeRegistry';
 
 extendZodWithOpenApi(z);
 
@@ -47,16 +48,36 @@ registry.registerPath({
     },
     503: {
       description: 'Service unavailable / Database disconnected',
-      content: {
-        'application/json': {
-          schema: ErrorResponseSchema,
-        },
-      },
+      content: { 'application/json': { schema: ErrorResponseSchema } },
     },
   },
 });
 
 export const getOpenApiSpec = () => {
+  const existing = new Set(
+    registry.definitions
+      .filter((d: any) => d.type === 'route')
+      .map((d: any) => `${d.route.method.toUpperCase()} ${d.route.path}`)
+  );
+
+  for (const r of registeredRoutes) {
+    const openApiPath = r.path.replace(/:([a-zA-Z0-9_]+)/g, '{$1}');
+    const key = `${r.method.toUpperCase()} ${openApiPath}`;
+    if (!existing.has(key)) {
+      existing.add(key);
+      registry.registerPath({
+        method: r.method.toLowerCase() as any,
+        path: openApiPath,
+        summary: `${r.method.toUpperCase()} ${openApiPath} [${Array.isArray(r.roles) ? r.roles.join(', ') : r.roles}]`,
+        security: r.roles === 'PUBLIC' ? [] : [{ cookieAuth: [] }],
+        responses: {
+          200: { description: 'Successful response' },
+          default: { description: 'Error response', content: { 'application/json': { schema: ErrorResponseSchema } } },
+        },
+      });
+    }
+  }
+
   const generator = new OpenApiGeneratorV3(registry.definitions);
   return generator.generateDocument({
     openapi: '3.0.0',
