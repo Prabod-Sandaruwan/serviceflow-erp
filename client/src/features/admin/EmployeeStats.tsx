@@ -3,7 +3,7 @@ import { Users, UserCheck, Shield, Briefcase } from 'lucide-react';
 export function EmployeeStats({ employees = [], total }: { employees?: any[]; total?: number }) {
   const totalCount = total ?? employees.length;
   const activeCount = employees.filter((e) => e.isActive !== false).length;
-  const activePct = totalCount > 0 ? Math.round((activeCount / totalCount) * 100) : 100;
+  const activePct = employees.length > 0 ? Math.round((activeCount / employees.length) * 100) : 100;
   const managerCount = employees.filter((e) =>
     e.role === 'MANAGER' || e.role === 'ADMIN' || (e.jobTitle || '').toLowerCase().includes('manager'),
   ).length;

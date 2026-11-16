@@ -1,6 +1,7 @@
 import { Users, CheckCircle2, ShieldCheck, UserCheck } from 'lucide-react';
 
-export function UserStats({ users = [] }: { users?: any[] }) {
+export function UserStats({ users = [], total }: { users?: any[]; total?: number }) {
+  const totalCount = total ?? users.length;
   const activeCount = users.filter((u) => u.isActive !== false).length;
   const adminCount = users.filter((u) => u.role === 'ADMIN').length;
   const managerCount = users.filter((u) => u.role === 'MANAGER').length;
@@ -11,7 +12,7 @@ export function UserStats({ users = [] }: { users?: any[] }) {
       <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-2xs flex items-center justify-between">
         <div>
           <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">TOTAL ACCOUNTS</p>
-          <div className="text-2xl font-black text-slate-900 tracking-tight mt-1">{users.length}</div>
+          <div className="text-2xl font-black text-slate-900 tracking-tight mt-1">{totalCount}</div>
           <span className="text-[11px] text-slate-500 mt-1 inline-block">Registered user profiles</span>
         </div>
         <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
@@ -58,4 +59,3 @@ export function UserStats({ users = [] }: { users?: any[] }) {
 }
 
 export default UserStats;
-

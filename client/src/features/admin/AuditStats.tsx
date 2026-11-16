@@ -29,7 +29,7 @@ export function AuditStats({ logs = [], total }: { logs?: any[]; total?: number 
         <div>
           <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">SECURITY &amp; ACCESS</p>
           <div className="text-2xl font-black text-indigo-600 tracking-tight mt-1">{authCount}</div>
-          <span className="text-[11px] text-slate-500 mt-1 inline-block">Auth, sessions &amp; keys</span>
+          <span className="text-[11px] text-slate-500 mt-1 inline-block">Auth, sessions &amp; keys (view)</span>
         </div>
         <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
           <Lock className="w-5 h-5" />
@@ -40,7 +40,7 @@ export function AuditStats({ logs = [], total }: { logs?: any[]; total?: number 
         <div>
           <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">FINANCIAL ACTIONS</p>
           <div className="text-2xl font-black text-emerald-600 tracking-tight mt-1">{financialCount}</div>
-          <span className="text-[11px] text-slate-500 mt-1 inline-block">Invoices, payments &amp; costs</span>
+          <span className="text-[11px] text-slate-500 mt-1 inline-block">Invoices, payments &amp; costs (view)</span>
         </div>
         <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
           <ShieldCheck className="w-5 h-5" />
@@ -51,7 +51,7 @@ export function AuditStats({ logs = [], total }: { logs?: any[]; total?: number 
         <div>
           <p className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">ENTITY MUTATIONS</p>
           <div className="text-2xl font-black text-amber-600 tracking-tight mt-1">{entityCount}</div>
-          <span className="text-[11px] text-slate-500 mt-1 inline-block">Projects, tasks &amp; CRM</span>
+          <span className="text-[11px] text-slate-500 mt-1 inline-block">Projects, tasks &amp; CRM (view)</span>
         </div>
         <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
           <Database className="w-5 h-5" />

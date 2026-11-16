@@ -77,7 +77,7 @@ export default function UserList() {
           </button>
         </div>
       </div>
-      <UserStats users={data} />
+      <UserStats users={data} total={meta?.total} />
       <div className="bg-white rounded-xl border border-slate-200/80 shadow-2xs p-5">
         <div className="max-w-xs mb-4">
           <Input id="user-search" placeholder="Search users..." value={search} onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
