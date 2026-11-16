@@ -87,7 +87,7 @@ async function main() {
   await seedProjects(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedInvoices(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
   await seedExpenses(prisma, { admin, manager1, manager2, staff1, staff2 }, colomboToday);
-  console.log('Database seeded with users, clients, leads, quotations, projects, invoices, and expenses.');
+  console.log('Database seeded with demo accounts (password: 12345): admin, manager1, manager2, staff1, staff2@serviceflow.lk');
 }
 
 main()

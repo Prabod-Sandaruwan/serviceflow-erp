@@ -50,4 +50,6 @@ lerna-debug.log*
 *.pdf
 test-results/
 playwright-report/
+coverage/
+**/coverage/
 

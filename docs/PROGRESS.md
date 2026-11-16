@@ -171,3 +171,25 @@ All five quality gate commands have been verified and exit with code 0:
 ### Acceptance Criteria
 - AS-09 and AS-10 verified. Note: Overpayment blocks, exact balance handling, and idempotency are fully automated via `payments.workflow.test.ts`, `payments.validation.test.ts`, and `payments-concurrency.test.ts`.
 - AS-11 (Expense Profit Impact), AS-12 (Invoice Cancel Revenue Impact), and AS-14 (CSV export totals) verified manually. Automated via integration tests in FIN-010.
+
+## Phase 14: Final Verification and Project Completion
+- [x] REL-001: Verify migrations on a clean database
+- [x] REL-002: Verify the seed and demo accounts
+- [x] REL-003: Review .env.example files
+- [x] REL-004: Scan the repository for secrets
+- [x] REL-005: Test a fresh clone on Windows
+- [x] REL-006: Write the final README for Windows
+- [x] REL-007: Verify the OpenAPI documentation
+- [x] REL-008: Finalize and verify GitHub Actions
+- [x] REL-009: Review security and error handling
+- [x] REL-010: Review the repository structure
+- [x] REL-011: Document known limitations and future extensions
+- [x] REL-012: Capture portfolio screenshots
+- [x] REL-013: Run the acceptance walkthrough AS-01 to AS-16
+- [x] REL-014: Complete the final checklist and tag the release
+
+### Release Sign-Off (v1.0.0)
+- All 193 tasks across Phase 0 through Phase 14 are complete and verified.
+- Full quality gate (format, lint, typecheck, test, build) verified clean.
+- All 16 SRS acceptance scenarios (AS-01 to AS-16) documented and passing in `docs/ACCEPTANCE.md`.
+- Annotated release tag `v1.0.0` ready for production deployment.
