@@ -72,7 +72,10 @@ export const getOpenApiSpec = () => {
         security: r.roles === 'PUBLIC' ? [] : [{ cookieAuth: [] }],
         responses: {
           200: { description: 'Successful response' },
-          default: { description: 'Error response', content: { 'application/json': { schema: ErrorResponseSchema } } },
+          default: {
+            description: 'Error response',
+            content: { 'application/json': { schema: ErrorResponseSchema } },
+          },
         },
       });
     }
