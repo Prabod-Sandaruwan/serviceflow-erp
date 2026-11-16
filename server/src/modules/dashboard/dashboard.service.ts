@@ -38,10 +38,18 @@ export async function getDashboardSummary(query: any, actor: any) {
 
   const now = new Date();
   const [
-    activeClients, activeProjects, milestones,
-    todo, inProgress, done, overdue,
-    overdueInvoices, revenue, paymentsReceived,
-    expenses, outstanding,
+    activeClients,
+    activeProjects,
+    milestones,
+    todo,
+    inProgress,
+    done,
+    overdue,
+    overdueInvoices,
+    revenue,
+    paymentsReceived,
+    expenses,
+    outstanding,
     trajectories,
     featuredProject,
   ] = await Promise.all([
@@ -51,7 +59,9 @@ export async function getDashboardSummary(query: any, actor: any) {
     prisma.task.count({ where: { status: 'TODO' } }),
     prisma.task.count({ where: { status: 'IN_PROGRESS' } }),
     prisma.task.count({ where: { status: 'DONE' } }),
-    prisma.task.count({ where: { status: { notIn: ['DONE', 'CANCELLED'] }, dueDate: { lt: now } } }),
+    prisma.task.count({
+      where: { status: { notIn: ['DONE', 'CANCELLED'] }, dueDate: { lt: now } },
+    }),
     getOverdueInvoices(query.endDate),
     getRevenue(query.startDate, query.endDate),
     getPaymentsReceived(query.startDate, query.endDate),
