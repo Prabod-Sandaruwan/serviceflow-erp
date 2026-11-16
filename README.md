@@ -74,15 +74,11 @@ All demo accounts are initialized with temporary password `12345` (forced change
 
 ---
 
-## Screenshots & Documentation References
+## Application Screenshots & Documents
 
-Screenshots of key workflows (Dashboard, Quotations, Invoices, Financial Reports):
-See `docs/images/` for visual documentation.
-
-- [Technical Design Document (TDD)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf)
-- [Software Requirements Specification (SRS)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Software%20Requirements%20Specification%20(SRS).pdf)
-- [Task Implementation Handbook](file:///docs/ServiceFlow%20ERP%20%E2%80%94%20Task-by-Task%20Implementation%20Handbook.pdf)
-- [Project Decisions Log](file:///docs/DECISIONS.md) | [Implementation Progress Log](file:///docs/PROGRESS.md)
+- **Screenshots**: [Login](docs/images/login.png) | [Dashboard](docs/images/dashboard.png) | [Quotations](docs/images/quotations.png) | [Projects](docs/images/projects.png) | [Invoices](docs/images/invoices.png) | [Reports](docs/images/reports.png)
+- **Design & Architecture**: [Technical Design Document (TDD)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf) | [Software Requirements (SRS)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Software%20Requirements%20Specification%20(SRS).pdf)
+- **Tracking & History**: [Handbook](file:///docs/ServiceFlow%20ERP%20%E2%80%94%20Task-by-Task%20Implementation%20Handbook.pdf) | [Decisions](file:///docs/DECISIONS.md) | [Progress Log](file:///docs/PROGRESS.md)
 
 ---
 
