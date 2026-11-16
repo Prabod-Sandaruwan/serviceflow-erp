@@ -20,6 +20,29 @@ export interface DashboardFinancials {
   overdueOutstanding: string;
   expenses: string;
   estimatedProfit: string;
+  overdueCount?: number;
+}
+
+export interface TrajectoryMonth {
+  m: string;
+  inv: number;
+  col: number;
+  exp: number;
+  invPct: number;
+  colPct: number;
+  expPct: number;
+  isCurrent: boolean;
+}
+
+export interface FeaturedProjectData {
+  id: string;
+  code: string;
+  name: string;
+  budget: string;
+  health: 'ON_TRACK' | 'AT_RISK' | 'CRITICAL';
+  status: string;
+  clientName: string;
+  creatorName: string;
 }
 
 export interface DashboardSummaryData {
@@ -29,6 +52,8 @@ export interface DashboardSummaryData {
   tasks?: TaskCounts;
   leadsCount?: number;
   quotationsCount?: number;
+  trajectories?: TrajectoryMonth[];
+  featuredProject?: FeaturedProjectData | null;
 }
 
 export interface DashboardSummaryResponse {

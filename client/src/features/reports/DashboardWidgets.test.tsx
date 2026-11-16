@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthContext } from '../auth/AuthProvider';
 import { DashboardPage } from './DashboardPage';
@@ -26,11 +27,13 @@ describe('DashboardWidgets and States (FIN-014)', () => {
 
   const renderDashboard = (role: 'STAFF' | 'MANAGER') =>
     render(
-      <QueryClientProvider client={queryClient}>
-        <AuthContext.Provider value={authCtx(role)}>
-          <DashboardPage />
-        </AuthContext.Provider>
-      </QueryClientProvider>
+      <MemoryRouter>
+        <QueryClientProvider client={queryClient}>
+          <AuthContext.Provider value={authCtx(role)}>
+            <DashboardPage />
+          </AuthContext.Provider>
+        </QueryClientProvider>
+      </MemoryRouter>
     );
 
   it('Test 1 (Loading State): renders loading skeletons/indicators for widgets', () => {

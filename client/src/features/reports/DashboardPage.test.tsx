@@ -51,15 +51,15 @@ describe('DashboardPage Component (FIN-012)', () => {
     );
 
     expect(screen.getByText('Estimated profit')).toBeInTheDocument();
-    expect(screen.getByText('$90,000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('$90,000.00').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Revenue')).toBeInTheDocument();
-    expect(screen.getByText('$125,000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('$125,000.00').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Payments Received')).toBeInTheDocument();
-    expect(screen.getByText('$75,000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('$75,000.00').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Outstanding')).toBeInTheDocument();
-    expect(screen.getByText('$50,000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('$50,000.00').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Expenses')).toBeInTheDocument();
-    expect(screen.getByText('$35,000.00')).toBeInTheDocument();
+    expect(screen.getAllByText('$35,000.00').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Active Clients')).toBeInTheDocument();
     expect(screen.getByText('15')).toBeInTheDocument();
   });

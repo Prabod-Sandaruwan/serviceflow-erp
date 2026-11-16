@@ -14,28 +14,27 @@ export interface AdminDashboardProps {
 export function AdminDashboard({ data, isLoading, isError }: AdminDashboardProps) {
   const c = data?.counts;
   const f = data?.financials;
+  const trajectories = data?.trajectories;
+  const featuredProject = data?.featuredProject;
 
   return (
     <div className="space-y-6">
-      {/* Top 5 KPI Cards */}
       <ExecutiveKpis f={f} isLoading={isLoading} isError={isError} />
 
-      {/* Middle Row: Revenue Trajectory + Invoice Risk Donut */}
       {!isLoading && (
         <>
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <RevenueTrajectoryChart f={f} />
+              <RevenueTrajectoryChart f={f} trajectories={trajectories} />
             </div>
             <div className="lg:col-span-1">
               <InvoiceRiskDonut f={f} />
             </div>
           </div>
 
-          {/* Bottom Row: Margin Trajectory + Project Delivery */}
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <MarginTrajectoryChart f={f} />
-            <ProjectDeliveryCard c={c} />
+            <MarginTrajectoryChart f={f} trajectories={trajectories} />
+            <ProjectDeliveryCard c={c} featuredProject={featuredProject} />
           </div>
         </>
       )}

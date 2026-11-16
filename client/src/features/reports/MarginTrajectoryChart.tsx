@@ -1,6 +1,16 @@
-import type { DashboardFinancials } from './types';
+import type { DashboardFinancials, TrajectoryMonth } from './types';
 
-export function MarginTrajectoryChart({ f: _ }: { f?: DashboardFinancials | null }) {
+interface Props {
+  f?: DashboardFinancials | null;
+  trajectories?: TrajectoryMonth[];
+}
+
+export function MarginTrajectoryChart({ f, trajectories }: Props) {
+  const rev = parseFloat(f?.revenue ?? '0') || 0;
+  const exp = parseFloat(f?.expenses ?? '0') || 0;
+  const net = parseFloat(f?.estimatedProfit ?? '0') || rev - exp;
+  const marginPct = rev > 0 ? ((net / rev) * 100).toFixed(1) : '0.0';
+
   return (
     <div className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
       <div>
@@ -9,7 +19,9 @@ export function MarginTrajectoryChart({ f: _ }: { f?: DashboardFinancials | null
             <h3 className="text-base font-bold text-slate-900">Monthly Inflow / Outflow &amp; Margin Trajectory</h3>
             <p className="mt-1 text-xs text-slate-500">Operating profit margin and cash burn efficiency</p>
           </div>
-          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">91.0% Margin</span>
+          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+            {marginPct}% Margin
+          </span>
         </div>
 
         {/* SVG Area Trajectory Curve */}
@@ -30,27 +42,37 @@ export function MarginTrajectoryChart({ f: _ }: { f?: DashboardFinancials | null
 
         {/* Timeline net labels */}
         <div className="mt-2 grid grid-cols-5 text-center text-[10px] text-slate-500 font-medium">
-          <span>Jul ($7.0k Net)</span>
-          <span>Aug ($8.8k Net)</span>
-          <span>Sep ($11k Net)</span>
-          <span>Oct ($13.8k Net)</span>
-          <span className="font-bold text-indigo-600">Nov ($3,033 Net)</span>
+          {trajectories && trajectories.length === 5 ? (
+            trajectories.map((t) => (
+              <span key={t.m} className={t.isCurrent ? 'font-bold text-indigo-600' : ''}>
+                {t.m} (${Math.round(t.inv - t.exp).toLocaleString()} Net)
+              </span>
+            ))
+          ) : (
+            <>
+              <span>Jul ($7k Net)</span>
+              <span>Aug ($8.8k Net)</span>
+              <span>Sep ($11k Net)</span>
+              <span>Oct ($13.8k Net)</span>
+              <span className="font-bold text-indigo-600">Nov (${Math.round(net).toLocaleString()} Net)</span>
+            </>
+          )}
         </div>
       </div>
 
-      {/* Bottom 3 Metric Pills matching screenshot */}
+      {/* Bottom 3 Metric Pills */}
       <div className="mt-6 grid grid-cols-3 gap-3">
         <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 text-center">
           <span className="text-[9px] font-bold uppercase tracking-wider text-slate-400">Total Revenue</span>
-          <p className="mt-1 text-sm font-black text-slate-900">$3,333.00</p>
+          <p className="mt-1 text-sm font-black text-slate-900">${rev.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className="rounded-xl border border-amber-100 bg-amber-50/30 p-3 text-center">
           <span className="text-[9px] font-bold uppercase tracking-wider text-amber-600">Op-Ex Burn</span>
-          <p className="mt-1 text-sm font-black text-amber-600">$300.00</p>
+          <p className="mt-1 text-sm font-black text-amber-600">${exp.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
         <div className="rounded-xl border border-emerald-100 bg-emerald-50/30 p-3 text-center">
           <span className="text-[9px] font-bold uppercase tracking-wider text-emerald-600">Net Earning</span>
-          <p className="mt-1 text-sm font-black text-emerald-600">$3,033.00</p>
+          <p className="mt-1 text-sm font-black text-emerald-600">${net.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
         </div>
       </div>
     </div>
