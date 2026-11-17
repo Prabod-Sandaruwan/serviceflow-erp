@@ -76,5 +76,7 @@ describe('Dashboard Summary Endpoints (FIN-008)', () => {
     expect(res.status).toBe(200);
     expect(res.body.data.financials.revenue).toBe('0.00');
     expect(res.body.data.financials.expenses).toBe('0.00');
+    expect(res.body.data.trajectories).toBeDefined();
+    expect(res.body.data.trajectories[4].m).toBe('Jan');
   });
 });

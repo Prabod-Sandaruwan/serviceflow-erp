@@ -1,7 +1,7 @@
 import prisma from '../../config/prisma';
 
-export async function getMonthlyTrajectories() {
-  const now = new Date();
+export async function getMonthlyTrajectories(endDate?: Date) {
+  const ref = endDate instanceof Date && !isNaN(endDate.getTime()) ? endDate : new Date();
   const months: Array<{ m: string; inv: number; col: number; exp: number; isCurrent: boolean }> =
     [];
   const monthNames = [
@@ -20,9 +20,10 @@ export async function getMonthlyTrajectories() {
   ];
 
   for (let i = 4; i >= 0; i--) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const start = new Date(d.getFullYear(), d.getMonth(), 1);
-    const end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+    const start = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - i, 1, 0, 0, 0, 0));
+    const end = new Date(
+      Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - i + 1, 0, 23, 59, 59, 999),
+    );
 
     const [invRows, payRows, expRows] = await Promise.all([
       prisma.invoice.aggregate({
@@ -47,7 +48,7 @@ export async function getMonthlyTrajectories() {
     const exp = Number(expRows._sum.amount || 0);
 
     months.push({
-      m: monthNames[d.getMonth()],
+      m: monthNames[start.getUTCMonth()],
       inv,
       col,
       exp,

@@ -1,5 +1,5 @@
 import { UserRepository } from '../users/users.repository';
-import { verifyPassword, hashPassword } from './password';
+import { verifyPassword, DUMMY_ARGON2_HASH } from './password';
 import { AppError } from '../../shared/errors';
 import { runInTransaction } from '../../shared/tx';
 import { AuditService } from '../audit/audit.service';
@@ -7,17 +7,12 @@ import { AUDIT_ACTIONS } from '../audit/actions';
 import { LoginInput } from './auth.schemas';
 import { toJson } from '../../shared/http';
 
-let cachedDummyHash: string | null = null;
-
 export class AuthService {
   static async login(input: LoginInput, ip?: string, requestId?: string) {
     const user = await UserRepository.findByEmail(input.email);
-
-    if (!cachedDummyHash) {
-      cachedDummyHash = await hashPassword('dummy');
-    }
-
-    const hashToVerify = user ? user.password_hash || (user as any).passwordHash : cachedDummyHash;
+    const hashToVerify = user
+      ? user.password_hash || (user as any).passwordHash
+      : DUMMY_ARGON2_HASH;
     const isValid = await verifyPassword(hashToVerify, input.password);
     const isActive = user ? (user.is_active ?? (user as any).isActive) : false;
 

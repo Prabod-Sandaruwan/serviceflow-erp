@@ -8,6 +8,9 @@ export const ARGON2_CONFIG = {
   parallelism: 1,
 } as const;
 
+export const DUMMY_ARGON2_HASH =
+  '$argon2id$v=19$m=19456,p=1,t=2$GzM+mTU+3YZJHCsgqSLewA$f9JqhQm6DmK5wRtRIIor3Hyr68ZoPCI2udBdeuqL4aI';
+
 export async function hashPassword(password: string): Promise<string> {
   return argon2.hash(password, {
     type: ARGON2_CONFIG.type,
