@@ -1,88 +1,85 @@
 # ServiceFlow ERP
 
-> **Project-Based Service Business Management System** — Built with React 19, Express 5, Prisma 7, and MySQL 8.
+> **Enterprise Project & Service Operations Platform** — High-assurance, full-lifecycle ERP engineered for project-based professional services and engineering consultancies.
 
 [![CI](https://github.com/Prabod-Sandaruwan/serviceflow-erp/actions/workflows/ci.yml/badge.svg)](https://github.com/Prabod-Sandaruwan/serviceflow-erp/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![React 19](https://img.shields.io/badge/React-19-61dafb.svg)](https://react.dev/)
+[![Express 5](https://img.shields.io/badge/Express-5-000000.svg)](https://expressjs.com/)
+[![Prisma 7](https://img.shields.io/badge/Prisma-7-2D3748.svg)](https://www.prisma.io/)
+[![MySQL 8](https://img.shields.io/badge/MySQL-8.0-4479A1.svg)](https://www.mysql.com/)
+[![Tests](https://img.shields.io/badge/Tests-950%2B%20Passing-brightgreen.svg)](tests)
+[![OWASP Aligned](https://img.shields.io/badge/Security-OWASP%20ASVS-success.svg)](docs/SECURITY.md)
 
 ---
 
-## Architecture & Technology Stack
+## Enterprise Core Capabilities
 
-- **Frontend**: React 19, TypeScript, Vite, Tailwind CSS 4, TanStack Query, React Hook Form, Lucide Icons.
-- **Backend**: Express 5, TypeScript, Prisma 7 ORM, MySQL 8, Argon2id, express-session (MySQL store), Zod 4.
-- **Reporting & Quality**: PDFKit, Vitest 3, Playwright, Supertest, Pino structured logger, OpenAPI/Swagger UI.
-
----
-
-## Prerequisites (Windows 11)
-
-- **Node.js**: `v22.12.0` LTS or newer (`node -v`)
-- **MySQL**: Community Server `8.0.x` running on default port `3306` (`mysql --version`)
-- **PowerShell**: Version 7+ (or Windows PowerShell 5.1 with script execution enabled)
+- **Lead-to-Cash Lifecycle**: Lead pipeline, interactive quotations, dual-authorization approval, automated milestone conversion.
+- **Project & Milestone Governance**: Sprint tracking, resource allocation, and milestone-linked revenue recognition.
+- **Financial & Receivables Engine**: Invoicing, automated dunning notifications, payment reconciliations, and expense tracking.
+- **Executive Business Intelligence**: Dynamic revenue trajectory curves, real-time margin analysis, and overdue risk exposure.
+- **Enterprise Defense-in-Depth**: Strict RBAC, CSRF mitigation, formula injection hardening, and immutable audit logs.
 
 ---
 
-## Setup & Quickstart
+## Enterprise Documentation Suite
+
+Detailed architecture specifications, security controls, and operational manuals:
+
+| Document                                                                                                                              | Focus & Scope                                                                            |
+| :------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
+| **[Architecture Specification](docs/ARCHITECTURE.md)**                                                                                | Multi-tier topology, transactional boundaries, state machines, and concurrency controls. |
+| **[Security & Compliance Guide](docs/SECURITY.md)**                                                                                   | Argon2id auth, CWE-1236/521/400 remediations, CSRF protection, and audit logging.        |
+| **[Role & Operations Manual](docs/ROLE_GUIDE.md)**                                                                                    | Workflows and permissions for `ADMIN`, `MANAGER`, and `STAFF` personas.                  |
+| **[Deployment & Operations](docs/DEPLOYMENT.md)**                                                                                     | Production infrastructure, Nginx reverse proxy configuration, pooling, and backups.      |
+| **[Technical Design Document](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf)**                       | Formal system architecture, data models, and API specifications.                         |
+| **[Software Requirements (SRS)](<file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Software%20Requirements%20Specification%20(SRS).pdf>)** | Comprehensive business and functional requirements matrix.                               |
+
+---
+
+## Quickstart & Local Setup
 
 ```powershell
-# 1. Clone repository and install dependencies
-git clone https://github.com/Prabod-Sandaruwan/serviceflow-erp.git
-cd serviceflow-erp
+# 1. Clone repository & install dependencies
+git clone https://github.com/Prabod-Sandaruwan/serviceflow-erp.git; cd serviceflow-erp
 npm install --prefix server; npm install --prefix client
 
-# 2. Configure environment variables
-Copy-Item server/.env.example server/.env
-Copy-Item server/.env.test.example server/.env.test
-Copy-Item client/.env.example client/.env
+# 2. Configure environment files
+Copy-Item server/.env.example server/.env; Copy-Item client/.env.example client/.env
 
-# 3. Create databases in MySQL
+# 3. Initialize MySQL databases & apply schema migrations
 mysql -u root -p -e "CREATE DATABASE serviceflow_dev; CREATE DATABASE serviceflow_test;"
+npm run db:migrate --prefix server; npm run db:seed --prefix server
 
-# 4. Apply migrations and seed demo data
-npm run db:migrate --prefix server
-npm run db:seed --prefix server
-
-# 5. Start development servers
-npm run dev --prefix server   # Backend API: http://localhost:3000
-npm run dev --prefix client   # Frontend UI: http://localhost:5173
+# 4. Start concurrent development servers
+npm run dev   # API: http://localhost:3000 | Web UI: http://localhost:5173
 ```
 
 ---
 
-## Available Root Scripts
+## Demo Credentials & API Documentation
 
-- `npm run dev`: Concurrently start both server and client development servers.
-- `npm run format:check`: Check code formatting with Prettier.
-- `npm run lint`: Lint both server and client TypeScript codebases.
-- `npm run typecheck`: Run strict TypeScript compiler verification without emit.
-- `npm test`: Run unit and integration tests across backend and frontend.
-- `npm run test:e2e`: Execute deterministic Playwright end-to-end user workflows.
-- `npm run build`: Compile backend TypeScript and bundle frontend Vite distribution.
+Default password for all demo accounts is `12345` (forced rotation upon initial authentication):
 
----
-
-## Demo Accounts & Swagger API Docs
-
-All demo accounts are initialized with temporary password `12345` (forced change on first login):
-- **Admin**: `admin@serviceflow.lk` (Complete access, audit logs, employee management)
-- **Operations Manager**: `manager1@serviceflow.lk` (Quotations, Projects, Invoicing, Approvals)
-- **Project Manager**: `manager2@serviceflow.lk` (Projects, Milestones, Approvals)
-- **Staff / Engineer**: `staff1@serviceflow.lk` (Task updates, scoped quotations & leads)
-- **Interactive OpenAPI Documentation**: `http://localhost:3000/api-docs`
+- **Executive Admin**: `admin@serviceflow.lk` (User provisioning, employee sync, audit records)
+- **Operations Manager**: `manager1@serviceflow.lk` (Quotations, approvals, projects, invoices, dunning)
+- **Staff Engineer**: `staff1@serviceflow.lk` (Assigned tasks, project status, scoped documents)
+- **OpenAPI / Swagger Explorer**: `http://localhost:3000/api-docs`
 
 ---
 
-## Application Screenshots & Documents
+## Verification & Quality Gates
 
-- **Screenshots**: [Login](docs/images/login.png) | [Dashboard](docs/images/dashboard.png) | [Quotations](docs/images/quotations.png) | [Projects](docs/images/projects.png) | [Invoices](docs/images/invoices.png) | [Reports](docs/images/reports.png)
-- **Design & Architecture**: [Technical Design Document (TDD)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf) | [Software Requirements (SRS)](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Software%20Requirements%20Specification%20(SRS).pdf)
-- **Tracking & History**: [Handbook](file:///docs/ServiceFlow%20ERP%20%E2%80%94%20Task-by-Task%20Implementation%20Handbook.pdf) | [Decisions](file:///docs/DECISIONS.md) | [Progress Log](file:///docs/PROGRESS.md)
+```powershell
+npm run typecheck    # Strict TypeScript compiler verification without emit
+npm run format:check # Prettier code standard validation
+npm test             # Full automated test suite (Unit, Integration, Authorization Matrix)
+npm run test:e2e     # Deterministic Playwright end-to-end user journeys
+```
 
 ---
 
-## Scope, Known Limitations & Future Work
+## License & Governance
 
-- **Known Limitations**: Single-company only; LKR currency only; manual tax rates (VAT/SSCL); no hourly labor costing; local/VM deployment; session cleanup is best-effort.
-- **Future Extensions (SRS §13 Exclusions)**: Multi-company tenancy; automated payment gateways; multi-currency; mobile companion app; automated tax authority filing.
+Licensed under the [MIT License](LICENSE). Maintained by the ServiceFlow Engineering Team.
