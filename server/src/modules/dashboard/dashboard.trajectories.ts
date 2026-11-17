@@ -22,7 +22,7 @@ export async function getMonthlyTrajectories(endDate?: Date) {
   for (let i = 4; i >= 0; i--) {
     const start = new Date(Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - i, 1, 0, 0, 0, 0));
     const end = new Date(
-      Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - i + 1, 0, 23, 59, 59, 999),
+      Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - i + 1, 0, 23, 59, 59, 999)
     );
 
     const [invRows, payRows, expRows] = await Promise.all([
