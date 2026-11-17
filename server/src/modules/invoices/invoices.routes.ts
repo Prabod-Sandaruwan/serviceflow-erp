@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { list, getById, create, update, issue, cancel, getPdf, stats } from './invoices.controller';
+import { sendDunningHandler } from './invoices.dunning.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
 import { route } from '../../shared/routeRegistry';
-import { registry } from '../../config/openapi';
+import { registerInvoiceOpenApi } from './invoices.openapi';
 
 const router = Router();
 const allRoles = ['ADMIN', 'MANAGER', 'STAFF'];
@@ -21,6 +22,10 @@ route(router, 'get', '/:id/pdf', {
   roles: allRoles,
   handler: [requireAuth, requireRole(allRoles), getPdf],
 });
+route(router, 'post', '/dunning-notices', {
+  roles: managerRoles,
+  handler: [requireAuth, requireRole(managerRoles), sendDunningHandler],
+});
 route(router, 'post', '/', {
   roles: managerRoles,
   handler: [requireAuth, requireRole(managerRoles), create],
@@ -38,78 +43,7 @@ route(router, 'post', '/:id/cancel', {
   handler: [requireAuth, requireRole(managerRoles), cancel],
 });
 
-registry.registerPath({
-  method: 'get',
-  path: '/api/v1/invoices',
-  summary: 'List invoices',
-  responses: { 200: { description: 'Invoices list' }, 401: { description: 'Unauthenticated' } },
-});
-
-registry.registerPath({
-  method: 'get',
-  path: '/api/v1/invoices/{id}',
-  summary: 'Get invoice details',
-  responses: {
-    200: { description: 'Invoice details' },
-    401: { description: 'Unauthenticated' },
-    404: { description: 'Not found' },
-  },
-});
-
-registry.registerPath({
-  method: 'get',
-  path: '/api/v1/invoices/{id}/pdf',
-  summary: 'Get invoice PDF',
-  responses: {
-    200: { description: 'Invoice PDF' },
-    401: { description: 'Unauthenticated' },
-    404: { description: 'Not found' },
-  },
-});
-
-registry.registerPath({
-  method: 'post',
-  path: '/api/v1/invoices',
-  summary: 'Create invoice',
-  responses: {
-    201: { description: 'Invoice created' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-  },
-});
-
-registry.registerPath({
-  method: 'patch',
-  path: '/api/v1/invoices/{id}',
-  summary: 'Update draft invoice',
-  responses: {
-    200: { description: 'Invoice updated' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-  },
-});
-
-registry.registerPath({
-  method: 'post',
-  path: '/api/v1/invoices/{id}/issue',
-  summary: 'Issue draft invoice',
-  responses: {
-    200: { description: 'Invoice issued' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-  },
-});
-
-registry.registerPath({
-  method: 'post',
-  path: '/api/v1/invoices/{id}/cancel',
-  summary: 'Cancel invoice',
-  responses: {
-    200: { description: 'Invoice cancelled' },
-    401: { description: 'Unauthenticated' },
-    403: { description: 'Forbidden' },
-  },
-});
+registerInvoiceOpenApi();
 
 export const invoiceRoutes = router;
 export default router;
