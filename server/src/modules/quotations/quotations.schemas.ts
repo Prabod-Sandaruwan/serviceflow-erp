@@ -14,57 +14,46 @@ export const quotationTaxSchema = z.object({
   reference: z.string().optional(),
 });
 
+function validateItemsAndDate(data: any, ctx: z.RefinementCtx) {
+  if (data.items !== undefined && (!data.items || data.items.length === 0)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Quotation must have at least one item',
+      path: ['items'],
+    });
+  }
+  if (data.validUntil && data.validUntil < getColomboToday()) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'validUntil cannot be before today',
+      path: ['validUntil'],
+    });
+  }
+}
+
+const itemArr = z.array(quotationItemInputSchema).max(100, 'Quotation cannot exceed 100 items');
+
 export const createQuotationSchema = z
   .object({
     clientId: z.string().min(1, 'Client ID is required'),
     leadId: z.string().optional(),
     title: z.string().trim().min(1, 'Title is required').max(160),
     validUntil: z.coerce.date(),
-    items: z.array(quotationItemInputSchema).default([]),
+    items: itemArr.default([]),
     tax: quotationTaxSchema.default({ type: 'NONE', rate: 0, amount: 0 }),
     notes: z.string().optional(),
   })
-  .superRefine((data, ctx) => {
-    if (!data.items || data.items.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Quotation must have at least one item',
-        path: ['items'],
-      });
-    }
-    if (data.validUntil && data.validUntil < getColomboToday()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'validUntil cannot be before today',
-        path: ['validUntil'],
-      });
-    }
-  });
+  .superRefine(validateItemsAndDate);
 
 export const updateQuotationSchema = z
   .object({
     title: z.string().trim().min(1).max(160).optional(),
     validUntil: z.coerce.date().optional(),
-    items: z.array(quotationItemInputSchema).optional(),
+    items: itemArr.optional(),
     tax: quotationTaxSchema.optional(),
     notes: z.string().optional(),
   })
-  .superRefine((data, ctx) => {
-    if (data.items !== undefined && data.items.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Quotation must have at least one item',
-        path: ['items'],
-      });
-    }
-    if (data.validUntil && data.validUntil < getColomboToday()) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'validUntil cannot be before today',
-        path: ['validUntil'],
-      });
-    }
-  });
+  .superRefine(validateItemsAndDate);
 
 export const rejectQuotationSchema = z.object({
   reason: z.string().trim().min(5, 'Rejection reason must be at least 5 characters').max(500),
@@ -90,11 +79,10 @@ export const listQuotationsQuerySchema = z.object({
   status: quotationStatusEnum.optional(),
   clientId: z.string().optional(),
   createdBy: z.string().optional(),
-  pendingApproval: z
-    .enum(['true', 'false'])
-    .transform((v) => v === 'true')
-    .or(z.boolean())
-    .optional(),
+  pendingApproval: z.preprocess(
+    (v) => (v === 'true' || v === true ? true : v === 'false' ? false : v),
+    z.boolean().optional()
+  ),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
   search: z.string().optional(),

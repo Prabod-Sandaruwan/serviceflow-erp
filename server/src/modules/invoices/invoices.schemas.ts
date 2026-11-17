@@ -36,13 +36,13 @@ const taxFields = {
 
 export const createInvoiceSchema = z.object({
   milestoneId: z.union([z.string().min(1), z.bigint(), z.number()]),
-  items: z.array(createInvoiceItemSchema).optional(),
+  items: z.array(createInvoiceItemSchema).max(100, 'Invoice cannot exceed 100 items').optional(),
   ...taxFields,
   taxAmount: numericAmountSchema.optional().default('0'),
 });
 
 export const updateInvoiceSchema = z.object({
-  items: z.array(createInvoiceItemSchema).optional(),
+  items: z.array(createInvoiceItemSchema).max(100, 'Invoice cannot exceed 100 items').optional(),
   ...taxFields,
 });
 
