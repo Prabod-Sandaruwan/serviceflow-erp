@@ -64,15 +64,16 @@ app.use('/api/v1', expenseRoutes);
 app.use('/api/v1', reportRoutes);
 app.use('/api/v1', dashboardRoutes);
 
-route(app as any, 'post', '/api/v1/test-mutation', {
-  roles: 'PUBLIC',
-  handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
-});
-
-route(app as any, 'get', '/api/v1/test-protected', {
-  roles: ['ADMIN', 'MANAGER', 'STAFF'],
-  handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
-});
+if (process.env.NODE_ENV !== 'production') {
+  route(app as any, 'post', '/api/v1/test-mutation', {
+    roles: 'PUBLIC',
+    handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
+  });
+  route(app as any, 'get', '/api/v1/test-protected', {
+    roles: ['ADMIN', 'MANAGER', 'STAFF'],
+    handler: (_req: Request, res: Response) => res.status(200).json({ status: 'ok' }),
+  });
+}
 
 app.get('/health', healthCheckHandler);
 route(app as any, 'get', '/api/v1/health', {
