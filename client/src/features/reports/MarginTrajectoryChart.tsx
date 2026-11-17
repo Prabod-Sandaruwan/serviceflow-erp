@@ -35,7 +35,7 @@ export function MarginTrajectoryChart({ f, trajectories }: Props) {
           </span>
         </div>
 
-        <MarginCurveSvg />
+        <MarginCurveSvg months={displayMonths} fallbackNet={net} />
 
         <div className="mt-2 grid grid-cols-5 text-center text-[10px] text-slate-500 font-medium">
           {displayMonths.map((t: any) => {
