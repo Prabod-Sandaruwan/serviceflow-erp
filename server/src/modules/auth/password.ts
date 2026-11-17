@@ -28,14 +28,18 @@ export async function verifyPassword(hash: string, password: string): Promise<bo
   }
 }
 
-const passwordSchema = z
+export const passwordComplexitySchema = z
   .string()
   .min(12, 'Password must be at least 12 characters')
-  .max(128, 'Password must not exceed 128 characters');
+  .max(128, 'Password must not exceed 128 characters')
+  .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
+  .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
+  .regex(/[0-9]/, 'Password must contain at least one number')
+  .regex(/[^A-Za-z0-9]/, 'Password must contain at least one special character');
 
 export function validatePasswordPolicy(password: string, email?: string): z.ZodIssue[] {
   const issues: z.ZodIssue[] = [];
-  const result = passwordSchema.safeParse(password);
+  const result = passwordComplexitySchema.safeParse(password);
 
   if (!result.success) {
     issues.push(...result.error.issues);

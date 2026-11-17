@@ -44,10 +44,17 @@ describe('Password module (AUTH-002)', () => {
     });
 
     it('rejects passwords longer than 128 characters', () => {
-      const tooLong = 'A'.repeat(129);
+      const tooLong = 'A'.repeat(129) + '1!a';
       const issues = validatePasswordPolicy(tooLong, validEmail);
       expect(issues.length).toBeGreaterThan(0);
       expect(issues.some((i) => i.code === 'too_big')).toBe(true);
+    });
+
+    it('rejects passwords missing uppercase, lowercase, numbers, or symbols', () => {
+      expect(validatePasswordPolicy('lowercase123456!', validEmail).length).toBeGreaterThan(0);
+      expect(validatePasswordPolicy('UPPERCASE123456!', validEmail).length).toBeGreaterThan(0);
+      expect(validatePasswordPolicy('NoDigitsHereAtAll!', validEmail).length).toBeGreaterThan(0);
+      expect(validatePasswordPolicy('NoSymbols123456', validEmail).length).toBeGreaterThan(0);
     });
 
     it('rejects password matching email case-insensitively', () => {

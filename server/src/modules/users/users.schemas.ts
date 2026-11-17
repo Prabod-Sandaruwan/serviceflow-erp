@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { paginationQuerySchema } from '../../shared/schemas';
+import { passwordComplexitySchema } from '../auth/password';
 
 export const roles = ['ADMIN', 'MANAGER', 'STAFF'] as const;
 
@@ -7,7 +8,7 @@ export const createUserSchema = z.object({
   body: z
     .object({
       email: z.string().trim().toLowerCase().email(),
-      password: z.string().min(12, 'Password must be at least 12 characters').max(128),
+      password: passwordComplexitySchema,
       role: z.enum(roles),
       employeeId: z.union([z.string(), z.number(), z.bigint()]).optional(),
       fullName: z.string().trim().min(1).max(255).optional(),
@@ -47,7 +48,7 @@ export type UpdateUserInput = z.infer<typeof updateUserSchema>['body'];
 export const resetPasswordSchema = z.object({
   body: z
     .object({
-      tempPassword: z.string().min(12).max(128),
+      tempPassword: passwordComplexitySchema,
     })
     .strict(),
 });
