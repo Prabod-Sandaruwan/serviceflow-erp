@@ -1,11 +1,12 @@
 import { Decimal } from 'decimal.js';
 import prisma from '../../config/prisma';
-import { AuthUser } from '../../shared/permissions';
 import { runInTransaction } from '../../shared/tx';
 import { AuditService } from '../audit/audit.service';
 import { AUDIT_ACTIONS } from '../audit/actions';
 
-export async function sendDunningNotices(actor: AuthUser, ip?: string, requestId?: string) {
+export type Actor = { userId?: bigint | string; role?: string };
+
+export async function sendDunningNotices(actor: Actor, ip?: string, requestId?: string) {
   const now = new Date();
   const overdueInvoices = await prisma.invoice.findMany({
     where: {
@@ -23,7 +24,7 @@ export async function sendDunningNotices(actor: AuthUser, ip?: string, requestId
   for (const inv of overdueInvoices) {
     const paid = inv.payments.reduce(
       (sum, p) => sum.plus(new Decimal(p.amount.toString())),
-      new Decimal(0),
+      new Decimal(0)
     );
     const bal = new Decimal(inv.total.toString()).minus(paid);
     if (bal.gt(0)) {
@@ -42,7 +43,7 @@ export async function sendDunningNotices(actor: AuthUser, ip?: string, requestId
         actor: { userId: actor.userId, role: actor.role },
         action: AUDIT_ACTIONS.INVOICE_DUNNING_SENT,
         entityType: 'INVOICE',
-        details: {
+        after: {
           dispatchedCount: eligibleInvoices.length,
           totalOverdue: totalOverdue.toFixed(2),
           invoices: eligibleInvoices.map((i) => i.invoiceNumber),

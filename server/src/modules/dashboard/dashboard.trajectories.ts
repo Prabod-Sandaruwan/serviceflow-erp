@@ -76,9 +76,13 @@ export async function getFeaturedProject() {
   const compMs = validMs.filter((m) => m.status === 'COMPLETED' || m.status === 'APPROVED');
   return {
     id: p.id.toString(),
+    code: p.projectCode,
     projectCode: p.projectCode,
     name: p.name,
+    budget: p.budgetAmount?.toString() || '0',
+    health: 'ON_TRACK' as const,
     clientName: p.client?.display_name || 'Client',
+    creatorName: p.creator?.email || 'Lead',
     totalMilestones: validMs.length,
     completedMilestones: compMs.length,
     progressPercent: validMs.length ? Math.round((compMs.length / validMs.length) * 100) : 0,
