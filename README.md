@@ -13,6 +13,10 @@
 
 ---
 
+![ServiceFlow ERP Executive Dashboard](docs/images/dashboard.png)
+
+---
+
 ## Enterprise Core Capabilities
 
 - **Lead-to-Cash Lifecycle**: Lead pipeline, interactive quotations, dual-authorization approval, automated milestone conversion.
@@ -27,14 +31,28 @@
 
 Detailed architecture specifications, security controls, and operational manuals:
 
-| Document                                                                                                                              | Focus & Scope                                                                            |
-| :------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------- |
-| **[Architecture Specification](docs/ARCHITECTURE.md)**                                                                                | Multi-tier topology, transactional boundaries, state machines, and concurrency controls. |
-| **[Security & Compliance Guide](docs/SECURITY.md)**                                                                                   | Argon2id auth, CWE-1236/521/400 remediations, CSRF protection, and audit logging.        |
-| **[Role & Operations Manual](docs/ROLE_GUIDE.md)**                                                                                    | Workflows and permissions for `ADMIN`, `MANAGER`, and `STAFF` personas.                  |
-| **[Deployment & Operations](docs/DEPLOYMENT.md)**                                                                                     | Production infrastructure, Nginx reverse proxy configuration, pooling, and backups.      |
-| **[Technical Design Document](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf)**                       | Formal system architecture, data models, and API specifications.                         |
-| **[Software Requirements (SRS)](<file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Software%20Requirements%20Specification%20(SRS).pdf>)** | Comprehensive business and functional requirements matrix.                               |
+| Document                                                                                                        | Focus & Scope                                                                            |
+| :-------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------- |
+| **[Architecture Specification](docs/ARCHITECTURE.md)**                                                          | Multi-tier topology, transactional boundaries, state machines, and concurrency controls. |
+| **[Security & Compliance Guide](docs/SECURITY.md)**                                                             | Argon2id auth, CWE-1236/521/400 remediations, CSRF protection, and audit logging.        |
+| **[Role & Operations Manual](docs/ROLE_GUIDE.md)**                                                              | Workflows and permissions for `ADMIN`, `MANAGER`, and `STAFF` personas.                  |
+| **[Deployment & Operations](docs/DEPLOYMENT.md)**                                                               | Production infrastructure, Nginx reverse proxy configuration, pooling, and backups.      |
+| **[Visual Interface Gallery](docs/GALLERY.md)**                                                                 | Full-resolution screenshot tour of all core modules with feature breakdowns.             |
+| **[Technical Design Document](file:///docs/ServiceFlow%20ERP%20%E2%80%93%20Technical%20Design%20Document.pdf)** | Formal system architecture, data models, and API specifications.                         |
+
+---
+
+## Application Interface Showcase
+
+|                         Executive Dashboard                          |                       Quotations & Dual Approval                        |
+| :------------------------------------------------------------------: | :---------------------------------------------------------------------: |
+| [![Dashboard](docs/images/dashboard.png)](docs/images/dashboard.png) | [![Quotations](docs/images/quotations.png)](docs/images/quotations.png) |
+|                    **Active Projects & Sprints**                     |                       **Receivables & Invoicing**                       |
+|  [![Projects](docs/images/projects.png)](docs/images/projects.png)   |    [![Invoices](docs/images/invoices.png)](docs/images/invoices.png)    |
+|                    **Human-Friendly Audit Trail**                    |                     **User Management & Security**                      |
+|    [![Audit Trail](docs/images/audit.png)](docs/images/audit.png)    |        [![Users](docs/images/users.png)](docs/images/users.png)         |
+
+> 📷 **View complete tour with descriptions in the [Visual Interface Gallery](docs/GALLERY.md)**. Interactive API Explorer: `http://localhost:3000/api-docs`.
 
 ---
 
@@ -45,23 +63,14 @@ Detailed architecture specifications, security controls, and operational manuals
 git clone https://github.com/Prabod-Sandaruwan/serviceflow-erp.git; cd serviceflow-erp
 npm install --prefix server; npm install --prefix client
 
-# 2. Configure environment files
+# 2. Configure environment files & initialize database
 Copy-Item server/.env.example server/.env; Copy-Item client/.env.example client/.env
-
-# 3. Initialize MySQL databases & apply schema migrations
 mysql -u root -p -e "CREATE DATABASE serviceflow_dev; CREATE DATABASE serviceflow_test;"
 npm run db:migrate --prefix server; npm run db:seed --prefix server
 
-# 4. Start concurrent development servers
-npm run dev   # API: http://localhost:3000 | Web UI: http://localhost:5173
+# 3. Start development servers (API: :3000 | Web UI: :5173)
+npm run dev
 ```
-
----
-
-## Application Interface Showcase
-
-- **Visual Gallery**: [Dashboard](docs/images/dashboard.png) | [Quotations](docs/images/quotations.png) | [Projects](docs/images/projects.png) | [Invoices](docs/images/invoices.png) | [Users](docs/images/users.png) | [Profile](docs/images/profile.png)
-- **Interactive OpenAPI Explorer**: `http://localhost:3000/api-docs`
 
 ---
 
