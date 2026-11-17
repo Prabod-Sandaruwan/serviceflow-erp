@@ -61,7 +61,8 @@ export async function exportCsvReportHandler(req: Request, res: Response, next: 
       csv = toCsv(rows, cols);
     }
 
-    const filename = (req.query.filename as string) || 'export.csv';
+    const rawName = typeof req.query.filename === 'string' ? req.query.filename : 'export.csv';
+    const filename = rawName.replace(/[^a-zA-Z0-9._-]/g, '_');
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.status(200).send(csv);
