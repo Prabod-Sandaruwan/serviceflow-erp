@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { ok } from '../../shared/http';
 import { ensureCsrfToken } from '../../middleware/csrf';
 import { loginLimiter } from '../../middleware/loginLimiter';
+import { sensitiveLimiter } from '../../middleware/rateLimiters';
 import { AuthController } from './auth.controller';
 import { AuthMeController } from './auth.me.controller';
 import { registry } from '../../config/openapi';
@@ -30,11 +31,11 @@ route(router, 'post', '/logout-other-sessions', {
 });
 route(router, 'post', '/change-password', {
   roles: ['ADMIN', 'MANAGER', 'STAFF'],
-  handler: AuthController.changePassword,
+  handler: [sensitiveLimiter, AuthController.changePassword],
 });
 route(router, 'patch', '/me/password', {
   roles: ['ADMIN', 'MANAGER', 'STAFF'],
-  handler: AuthController.changePassword,
+  handler: [sensitiveLimiter, AuthController.changePassword],
 });
 
 registry.registerPath({

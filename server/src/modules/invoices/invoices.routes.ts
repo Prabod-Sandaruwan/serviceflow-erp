@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { list, getById, create, update, issue, cancel, getPdf, stats } from './invoices.controller';
 import { sendDunningHandler } from './invoices.dunning.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
+import { sensitiveLimiter, dunningLimiter } from '../../middleware/rateLimiters';
 import { route } from '../../shared/routeRegistry';
 import { registerInvoiceOpenApi } from './invoices.openapi';
 
@@ -20,11 +21,11 @@ route(router, 'get', '/:id', {
 });
 route(router, 'get', '/:id/pdf', {
   roles: allRoles,
-  handler: [requireAuth, requireRole(allRoles), getPdf],
+  handler: [requireAuth, requireRole(allRoles), sensitiveLimiter, getPdf],
 });
 route(router, 'post', '/dunning-notices', {
   roles: managerRoles,
-  handler: [requireAuth, requireRole(managerRoles), sendDunningHandler],
+  handler: [requireAuth, requireRole(managerRoles), dunningLimiter, sendDunningHandler],
 });
 route(router, 'post', '/', {
   roles: managerRoles,

@@ -13,6 +13,7 @@ import {
   getPdf,
 } from './quotations.controller';
 import { requireAuth, requireRole } from '../../middleware/auth';
+import { sensitiveLimiter } from '../../middleware/rateLimiters';
 import { route } from '../../shared/routeRegistry';
 import { registry } from '../../config/openapi';
 
@@ -31,7 +32,7 @@ route(router, 'get', '/:id', {
 });
 route(router, 'get', '/:id/pdf', {
   roles: allRoles,
-  handler: [requireAuth, requireRole(allRoles), getPdf],
+  handler: [requireAuth, requireRole(allRoles), sensitiveLimiter, getPdf],
 });
 route(router, 'patch', '/:id', {
   roles: allRoles,
