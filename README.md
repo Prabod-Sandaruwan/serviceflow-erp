@@ -58,14 +58,10 @@ npm run dev   # API: http://localhost:3000 | Web UI: http://localhost:5173
 
 ---
 
-## Demo Credentials & API Documentation
+## Application Interface Showcase
 
-Default password for all demo accounts is `12345` (forced rotation upon initial authentication):
-
-- **Executive Admin**: `admin@serviceflow.lk` (User provisioning, employee sync, audit records)
-- **Operations Manager**: `manager1@serviceflow.lk` (Quotations, approvals, projects, invoices, dunning)
-- **Staff Engineer**: `staff1@serviceflow.lk` (Assigned tasks, project status, scoped documents)
-- **OpenAPI / Swagger Explorer**: `http://localhost:3000/api-docs`
+- **Visual Gallery**: [Dashboard](docs/images/dashboard.png) | [Quotations](docs/images/quotations.png) | [Projects](docs/images/projects.png) | [Invoices](docs/images/invoices.png) | [Users](docs/images/users.png) | [Profile](docs/images/profile.png)
+- **Interactive OpenAPI Explorer**: `http://localhost:3000/api-docs`
 
 ---
 
