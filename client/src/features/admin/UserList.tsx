@@ -1,37 +1,27 @@
 import { useState } from 'react';
 import { Download, Plus } from 'lucide-react';
 import { useAuth } from '../auth/AuthProvider';
-import { useUsers, useResetPassword } from './hooks';
+import { useUsers } from './hooks';
 import { Table } from '../../components/ui/Table';
 import { Pagination } from '../../components/ui/Pagination';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { Button, Input } from '../../components/ui/Forms';
 import { QueryBoundary } from '../../components/states/QueryBoundary';
-import { useToast } from '../../components/ui/Toast';
 import { UserModal } from './UserModal';
+import { ResetPasswordModal } from './ResetPasswordModal';
 import { UserStats } from './UserStats';
 import { downloadAllUsersCsv } from './exportUsers';
 
 export default function UserList() {
   const { user: authUser } = useAuth();
-  const { addToast } = useToast();
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
+  const [resetUser, setResetUser] = useState<any>(null);
   const [isExporting, setIsExporting] = useState(false);
 
   const query = useUsers(page, search);
-  const resetPassword = useResetPassword();
-
-  const handleReset = async (user: any) => {
-    const temp = window.prompt('Enter temporary password (min 12 characters):', 'TempPass@2026!');
-    if (!temp) return;
-    try {
-      await resetPassword.mutateAsync({ id: user.id, tempPassword: temp });
-      addToast(`Password reset for ${user.email}`, 'success');
-    } catch { addToast('Failed to reset password', 'error'); }
-  };
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -49,7 +39,7 @@ export default function UserList() {
       render: (r: any) => (
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <Button variant="secondary" onClick={() => { setEditingUser(r); setModalOpen(true); }} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}>Edit</Button>
-          <Button variant="danger" onClick={() => handleReset(r)} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}>Reset</Button>
+          <Button variant="danger" onClick={() => setResetUser(r)} style={{ padding: '0.25rem 0.65rem', fontSize: '0.75rem' }}>Reset</Button>
         </div>
       ),
     },
@@ -88,6 +78,7 @@ export default function UserList() {
         </QueryBoundary>
       </div>
       <UserModal isOpen={modalOpen} onClose={() => setModalOpen(false)} user={editingUser} isSelf={String(authUser?.id) === String(editingUser?.id)} />
+      <ResetPasswordModal isOpen={Boolean(resetUser)} onClose={() => setResetUser(null)} user={resetUser} />
     </div>
   );
 }
